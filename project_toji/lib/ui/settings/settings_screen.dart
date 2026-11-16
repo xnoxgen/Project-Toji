@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_typography.dart';
 import '../../state/physique_state.dart';
-import 'edit_profile_screen.dart';
+import 'profile_overview_screen.dart';
 import 'backup_restore_dialog.dart';
 
 class SettingsScreen extends StatelessWidget {
@@ -63,65 +63,78 @@ class SettingsScreen extends StatelessWidget {
             padding: const EdgeInsets.all(16),
             children: [
               // User Profile Card
-              Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: surfaceColor,
+              Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (ctx) => ProfileOverviewScreen(state: state),
+                      ),
+                    );
+                  },
                   borderRadius: BorderRadius.circular(14),
-                  border: Border.all(color: borderColor),
-                ),
-                child: Row(
-                  children: [
-                    CircleAvatar(
-                      radius: 26,
-                      backgroundColor: AppColors.crimson.withValues(alpha: 0.15),
-                      child: Text(
-                        state.profile.name.isNotEmpty
-                            ? state.profile.name[0].toUpperCase()
-                            : 'P',
-                        style: AppTypography.titleLarge.copyWith(
-                          color: AppColors.crimson,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
+                  child: Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: surfaceColor,
+                      borderRadius: BorderRadius.circular(14),
+                      border: Border.all(color: borderColor),
                     ),
-                    const SizedBox(width: 14),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            state.profile.name,
+                    child: Row(
+                      children: [
+                        CircleAvatar(
+                          radius: 26,
+                          backgroundColor: AppColors.crimson.withValues(alpha: 0.15),
+                          child: Text(
+                            state.profile.name.isNotEmpty
+                                ? state.profile.name[0].toUpperCase()
+                                : 'P',
                             style: AppTypography.titleLarge.copyWith(
-                              color: textColor,
-                              fontSize: 17,
+                              color: AppColors.crimson,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
-                          const SizedBox(height: 2),
-                          Text(
-                            '${state.profile.currentWeightKg.toStringAsFixed(1)} kg • ${state.profile.heightCm.toStringAsFixed(0)} cm • ${_formatGoal(state.profile.fitnessGoal)}',
-                            style: AppTypography.bodyMedium.copyWith(
-                              color: textMuted,
-                              fontSize: 12,
-                            ),
+                        ),
+                        const SizedBox(width: 14),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                state.profile.name,
+                                style: AppTypography.titleLarge.copyWith(
+                                  color: textColor,
+                                  fontSize: 17,
+                                ),
+                              ),
+                              const SizedBox(height: 2),
+                              Text(
+                                '${state.profile.currentWeightKg.toStringAsFixed(1)} kg • ${state.profile.heightCm.toStringAsFixed(0)} cm • ${_formatGoal(state.profile.fitnessGoal)}',
+                                style: AppTypography.bodyMedium.copyWith(
+                                  color: textMuted,
+                                  fontSize: 12,
+                                ),
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
-                    ),
-                    OutlinedButton(
-                      onPressed: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (ctx) => EditProfileScreen(state: state),
+                        ),
+                        OutlinedButton(
+                          onPressed: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (ctx) => ProfileOverviewScreen(state: state),
+                              ),
+                            );
+                          },
+                          style: OutlinedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
                           ),
-                        );
-                      },
-                      style: OutlinedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-                      ),
-                      child: const Text('Edit', style: TextStyle(fontSize: 12)),
+                          child: const Text('View Targets', style: TextStyle(fontSize: 12)),
+                        ),
+                      ],
                     ),
-                  ],
+                  ),
                 ),
               ),
               const SizedBox(height: 24),

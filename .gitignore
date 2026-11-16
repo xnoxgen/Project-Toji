@@ -34,3 +34,9 @@ coverage/
 **/android/app/debug
 **/android/app/profile
 **/android/app/release
+
+# Allow release APKs
+!release/
+!release/*.apk
+!*.apk
+

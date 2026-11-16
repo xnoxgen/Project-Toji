@@ -6,6 +6,7 @@ import '../../core/widgets/metric_card.dart';
 import '../../state/physique_state.dart';
 import '../checkin/weekly_checkin_dialog.dart';
 import '../execution/workout_execution_screen.dart';
+import '../execution/workout_summary_dialog.dart';
 
 class DashboardScreen extends StatelessWidget {
   final PhysiqueState state;
@@ -456,6 +457,22 @@ class DashboardScreen extends StatelessWidget {
                           await state.undoExerciseCompletion(todaySession.id, ex.exerciseId);
                         } else {
                           await state.markExerciseDone(todaySession.id, ex.exerciseId);
+                          final updated = state.getOrCreateTodaySession();
+                          if (updated.isCompleted && context.mounted) {
+                            showDialog(
+                              context: context,
+                              barrierDismissible: true,
+                              builder: (ctx) => WorkoutSummaryDialog(
+                                session: updated,
+                                streak: state.currentStreak,
+                                onDismiss: () => Navigator.of(ctx).pop(),
+                                onUndo: () {
+                                  state.undoWorkoutCompletion(updated.id);
+                                  Navigator.of(ctx).pop();
+                                },
+                              ),
+                            );
+                          }
                         }
                       },
                       borderRadius: BorderRadius.circular(8),

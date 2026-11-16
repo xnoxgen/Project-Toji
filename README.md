@@ -21,6 +21,13 @@ Works 100% offline with persistent local storage, zero accounts, and zero cloud 
 
 ---
 
+## Download APK
+
+You can download the pre-compiled Android release build directly:
+- **Direct Download**: [`release/app-release.apk`](release/app-release.apk) (v1.0.0, 50.9 MB)
+
+---
+
 ## Getting Started
 
 ### Prerequisites
@@ -59,3 +66,4 @@ flutter test
 ## License
 
 Distributed under the MIT License. See `LICENSE` for more information.
+
