@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_typography.dart';
 import '../../data/models/weekly_checkin.dart';
@@ -31,13 +32,27 @@ class _WeeklyCheckinDialogState extends State<WeeklyCheckinDialog> {
   void initState() {
     super.initState();
     final p = widget.state.profile;
-    _weightCtrl = TextEditingController(text: p.currentWeightKg.toStringAsFixed(1));
-    _waistCtrl = TextEditingController(text: p.waistCm?.toStringAsFixed(1) ?? '');
-    _chestCtrl = TextEditingController(text: p.chestCm?.toStringAsFixed(1) ?? '');
-    _bicepsCtrl = TextEditingController(text: p.bicepsCm?.toStringAsFixed(1) ?? '');
-    _thighsCtrl = TextEditingController(text: p.thighCm?.toStringAsFixed(1) ?? '');
-    _forearmsCtrl = TextEditingController(text: p.forearmCm?.toStringAsFixed(1) ?? '');
-    _calvesCtrl = TextEditingController(text: p.calfCm?.toStringAsFixed(1) ?? '');
+    _weightCtrl = TextEditingController(
+      text: p.currentWeightKg.toStringAsFixed(1),
+    );
+    _waistCtrl = TextEditingController(
+      text: p.waistCm?.toStringAsFixed(1) ?? '',
+    );
+    _chestCtrl = TextEditingController(
+      text: p.chestCm?.toStringAsFixed(1) ?? '',
+    );
+    _bicepsCtrl = TextEditingController(
+      text: p.bicepsCm?.toStringAsFixed(1) ?? '',
+    );
+    _thighsCtrl = TextEditingController(
+      text: p.thighCm?.toStringAsFixed(1) ?? '',
+    );
+    _forearmsCtrl = TextEditingController(
+      text: p.forearmCm?.toStringAsFixed(1) ?? '',
+    );
+    _calvesCtrl = TextEditingController(
+      text: p.calfCm?.toStringAsFixed(1) ?? '',
+    );
     _neckCtrl = TextEditingController(text: p.neckCm?.toStringAsFixed(1) ?? '');
     _notesCtrl = TextEditingController();
   }
@@ -90,11 +105,19 @@ class _WeeklyCheckinDialogState extends State<WeeklyCheckinDialog> {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final surfaceColor = isDark ? AppColors.darkSurface : AppColors.lightSurface;
-    final elevatedColor = isDark ? AppColors.darkSurfaceElevated : AppColors.lightSurfaceElevated;
+    final surfaceColor = isDark
+        ? AppColors.darkSurface
+        : AppColors.lightSurface;
+    final elevatedColor = isDark
+        ? AppColors.darkSurfaceElevated
+        : AppColors.lightSurfaceElevated;
     final borderColor = isDark ? AppColors.darkBorder : AppColors.lightBorder;
-    final textColor = isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary;
-    final textMuted = isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary;
+    final textColor = isDark
+        ? AppColors.darkTextPrimary
+        : AppColors.lightTextPrimary;
+    final textMuted = isDark
+        ? AppColors.darkTextSecondary
+        : AppColors.lightTextSecondary;
 
     final prevWeight = widget.state.getLatestMeasurement('weight');
     final prevWaist = widget.state.getLatestMeasurement('waist');
@@ -123,7 +146,11 @@ class _WeeklyCheckinDialogState extends State<WeeklyCheckinDialog> {
                       children: [
                         Row(
                           children: [
-                            const Icon(Icons.assessment_outlined, size: 18, color: AppColors.crimson),
+                            const Icon(
+                              Icons.assessment_outlined,
+                              size: 18,
+                              color: AppColors.crimson,
+                            ),
                             const SizedBox(width: 6),
                             Text(
                               'WEEKLY REVIEW & CHECK-IN',
@@ -138,11 +165,17 @@ class _WeeklyCheckinDialogState extends State<WeeklyCheckinDialog> {
                         const SizedBox(height: 4),
                         Text(
                           'Update Physique Measurements',
-                          style: AppTypography.titleLarge.copyWith(color: textColor, fontSize: 18),
+                          style: AppTypography.titleLarge.copyWith(
+                            color: textColor,
+                            fontSize: 18,
+                          ),
                         ),
                         Text(
                           'Log your latest numbers to calibrate progress trends.',
-                          style: AppTypography.bodyMedium.copyWith(color: textMuted, fontSize: 12),
+                          style: AppTypography.bodyMedium.copyWith(
+                            color: textMuted,
+                            fontSize: 12,
+                          ),
                         ),
                       ],
                     ),
@@ -165,13 +198,33 @@ class _WeeklyCheckinDialogState extends State<WeeklyCheckinDialog> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     // Primary Metric Inputs
-                    _buildFieldRow('Body Weight (kg) *', _weightCtrl, prevWeight, 'kg'),
+                    _buildFieldRow(
+                      'Body Weight (kg) *',
+                      _weightCtrl,
+                      prevWeight,
+                      'kg',
+                    ),
                     const SizedBox(height: 12),
-                    _buildFieldRow('Waist Circumference (cm)', _waistCtrl, prevWaist, 'cm'),
+                    _buildFieldRow(
+                      'Waist Circumference (cm)',
+                      _waistCtrl,
+                      prevWaist,
+                      'cm',
+                    ),
                     const SizedBox(height: 12),
-                    _buildFieldRow('Chest Circumference (cm)', _chestCtrl, prevChest, 'cm'),
+                    _buildFieldRow(
+                      'Chest Circumference (cm)',
+                      _chestCtrl,
+                      prevChest,
+                      'cm',
+                    ),
                     const SizedBox(height: 12),
-                    _buildFieldRow('Biceps Circumference (cm)', _bicepsCtrl, prevBiceps, 'cm'),
+                    _buildFieldRow(
+                      'Biceps Circumference (cm)',
+                      _bicepsCtrl,
+                      prevBiceps,
+                      'cm',
+                    ),
                     const SizedBox(height: 16),
 
                     // Collapsible Optional Measurements
@@ -186,13 +239,33 @@ class _WeeklyCheckinDialogState extends State<WeeklyCheckinDialog> {
                       ),
                       children: [
                         const SizedBox(height: 8),
-                        _buildFieldRow('Thighs (cm)', _thighsCtrl, widget.state.profile.thighCm, 'cm'),
+                        _buildFieldRow(
+                          'Thighs (cm)',
+                          _thighsCtrl,
+                          widget.state.profile.thighCm,
+                          'cm',
+                        ),
                         const SizedBox(height: 10),
-                        _buildFieldRow('Forearms (cm)', _forearmsCtrl, widget.state.profile.forearmCm, 'cm'),
+                        _buildFieldRow(
+                          'Forearms (cm)',
+                          _forearmsCtrl,
+                          widget.state.profile.forearmCm,
+                          'cm',
+                        ),
                         const SizedBox(height: 10),
-                        _buildFieldRow('Calves (cm)', _calvesCtrl, widget.state.profile.calfCm, 'cm'),
+                        _buildFieldRow(
+                          'Calves (cm)',
+                          _calvesCtrl,
+                          widget.state.profile.calfCm,
+                          'cm',
+                        ),
                         const SizedBox(height: 10),
-                        _buildFieldRow('Neck (cm)', _neckCtrl, widget.state.profile.neckCm, 'cm'),
+                        _buildFieldRow(
+                          'Neck (cm)',
+                          _neckCtrl,
+                          widget.state.profile.neckCm,
+                          'cm',
+                        ),
                         const SizedBox(height: 10),
                       ],
                     ),
@@ -201,7 +274,9 @@ class _WeeklyCheckinDialogState extends State<WeeklyCheckinDialog> {
                     // Weekly Workout Consistency Rating
                     Text(
                       'WORKOUT CONSISTENCY (1-5)',
-                      style: AppTypography.labelSmall.copyWith(color: textMuted),
+                      style: AppTypography.labelSmall.copyWith(
+                        color: textMuted,
+                      ),
                     ),
                     const SizedBox(height: 6),
                     Row(
@@ -217,7 +292,9 @@ class _WeeklyCheckinDialogState extends State<WeeklyCheckinDialog> {
                             decoration: BoxDecoration(
                               color: isSel ? AppColors.crimson : elevatedColor,
                               borderRadius: BorderRadius.circular(8),
-                              border: Border.all(color: isSel ? AppColors.crimson : borderColor),
+                              border: Border.all(
+                                color: isSel ? AppColors.crimson : borderColor,
+                              ),
                             ),
                             alignment: Alignment.center,
                             child: Text(
@@ -236,7 +313,9 @@ class _WeeklyCheckinDialogState extends State<WeeklyCheckinDialog> {
                     // Energy & Recovery Rating
                     Text(
                       'ENERGY & RECOVERY (1-5)',
-                      style: AppTypography.labelSmall.copyWith(color: textMuted),
+                      style: AppTypography.labelSmall.copyWith(
+                        color: textMuted,
+                      ),
                     ),
                     const SizedBox(height: 6),
                     Row(
@@ -252,7 +331,9 @@ class _WeeklyCheckinDialogState extends State<WeeklyCheckinDialog> {
                             decoration: BoxDecoration(
                               color: isSel ? AppColors.crimson : elevatedColor,
                               borderRadius: BorderRadius.circular(8),
-                              border: Border.all(color: isSel ? AppColors.crimson : borderColor),
+                              border: Border.all(
+                                color: isSel ? AppColors.crimson : borderColor,
+                              ),
                             ),
                             alignment: Alignment.center,
                             child: Text(
@@ -293,7 +374,10 @@ class _WeeklyCheckinDialogState extends State<WeeklyCheckinDialog> {
                       await widget.state.dismissCheckInForDays(3);
                       if (mounted) nav.pop();
                     },
-                    child: Text('Remind in 3 Days', style: TextStyle(color: textMuted, fontSize: 13)),
+                    child: Text(
+                      'Remind in 3 Days',
+                      style: TextStyle(color: textMuted, fontSize: 13),
+                    ),
                   ),
                   const Spacer(),
                   ElevatedButton(
@@ -301,7 +385,10 @@ class _WeeklyCheckinDialogState extends State<WeeklyCheckinDialog> {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.crimson,
                       foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 24,
+                        vertical: 12,
+                      ),
                     ),
                     child: const Text('Save Check-In'),
                   ),
@@ -328,12 +415,17 @@ class _WeeklyCheckinDialogState extends State<WeeklyCheckinDialog> {
           children: [
             Text(
               label,
-              style: AppTypography.bodyMedium.copyWith(fontWeight: FontWeight.w500),
+              style: AppTypography.bodyMedium.copyWith(
+                fontWeight: FontWeight.w500,
+              ),
             ),
             if (previousValue != null)
               Text(
                 'Previous: ${previousValue.toStringAsFixed(1)} $unit',
-                style: AppTypography.labelSmall.copyWith(color: AppColors.crimson, fontSize: 11),
+                style: AppTypography.labelSmall.copyWith(
+                  color: AppColors.crimson,
+                  fontSize: 11,
+                ),
               ),
           ],
         ),
@@ -343,7 +435,10 @@ class _WeeklyCheckinDialogState extends State<WeeklyCheckinDialog> {
           keyboardType: const TextInputType.numberWithOptions(decimal: true),
           decoration: InputDecoration(
             suffixText: unit,
-            contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 14,
+              vertical: 10,
+            ),
           ),
         ),
       ],

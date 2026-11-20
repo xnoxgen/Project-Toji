@@ -1,6 +1,11 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:home_widget/home_widget.dart';
+
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_typography.dart';
+import '../../data/services/reminder_notification_service.dart';
 import '../../state/notes_state.dart';
 import '../../state/physique_state.dart';
 import '../notes/notes_screen.dart';
@@ -21,8 +26,48 @@ class AppNavigationShell extends StatefulWidget {
 }
 
 class _AppNavigationShellState extends State<AppNavigationShell> {
-  // Default destination after onboarding: 1 (Gym), preserving current app-opening experience
+  // Default destination after onboarding: 1 (Gym), preserving existing app-opening experience
   int _currentTopIndex = 1;
+
+  final GlobalKey<NotesScreenState> _notesKey = GlobalKey<NotesScreenState>();
+  final GlobalKey<MainScaffoldState> _gymKey = GlobalKey<MainScaffoldState>();
+
+  StreamSubscription<Uri?>? _widgetSub;
+  StreamSubscription<String?>? _notificationSub;
+
+  bool get _isTestEnv {
+    return WidgetsBinding.instance.runtimeType.toString().contains('Test');
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    if (!_isTestEnv) {
+      // Check if application was launched from a home widget tap
+      HomeWidget.initiallyLaunchedFromHomeWidget().then((uri) {
+        if (uri != null) _handleDeepLink(uri);
+      });
+
+      // Listen for interactive home widget taps while app is in foreground/background
+      _widgetSub = HomeWidget.widgetClicked.listen((uri) {
+        if (uri != null) _handleDeepLink(uri);
+      });
+
+      // Listen for reminder notification taps
+      _notificationSub = ReminderNotificationService().onNotificationClicked
+          .listen((payload) {
+            if (payload != null) _handleNotificationPayload(payload);
+          });
+    }
+  }
+
+  @override
+  void dispose() {
+    _widgetSub?.cancel();
+    _notificationSub?.cancel();
+    super.dispose();
+  }
 
   void _onDestinationSelected(int index) {
     if (_currentTopIndex != index) {
@@ -32,21 +77,106 @@ class _AppNavigationShellState extends State<AppNavigationShell> {
     }
   }
 
+  void _handleDeepLink(Uri uri) {
+    final host = uri.host.toLowerCase();
+    final scheme = uri.scheme.toLowerCase();
+    if (scheme != 'toji') return;
+
+    debugPrint('AppNavigationShell handling deep link: $uri (host: $host)');
+
+    switch (host) {
+      case 'workout':
+        setState(() => _currentTopIndex = 1);
+        _gymKey.currentState?.navigateToTab(0);
+        break;
+      case 'gym':
+        setState(() => _currentTopIndex = 1);
+        break;
+      case 'streak':
+        setState(() => _currentTopIndex = 1);
+        _gymKey.currentState?.navigateToTab(3);
+        break;
+      case 'progress':
+        setState(() => _currentTopIndex = 1);
+        _gymKey.currentState?.navigateToTab(2);
+        break;
+      case 'notes':
+        setState(() => _currentTopIndex = 0);
+        break;
+      case 'add_note':
+        setState(() => _currentTopIndex = 0);
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          _notesKey.currentState?.openNoteEditor();
+        });
+        break;
+      case 'reminder':
+        setState(() => _currentTopIndex = 0);
+        widget.notesState.setActiveModuleTab(1);
+        break;
+      default:
+        setState(() => _currentTopIndex = 1);
+        break;
+    }
+  }
+
+  void _handleNotificationPayload(String payload) {
+    debugPrint('AppNavigationShell handling notification payload: $payload');
+    if (payload == 'test_alert') {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Row(
+            children: [
+              Icon(Icons.check_circle_rounded, color: Color(0xFF22C55E)),
+              SizedBox(width: 10),
+              Text('Project Toji alert received successfully!'),
+            ],
+          ),
+          backgroundColor: const Color(0xFF1E1E1E),
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+        ),
+      );
+      return;
+    }
+
+    if (payload.startsWith('note:')) {
+      final noteId = payload.substring('note:'.length);
+      setState(() => _currentTopIndex = 0);
+      widget.notesState.setActiveModuleTab(0);
+      final note = widget.notesState.notes
+          .where((n) => n.id == noteId)
+          .firstOrNull;
+      if (note != null) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          _notesKey.currentState?.openNoteEditor(note);
+        });
+      }
+    } else if (payload.startsWith('reminder:')) {
+      setState(() => _currentTopIndex = 0);
+      widget.notesState.setActiveModuleTab(1);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final surfaceColor = isDark ? AppColors.darkSurface : AppColors.lightSurface;
+    final surfaceColor = isDark
+        ? AppColors.darkSurface
+        : AppColors.lightSurface;
     final borderColor = isDark ? AppColors.darkBorder : AppColors.lightBorder;
-    final textMuted = isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary;
+    final textMuted = isDark
+        ? AppColors.darkTextSecondary
+        : AppColors.lightTextSecondary;
 
     final pages = [
       NotesScreen(
+        key: _notesKey,
         notesState: widget.notesState,
         physiqueState: widget.physiqueState,
       ),
-      MainScaffold(
-        state: widget.physiqueState,
-      ),
+      MainScaffold(key: _gymKey, state: widget.physiqueState),
     ];
 
     return LayoutBuilder(
@@ -67,7 +197,10 @@ class _AppNavigationShellState extends State<AppNavigationShell> {
                   leading: Padding(
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 4,
+                      ),
                       decoration: BoxDecoration(
                         color: AppColors.crimson,
                         borderRadius: BorderRadius.circular(6),
@@ -86,22 +219,25 @@ class _AppNavigationShellState extends State<AppNavigationShell> {
                   destinations: const [
                     NavigationRailDestination(
                       icon: Icon(Icons.note_alt_outlined),
-                      selectedIcon: Icon(Icons.note_alt_rounded, color: AppColors.crimson),
+                      selectedIcon: Icon(
+                        Icons.note_alt_rounded,
+                        color: AppColors.crimson,
+                      ),
                       label: Text('Notes'),
                     ),
                     NavigationRailDestination(
                       icon: Icon(Icons.fitness_center_outlined),
-                      selectedIcon: Icon(Icons.fitness_center_rounded, color: AppColors.crimson),
+                      selectedIcon: Icon(
+                        Icons.fitness_center_rounded,
+                        color: AppColors.crimson,
+                      ),
                       label: Text('Gym'),
                     ),
                   ],
                 ),
                 const VerticalDivider(width: 1),
                 Expanded(
-                  child: IndexedStack(
-                    index: _currentTopIndex,
-                    children: pages,
-                  ),
+                  child: IndexedStack(index: _currentTopIndex, children: pages),
                 ),
               ],
             ),
@@ -110,16 +246,11 @@ class _AppNavigationShellState extends State<AppNavigationShell> {
 
         // Mobile layout: App-level bottom navigation bar with exactly TWO destinations (Notes and Gym)
         return Scaffold(
-          body: IndexedStack(
-            index: _currentTopIndex,
-            children: pages,
-          ),
+          body: IndexedStack(index: _currentTopIndex, children: pages),
           bottomNavigationBar: Container(
             decoration: BoxDecoration(
               color: surfaceColor,
-              border: Border(
-                top: BorderSide(color: borderColor, width: 1),
-              ),
+              border: Border(top: BorderSide(color: borderColor, width: 1)),
             ),
             child: SafeArea(
               top: false,
@@ -138,11 +269,7 @@ class _AppNavigationShellState extends State<AppNavigationShell> {
                         textMuted: textMuted,
                       ),
                     ),
-                    Container(
-                      width: 1,
-                      height: 24,
-                      color: borderColor,
-                    ),
+                    Container(width: 1, height: 24, color: borderColor),
                     // Destination 2: Gym
                     Expanded(
                       child: _buildTopNavButton(
@@ -179,10 +306,14 @@ class _AppNavigationShellState extends State<AppNavigationShell> {
           duration: const Duration(milliseconds: 160),
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 6),
           decoration: BoxDecoration(
-            color: isSelected ? AppColors.crimson.withAlpha(25) : Colors.transparent,
+            color: isSelected
+                ? AppColors.crimson.withAlpha(25)
+                : Colors.transparent,
             borderRadius: BorderRadius.circular(10),
             border: Border.all(
-              color: isSelected ? AppColors.crimson.withAlpha(80) : Colors.transparent,
+              color: isSelected
+                  ? AppColors.crimson.withAlpha(80)
+                  : Colors.transparent,
               width: 1,
             ),
           ),

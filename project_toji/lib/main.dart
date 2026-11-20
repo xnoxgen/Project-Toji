@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_quill/flutter_quill.dart';
+
 import 'core/theme/app_theme.dart';
+import 'data/services/label_storage_service.dart';
 import 'data/services/notes_storage_service.dart';
-import 'data/services/notification_service.dart';
+import 'data/services/reminder_notification_service.dart';
 import 'data/services/storage_service.dart';
+import 'data/services/widget_update_service.dart';
 import 'state/notes_state.dart';
 import 'state/physique_state.dart';
 import 'ui/navigation/app_navigation_shell.dart';
@@ -24,27 +29,41 @@ void main() async {
 
   final storage = await StorageService.init();
   final notesStorage = await NotesStorageService.init();
-  final notificationService = NotificationService();
+  final labelStorage = await LabelStorageService.init();
+  final notificationService = ReminderNotificationService();
   await notificationService.init();
 
   final physiqueState = PhysiqueState(storage);
-  final notesState = NotesState(notesStorage);
+  final notesState = NotesState(notesStorage, labelStorage);
 
-  runApp(PhysiqueApp(
-    state: physiqueState,
+  // Initial synchronization for native Android home screen widgets
+  WidgetUpdateService.syncWidgetData(
+    physiqueState: physiqueState,
     notesState: notesState,
-  ));
+  );
+
+  // Keep native home widgets updated in real-time when Gym or Notes state changes
+  physiqueState.addListener(() {
+    WidgetUpdateService.syncWidgetData(
+      physiqueState: physiqueState,
+      notesState: notesState,
+    );
+  });
+  notesState.addListener(() {
+    WidgetUpdateService.syncWidgetData(
+      physiqueState: physiqueState,
+      notesState: notesState,
+    );
+  });
+
+  runApp(PhysiqueApp(state: physiqueState, notesState: notesState));
 }
 
 class PhysiqueApp extends StatelessWidget {
   final PhysiqueState state;
   final NotesState notesState;
 
-  const PhysiqueApp({
-    super.key,
-    required this.state,
-    required this.notesState,
-  });
+  const PhysiqueApp({super.key, required this.state, required this.notesState});
 
   @override
   Widget build(BuildContext context) {
@@ -57,11 +76,15 @@ class PhysiqueApp extends StatelessWidget {
           theme: AppTheme.lightTheme,
           darkTheme: AppTheme.darkTheme,
           themeMode: state.isDarkMode ? ThemeMode.dark : ThemeMode.light,
+          localizationsDelegates: const [
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+            FlutterQuillLocalizations.delegate,
+          ],
+          supportedLocales: FlutterQuillLocalizations.supportedLocales,
           home: state.settings.hasCompletedOnboarding
-              ? AppNavigationShell(
-                  notesState: notesState,
-                  physiqueState: state,
-                )
+              ? AppNavigationShell(notesState: notesState, physiqueState: state)
               : OnboardingScreen(
                   state: state,
                   onFinish: () {

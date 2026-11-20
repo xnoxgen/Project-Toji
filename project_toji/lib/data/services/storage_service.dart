@@ -1,5 +1,7 @@
 import 'dart:convert';
+
 import 'package:shared_preferences/shared_preferences.dart';
+
 import '../models/user_profile.dart';
 import '../models/app_settings.dart';
 import '../models/body_measurement.dart';
@@ -109,8 +111,9 @@ class StorageService {
     try {
       final list = jsonDecode(raw) as List<dynamic>;
       return list
-          .map((item) =>
-              ExerciseDefinition.fromJson(item as Map<String, dynamic>))
+          .map(
+            (item) => ExerciseDefinition.fromJson(item as Map<String, dynamic>),
+          )
           .toList();
     } catch (_) {
       return [];
@@ -169,9 +172,10 @@ class StorageService {
       'profile': loadUserProfile()?.toJson(),
       'settings': loadAppSettings().toJson(),
       'measurements': loadMeasurements().map((m) => m.toJson()).toList(),
-      'plans': loadWeeklyPlans()?.map((k, v) => MapEntry(k.toString(), v.toJson())),
-      'customExercises':
-          loadCustomExercises().map((e) => e.toJson()).toList(),
+      'plans': loadWeeklyPlans()?.map(
+        (k, v) => MapEntry(k.toString(), v.toJson()),
+      ),
+      'customExercises': loadCustomExercises().map((e) => e.toJson()).toList(),
       'sessions': loadWorkoutSessions().map((s) => s.toJson()).toList(),
       'checkins': loadWeeklyCheckins().map((c) => c.toJson()).toList(),
     };
@@ -185,32 +189,31 @@ class StorageService {
       if (decoded is! Map<String, dynamic>) return false;
 
       if (decoded['profile'] != null) {
-        await _prefs.setString(
-            _keyProfile, jsonEncode(decoded['profile']));
+        await _prefs.setString(_keyProfile, jsonEncode(decoded['profile']));
       }
       if (decoded['settings'] != null) {
-        await _prefs.setString(
-            _keySettings, jsonEncode(decoded['settings']));
+        await _prefs.setString(_keySettings, jsonEncode(decoded['settings']));
       }
       if (decoded['measurements'] != null) {
         await _prefs.setString(
-            _keyMeasurements, jsonEncode(decoded['measurements']));
+          _keyMeasurements,
+          jsonEncode(decoded['measurements']),
+        );
       }
       if (decoded['plans'] != null) {
-        await _prefs.setString(
-            _keyPlans, jsonEncode(decoded['plans']));
+        await _prefs.setString(_keyPlans, jsonEncode(decoded['plans']));
       }
       if (decoded['customExercises'] != null) {
         await _prefs.setString(
-            _keyCustomExercises, jsonEncode(decoded['customExercises']));
+          _keyCustomExercises,
+          jsonEncode(decoded['customExercises']),
+        );
       }
       if (decoded['sessions'] != null) {
-        await _prefs.setString(
-            _keySessions, jsonEncode(decoded['sessions']));
+        await _prefs.setString(_keySessions, jsonEncode(decoded['sessions']));
       }
       if (decoded['checkins'] != null) {
-        await _prefs.setString(
-            _keyCheckins, jsonEncode(decoded['checkins']));
+        await _prefs.setString(_keyCheckins, jsonEncode(decoded['checkins']));
       }
       return true;
     } catch (e) {
@@ -229,4 +232,3 @@ class StorageService {
     await _prefs.remove(_keyCheckins);
   }
 }
-

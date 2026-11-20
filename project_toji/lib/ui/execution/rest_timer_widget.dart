@@ -1,5 +1,7 @@
 import 'dart:async';
+
 import 'package:flutter/material.dart';
+
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_typography.dart';
 import '../../core/utils/audio_feedback.dart';
@@ -107,7 +109,9 @@ class _RestTimerWidgetState extends State<RestTimerWidget> {
     final next = (_remainingSeconds + deltaSeconds).clamp(5, 600);
     setState(() {
       _remainingSeconds = next;
-      _totalDurationSeconds = next > _totalDurationSeconds ? next : _totalDurationSeconds;
+      _totalDurationSeconds = next > _totalDurationSeconds
+          ? next
+          : _totalDurationSeconds;
       if (_isRunning && _targetEndTime != null) {
         _targetEndTime = DateTime.now().add(Duration(seconds: next));
       }
@@ -123,10 +127,16 @@ class _RestTimerWidgetState extends State<RestTimerWidget> {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final surfaceColor = isDark ? AppColors.darkSurfaceElevated : AppColors.lightSurfaceElevated;
+    final surfaceColor = isDark
+        ? AppColors.darkSurfaceElevated
+        : AppColors.lightSurfaceElevated;
     final borderColor = isDark ? AppColors.darkBorder : AppColors.lightBorder;
-    final textColor = isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary;
-    final textMuted = isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary;
+    final textColor = isDark
+        ? AppColors.darkTextPrimary
+        : AppColors.lightTextPrimary;
+    final textMuted = isDark
+        ? AppColors.darkTextSecondary
+        : AppColors.lightTextSecondary;
 
     final progress = _totalDurationSeconds > 0
         ? (_remainingSeconds / _totalDurationSeconds).clamp(0.0, 1.0)
@@ -147,7 +157,11 @@ class _RestTimerWidgetState extends State<RestTimerWidget> {
             children: [
               Row(
                 children: [
-                  const Icon(Icons.timer_outlined, size: 16, color: AppColors.crimson),
+                  const Icon(
+                    Icons.timer_outlined,
+                    size: 16,
+                    color: AppColors.crimson,
+                  ),
                   const SizedBox(width: 6),
                   Text(
                     'REST TIMER',
@@ -168,7 +182,10 @@ class _RestTimerWidgetState extends State<RestTimerWidget> {
                       onTap: () => _setPreset(s),
                       borderRadius: BorderRadius.circular(6),
                       child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 7,
+                          vertical: 3,
+                        ),
                         decoration: BoxDecoration(
                           color: isCurrent
                               ? AppColors.crimson.withValues(alpha: 0.15)
@@ -177,7 +194,9 @@ class _RestTimerWidgetState extends State<RestTimerWidget> {
                           border: Border.all(
                             color: isCurrent
                                 ? AppColors.crimson
-                                : (isDark ? AppColors.darkBorder : AppColors.lightBorder),
+                                : (isDark
+                                      ? AppColors.darkBorder
+                                      : AppColors.lightBorder),
                             width: 1,
                           ),
                         ),
@@ -186,7 +205,9 @@ class _RestTimerWidgetState extends State<RestTimerWidget> {
                           style: AppTypography.labelSmall.copyWith(
                             color: isCurrent ? AppColors.crimson : textMuted,
                             fontSize: 10,
-                            fontWeight: isCurrent ? FontWeight.w700 : FontWeight.w500,
+                            fontWeight: isCurrent
+                                ? FontWeight.w700
+                                : FontWeight.w500,
                           ),
                         ),
                       ),
@@ -241,7 +262,9 @@ class _RestTimerWidgetState extends State<RestTimerWidget> {
                           ),
                         ),
                         Text(
-                          _isRunning ? 'RESTING' : (_remainingSeconds == 0 ? 'READY' : 'PAUSED'),
+                          _isRunning
+                              ? 'RESTING'
+                              : (_remainingSeconds == 0 ? 'READY' : 'PAUSED'),
                           style: AppTypography.labelSmall.copyWith(
                             fontSize: 9,
                             color: _remainingSeconds == 0
@@ -288,17 +311,29 @@ class _RestTimerWidgetState extends State<RestTimerWidget> {
                 child: ElevatedButton.icon(
                   onPressed: _isRunning ? _pauseTimer : _startTimer,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: _isRunning ? AppColors.crimsonDark : AppColors.crimson,
+                    backgroundColor: _isRunning
+                        ? AppColors.crimsonDark
+                        : AppColors.crimson,
                     foregroundColor: Colors.white,
                     padding: const EdgeInsets.symmetric(vertical: 10),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
                     ),
                   ),
-                  icon: Icon(_isRunning ? Icons.pause_rounded : Icons.play_arrow_rounded, size: 18),
+                  icon: Icon(
+                    _isRunning ? Icons.pause_rounded : Icons.play_arrow_rounded,
+                    size: 18,
+                  ),
                   label: Text(
-                    _isRunning ? 'Pause' : (_remainingSeconds == _totalDurationSeconds ? 'Start Rest' : 'Resume'),
-                    style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 13),
+                    _isRunning
+                        ? 'Pause'
+                        : (_remainingSeconds == _totalDurationSeconds
+                              ? 'Start Rest'
+                              : 'Resume'),
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 13,
+                    ),
                   ),
                 ),
               ),
@@ -309,4 +344,3 @@ class _RestTimerWidgetState extends State<RestTimerWidget> {
     );
   }
 }
-

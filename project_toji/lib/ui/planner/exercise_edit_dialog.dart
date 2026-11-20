@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../../data/models/workout_plan.dart';
 
 class ExerciseEditDialog extends StatefulWidget {
@@ -21,9 +22,13 @@ class _ExerciseEditDialogState extends State<ExerciseEditDialog> {
   void initState() {
     super.initState();
     _nameController = TextEditingController(text: widget.exercise.name);
-    _setsController = TextEditingController(text: widget.exercise.targetSets.toString());
+    _setsController = TextEditingController(
+      text: widget.exercise.targetSets.toString(),
+    );
     _repsController = TextEditingController(text: widget.exercise.targetReps);
-    _restController = TextEditingController(text: widget.exercise.restSeconds.toString());
+    _restController = TextEditingController(
+      text: widget.exercise.restSeconds.toString(),
+    );
     _notesController = TextEditingController(text: widget.exercise.notes);
   }
 
@@ -101,11 +106,15 @@ class _ExerciseEditDialogState extends State<ExerciseEditDialog> {
 
             final updated = widget.exercise.copyWith(
               name: name,
-              targetSets: int.tryParse(_setsController.text) ?? widget.exercise.targetSets,
+              targetSets:
+                  int.tryParse(_setsController.text) ??
+                  widget.exercise.targetSets,
               targetReps: _repsController.text.trim().isNotEmpty
                   ? _repsController.text.trim()
                   : widget.exercise.targetReps,
-              restSeconds: int.tryParse(_restController.text) ?? widget.exercise.restSeconds,
+              restSeconds:
+                  int.tryParse(_restController.text) ??
+                  widget.exercise.restSeconds,
               notes: _notesController.text.trim(),
             );
             Navigator.of(context).pop(updated);

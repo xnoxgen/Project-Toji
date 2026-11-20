@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../theme/app_colors.dart';
 import '../theme/app_typography.dart';
 
@@ -56,8 +57,8 @@ class CrimsonButton extends StatelessWidget {
             ],
           );
 
-    final btnPadding = padding ??
-        const EdgeInsets.symmetric(horizontal: 20, vertical: 14);
+    final btnPadding =
+        padding ?? const EdgeInsets.symmetric(horizontal: 20, vertical: 14);
 
     if (isOutlined) {
       return SizedBox(
@@ -65,7 +66,9 @@ class CrimsonButton extends StatelessWidget {
         child: OutlinedButton(
           onPressed: isLoading ? null : onPressed,
           style: OutlinedButton.styleFrom(
-            foregroundColor: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary,
+            foregroundColor: isDark
+                ? AppColors.darkTextPrimary
+                : AppColors.lightTextPrimary,
             side: BorderSide(
               color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
               width: 1,
@@ -86,10 +89,12 @@ class CrimsonButton extends StatelessWidget {
         child: ElevatedButton(
           onPressed: isLoading ? null : onPressed,
           style: ElevatedButton.styleFrom(
-            backgroundColor:
-                isDark ? AppColors.darkSurfaceElevated : AppColors.lightSurfaceElevated,
-            foregroundColor:
-                isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary,
+            backgroundColor: isDark
+                ? AppColors.darkSurfaceElevated
+                : AppColors.lightSurfaceElevated,
+            foregroundColor: isDark
+                ? AppColors.darkTextPrimary
+                : AppColors.lightTextPrimary,
             elevation: 0,
             padding: btnPadding,
             shape: RoundedRectangleBorder(
@@ -124,4 +129,3 @@ class CrimsonButton extends StatelessWidget {
     );
   }
 }
-

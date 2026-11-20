@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_typography.dart';
 import '../../data/models/user_profile.dart';
@@ -54,17 +55,35 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     _nameCtrl = TextEditingController(text: p.name);
     _ageCtrl = TextEditingController(text: p.age.toString());
     _heightCtrl = TextEditingController(text: p.heightCm.toStringAsFixed(0));
-    _weightCtrl = TextEditingController(text: p.currentWeightKg.toStringAsFixed(1));
+    _weightCtrl = TextEditingController(
+      text: p.currentWeightKg.toStringAsFixed(1),
+    );
     _sex = p.sex;
 
-    _waistCtrl = TextEditingController(text: p.waistCm?.toStringAsFixed(1) ?? '91.0');
-    _chestCtrl = TextEditingController(text: p.chestCm?.toStringAsFixed(1) ?? '96.0');
-    _bicepsCtrl = TextEditingController(text: p.bicepsCm?.toStringAsFixed(1) ?? '31.0');
-    _shoulderCtrl = TextEditingController(text: p.shoulderCm?.toStringAsFixed(1) ?? '46.0');
-    _forearmCtrl = TextEditingController(text: p.forearmCm?.toStringAsFixed(1) ?? '24.0');
-    _thighCtrl = TextEditingController(text: p.thighCm?.toStringAsFixed(1) ?? '47.0');
-    _calfCtrl = TextEditingController(text: p.calfCm?.toStringAsFixed(1) ?? '31.0');
-    _neckCtrl = TextEditingController(text: p.neckCm?.toStringAsFixed(1) ?? '37.0');
+    _waistCtrl = TextEditingController(
+      text: p.waistCm?.toStringAsFixed(1) ?? '91.0',
+    );
+    _chestCtrl = TextEditingController(
+      text: p.chestCm?.toStringAsFixed(1) ?? '96.0',
+    );
+    _bicepsCtrl = TextEditingController(
+      text: p.bicepsCm?.toStringAsFixed(1) ?? '31.0',
+    );
+    _shoulderCtrl = TextEditingController(
+      text: p.shoulderCm?.toStringAsFixed(1) ?? '46.0',
+    );
+    _forearmCtrl = TextEditingController(
+      text: p.forearmCm?.toStringAsFixed(1) ?? '24.0',
+    );
+    _thighCtrl = TextEditingController(
+      text: p.thighCm?.toStringAsFixed(1) ?? '47.0',
+    );
+    _calfCtrl = TextEditingController(
+      text: p.calfCm?.toStringAsFixed(1) ?? '31.0',
+    );
+    _neckCtrl = TextEditingController(
+      text: p.neckCm?.toStringAsFixed(1) ?? '37.0',
+    );
 
     _fitnessGoal = p.fitnessGoal;
     _descCtrl = TextEditingController(
@@ -72,10 +91,18 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           ? p.targetPhysiqueDescription
           : 'Lean, athletic, sculpted physique with broad shoulders, sharp waist, and dense muscle.',
     );
-    _targetWeightCtrl = TextEditingController(text: p.targetWeightKg?.toStringAsFixed(1) ?? '78.0');
-    _targetWaistCtrl = TextEditingController(text: p.targetWaistCm?.toStringAsFixed(1) ?? '80.0');
-    _targetChestCtrl = TextEditingController(text: p.targetChestCm?.toStringAsFixed(1) ?? '104.0');
-    _targetBicepsCtrl = TextEditingController(text: p.targetBicepsCm?.toStringAsFixed(1) ?? '37.0');
+    _targetWeightCtrl = TextEditingController(
+      text: p.targetWeightKg?.toStringAsFixed(1) ?? '78.0',
+    );
+    _targetWaistCtrl = TextEditingController(
+      text: p.targetWaistCm?.toStringAsFixed(1) ?? '80.0',
+    );
+    _targetChestCtrl = TextEditingController(
+      text: p.targetChestCm?.toStringAsFixed(1) ?? '104.0',
+    );
+    _targetBicepsCtrl = TextEditingController(
+      text: p.targetBicepsCm?.toStringAsFixed(1) ?? '37.0',
+    );
   }
 
   @override
@@ -104,9 +131,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   void _nextPage() {
     if (_currentStep == 0) {
       if (_nameCtrl.text.trim().isEmpty) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Please enter your name')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('Please enter your name')));
         return;
       }
     }
@@ -132,7 +159,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   Future<void> _completeOnboarding() async {
     final newProfile = UserProfile(
-      name: _nameCtrl.text.trim().isNotEmpty ? _nameCtrl.text.trim() : 'Athlete',
+      name: _nameCtrl.text.trim().isNotEmpty
+          ? _nameCtrl.text.trim()
+          : 'Athlete',
       age: int.tryParse(_ageCtrl.text) ?? 20,
       sex: _sex,
       heightCm: double.tryParse(_heightCtrl.text) ?? 175.0,
@@ -160,13 +189,21 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final surfaceColor = isDark ? AppColors.darkSurface : AppColors.lightSurface;
+    final surfaceColor = isDark
+        ? AppColors.darkSurface
+        : AppColors.lightSurface;
     final borderColor = isDark ? AppColors.darkBorder : AppColors.lightBorder;
-    final textColor = isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary;
-    final textMuted = isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary;
+    final textColor = isDark
+        ? AppColors.darkTextPrimary
+        : AppColors.lightTextPrimary;
+    final textMuted = isDark
+        ? AppColors.darkTextSecondary
+        : AppColors.lightTextSecondary;
 
     return Scaffold(
-      backgroundColor: isDark ? AppColors.darkBackground : AppColors.lightBackground,
+      backgroundColor: isDark
+          ? AppColors.darkBackground
+          : AppColors.lightBackground,
       body: SafeArea(
         child: Center(
           child: ConstrainedBox(
@@ -204,7 +241,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                           ),
                           Text(
                             'Step ${_currentStep + 1} of 3',
-                            style: AppTypography.labelSmall.copyWith(color: textMuted),
+                            style: AppTypography.labelSmall.copyWith(
+                              color: textMuted,
+                            ),
                           ),
                         ],
                       ),
@@ -219,7 +258,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                               decoration: BoxDecoration(
                                 color: isActive
                                     ? AppColors.crimson
-                                    : (isDark ? AppColors.darkBorder : AppColors.lightBorder),
+                                    : (isDark
+                                          ? AppColors.darkBorder
+                                          : AppColors.lightBorder),
                                 borderRadius: BorderRadius.circular(2),
                               ),
                             ),
@@ -237,9 +278,24 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     physics: const NeverScrollableScrollPhysics(),
                     onPageChanged: (idx) => setState(() => _currentStep = idx),
                     children: [
-                      _buildStep1(surfaceColor, borderColor, textColor, textMuted),
-                      _buildStep2(surfaceColor, borderColor, textColor, textMuted),
-                      _buildStep3(surfaceColor, borderColor, textColor, textMuted),
+                      _buildStep1(
+                        surfaceColor,
+                        borderColor,
+                        textColor,
+                        textMuted,
+                      ),
+                      _buildStep2(
+                        surfaceColor,
+                        borderColor,
+                        textColor,
+                        textMuted,
+                      ),
+                      _buildStep3(
+                        surfaceColor,
+                        borderColor,
+                        textColor,
+                        textMuted,
+                      ),
                     ],
                   ),
                 ),
@@ -253,7 +309,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         OutlinedButton(
                           onPressed: _prevPage,
                           style: OutlinedButton.styleFrom(
-                            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 20,
+                              vertical: 14,
+                            ),
                           ),
                           child: const Text('Back'),
                         )
@@ -268,7 +327,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppColors.crimson,
                           foregroundColor: Colors.white,
-                          padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 14),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 28,
+                            vertical: 14,
+                          ),
                         ),
                         child: Text(
                           _currentStep == 2 ? 'Launch PHYSIQUE' : 'Continue',
@@ -287,7 +349,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   }
 
   // Step 1: Athlete Info
-  Widget _buildStep1(Color surfaceColor, Color borderColor, Color textColor, Color textMuted) {
+  Widget _buildStep1(
+    Color surfaceColor,
+    Color borderColor,
+    Color textColor,
+    Color textMuted,
+  ) {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(24),
       child: Column(
@@ -327,7 +394,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       child: TextField(
                         controller: _ageCtrl,
                         keyboardType: TextInputType.number,
-                        decoration: const InputDecoration(labelText: 'Age (years)'),
+                        decoration: const InputDecoration(
+                          labelText: 'Age (years)',
+                        ),
                       ),
                     ),
                     const SizedBox(width: 12),
@@ -336,7 +405,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         initialValue: _sex,
                         decoration: const InputDecoration(labelText: 'Sex'),
                         items: ['Male', 'Female', 'Other']
-                            .map((s) => DropdownMenuItem(value: s, child: Text(s)))
+                            .map(
+                              (s) => DropdownMenuItem(value: s, child: Text(s)),
+                            )
                             .toList(),
                         onChanged: (val) {
                           if (val != null) setState(() => _sex = val);
@@ -362,7 +433,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     Expanded(
                       child: TextField(
                         controller: _weightCtrl,
-                        keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                        keyboardType: const TextInputType.numberWithOptions(
+                          decimal: true,
+                        ),
                         decoration: const InputDecoration(
                           labelText: 'Current Weight',
                           suffixText: 'kg',
@@ -380,7 +453,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   }
 
   // Step 2: Starting Measurements
-  Widget _buildStep2(Color surfaceColor, Color borderColor, Color textColor, Color textMuted) {
+  Widget _buildStep2(
+    Color surfaceColor,
+    Color borderColor,
+    Color textColor,
+    Color textMuted,
+  ) {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(24),
       child: Column(
@@ -417,31 +495,48 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               children: [
                 Row(
                   children: [
-                    Expanded(child: _buildMeasureField('Waist (cm)', _waistCtrl)),
+                    Expanded(
+                      child: _buildMeasureField('Waist (cm)', _waistCtrl),
+                    ),
                     const SizedBox(width: 12),
-                    Expanded(child: _buildMeasureField('Chest (cm)', _chestCtrl)),
+                    Expanded(
+                      child: _buildMeasureField('Chest (cm)', _chestCtrl),
+                    ),
                   ],
                 ),
                 const SizedBox(height: 12),
                 Row(
                   children: [
-                    Expanded(child: _buildMeasureField('Biceps (cm)', _bicepsCtrl)),
+                    Expanded(
+                      child: _buildMeasureField('Biceps (cm)', _bicepsCtrl),
+                    ),
                     const SizedBox(width: 12),
-                    Expanded(child: _buildMeasureField('Shoulders (cm)', _shoulderCtrl)),
+                    Expanded(
+                      child: _buildMeasureField(
+                        'Shoulders (cm)',
+                        _shoulderCtrl,
+                      ),
+                    ),
                   ],
                 ),
                 const SizedBox(height: 12),
                 Row(
                   children: [
-                    Expanded(child: _buildMeasureField('Forearms (cm)', _forearmCtrl)),
+                    Expanded(
+                      child: _buildMeasureField('Forearms (cm)', _forearmCtrl),
+                    ),
                     const SizedBox(width: 12),
-                    Expanded(child: _buildMeasureField('Thighs (cm)', _thighCtrl)),
+                    Expanded(
+                      child: _buildMeasureField('Thighs (cm)', _thighCtrl),
+                    ),
                   ],
                 ),
                 const SizedBox(height: 12),
                 Row(
                   children: [
-                    Expanded(child: _buildMeasureField('Calves (cm)', _calfCtrl)),
+                    Expanded(
+                      child: _buildMeasureField('Calves (cm)', _calfCtrl),
+                    ),
                     const SizedBox(width: 12),
                     Expanded(child: _buildMeasureField('Neck (cm)', _neckCtrl)),
                   ],
@@ -455,7 +550,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   }
 
   // Step 3: Goal & Target Physique
-  Widget _buildStep3(Color surfaceColor, Color borderColor, Color textColor, Color textMuted) {
+  Widget _buildStep3(
+    Color surfaceColor,
+    Color borderColor,
+    Color textColor,
+    Color textMuted,
+  ) {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(24),
       child: Column(
@@ -484,12 +584,26 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               children: [
                 DropdownButtonFormField<String>(
                   initialValue: _fitnessGoal,
-                  decoration: const InputDecoration(labelText: 'Primary Fitness Goal'),
+                  decoration: const InputDecoration(
+                    labelText: 'Primary Fitness Goal',
+                  ),
                   items: const [
-                    DropdownMenuItem(value: 'muscle_gain', child: Text('Muscle Gain (Hypertrophy)')),
-                    DropdownMenuItem(value: 'fat_loss', child: Text('Fat Loss (Cutting)')),
-                    DropdownMenuItem(value: 'recomposition', child: Text('Body Recomposition (Lean & Muscular)')),
-                    DropdownMenuItem(value: 'general_fitness', child: Text('General Strength & Conditioning')),
+                    DropdownMenuItem(
+                      value: 'muscle_gain',
+                      child: Text('Muscle Gain (Hypertrophy)'),
+                    ),
+                    DropdownMenuItem(
+                      value: 'fat_loss',
+                      child: Text('Fat Loss (Cutting)'),
+                    ),
+                    DropdownMenuItem(
+                      value: 'recomposition',
+                      child: Text('Body Recomposition (Lean & Muscular)'),
+                    ),
+                    DropdownMenuItem(
+                      value: 'general_fitness',
+                      child: Text('General Strength & Conditioning'),
+                    ),
                   ],
                   onChanged: (val) {
                     if (val != null) setState(() => _fitnessGoal = val);
@@ -507,22 +621,44 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 const SizedBox(height: 18),
                 Text(
                   'IDEAL TARGET MEASUREMENTS',
-                  style: AppTypography.labelSmall.copyWith(color: AppColors.crimson),
+                  style: AppTypography.labelSmall.copyWith(
+                    color: AppColors.crimson,
+                  ),
                 ),
                 const SizedBox(height: 10),
                 Row(
                   children: [
-                    Expanded(child: _buildMeasureField('Target Weight (kg)', _targetWeightCtrl)),
+                    Expanded(
+                      child: _buildMeasureField(
+                        'Target Weight (kg)',
+                        _targetWeightCtrl,
+                      ),
+                    ),
                     const SizedBox(width: 12),
-                    Expanded(child: _buildMeasureField('Target Waist (cm)', _targetWaistCtrl)),
+                    Expanded(
+                      child: _buildMeasureField(
+                        'Target Waist (cm)',
+                        _targetWaistCtrl,
+                      ),
+                    ),
                   ],
                 ),
                 const SizedBox(height: 12),
                 Row(
                   children: [
-                    Expanded(child: _buildMeasureField('Target Chest (cm)', _targetChestCtrl)),
+                    Expanded(
+                      child: _buildMeasureField(
+                        'Target Chest (cm)',
+                        _targetChestCtrl,
+                      ),
+                    ),
                     const SizedBox(width: 12),
-                    Expanded(child: _buildMeasureField('Target Biceps (cm)', _targetBicepsCtrl)),
+                    Expanded(
+                      child: _buildMeasureField(
+                        'Target Biceps (cm)',
+                        _targetBicepsCtrl,
+                      ),
+                    ),
                   ],
                 ),
               ],
@@ -539,7 +675,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       keyboardType: const TextInputType.numberWithOptions(decimal: true),
       decoration: InputDecoration(
         labelText: label,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 14,
+          vertical: 12,
+        ),
       ),
     );
   }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_typography.dart';
 import '../../data/models/workout_session.dart';
@@ -15,7 +16,11 @@ class ConsistencyScreen extends StatefulWidget {
 }
 
 class _ConsistencyScreenState extends State<ConsistencyScreen> {
-  DateTime _currentMonth = DateTime(DateTime.now().year, DateTime.now().month, 1);
+  DateTime _currentMonth = DateTime(
+    DateTime.now().year,
+    DateTime.now().month,
+    1,
+  );
   DateTime? _selectedCalendarDate;
 
   void _prevMonth() {
@@ -37,18 +42,24 @@ class _ConsistencyScreenState extends State<ConsistencyScreen> {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final surfaceColor = isDark ? AppColors.darkSurface : AppColors.lightSurface;
-    final elevatedColor = isDark ? AppColors.darkSurfaceElevated : AppColors.lightSurfaceElevated;
+    final surfaceColor = isDark
+        ? AppColors.darkSurface
+        : AppColors.lightSurface;
+    final elevatedColor = isDark
+        ? AppColors.darkSurfaceElevated
+        : AppColors.lightSurfaceElevated;
     final borderColor = isDark ? AppColors.darkBorder : AppColors.lightBorder;
-    final textColor = isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary;
-    final textMuted = isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary;
+    final textColor = isDark
+        ? AppColors.darkTextPrimary
+        : AppColors.lightTextPrimary;
+    final textMuted = isDark
+        ? AppColors.darkTextSecondary
+        : AppColors.lightTextSecondary;
 
     final completedKeys = widget.state.completedDateKeys;
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Streak & Consistency'),
-      ),
+      appBar: AppBar(title: const Text('Streak & Consistency')),
       body: Center(
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 720),
@@ -161,7 +172,9 @@ class _ConsistencyScreenState extends State<ConsistencyScreen> {
                       // Weekday Abbreviations
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: ['M', 'T', 'W', 'T', 'F', 'S', 'S'].map((day) {
+                        children: ['M', 'T', 'W', 'T', 'F', 'S', 'S'].map((
+                          day,
+                        ) {
                           return SizedBox(
                             width: 36,
                             child: Text(
@@ -302,10 +315,12 @@ class _ConsistencyScreenState extends State<ConsistencyScreen> {
       final cellDate = DateTime(month.year, month.month, d);
       final key = _dateKey(cellDate);
       final isCompleted = completedKeys.contains(key);
-      final isToday = cellDate.year == today.year &&
+      final isToday =
+          cellDate.year == today.year &&
           cellDate.month == today.month &&
           cellDate.day == today.day;
-      final isSelected = _selectedCalendarDate != null &&
+      final isSelected =
+          _selectedCalendarDate != null &&
           _selectedCalendarDate!.year == cellDate.year &&
           _selectedCalendarDate!.month == cellDate.month &&
           _selectedCalendarDate!.day == cellDate.day;
@@ -324,8 +339,8 @@ class _ConsistencyScreenState extends State<ConsistencyScreen> {
               color: isCompleted
                   ? AppColors.crimson
                   : (isSelected
-                      ? (isDark ? elevatedColor : elevatedColor)
-                      : Colors.transparent),
+                        ? (isDark ? elevatedColor : elevatedColor)
+                        : Colors.transparent),
               borderRadius: BorderRadius.circular(10),
               border: Border.all(
                 color: isToday
@@ -341,9 +356,13 @@ class _ConsistencyScreenState extends State<ConsistencyScreen> {
                 Text(
                   '$d',
                   style: TextStyle(
-                    color: isCompleted ? Colors.white : (isToday ? AppColors.crimson : textColor),
+                    color: isCompleted
+                        ? Colors.white
+                        : (isToday ? AppColors.crimson : textColor),
                     fontSize: 12,
-                    fontWeight: isCompleted || isToday ? FontWeight.w700 : FontWeight.w500,
+                    fontWeight: isCompleted || isToday
+                        ? FontWeight.w700
+                        : FontWeight.w500,
                   ),
                 ),
                 if (isCompleted) ...[
@@ -402,14 +421,19 @@ class _ConsistencyScreenState extends State<ConsistencyScreen> {
             children: [
               Text(
                 dateStr,
-                style: AppTypography.titleMedium.copyWith(color: textColor, fontSize: 15),
+                style: AppTypography.titleMedium.copyWith(
+                  color: textColor,
+                  fontSize: 15,
+                ),
               ),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                 decoration: BoxDecoration(
                   color: isCompleted
                       ? AppColors.crimson.withValues(alpha: 0.15)
-                      : (isDark ? AppColors.darkSurfaceElevated : AppColors.lightSurfaceElevated),
+                      : (isDark
+                            ? AppColors.darkSurfaceElevated
+                            : AppColors.lightSurfaceElevated),
                   borderRadius: BorderRadius.circular(6),
                 ),
                 child: Text(
@@ -436,9 +460,14 @@ class _ConsistencyScreenState extends State<ConsistencyScreen> {
                 runSpacing: 4,
                 children: session.exercises.map((e) {
                   return Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 3,
+                    ),
                     decoration: BoxDecoration(
-                      color: isDark ? AppColors.darkSurfaceElevated : AppColors.lightSurfaceElevated,
+                      color: isDark
+                          ? AppColors.darkSurfaceElevated
+                          : AppColors.lightSurfaceElevated,
                       borderRadius: BorderRadius.circular(4),
                       border: Border.all(
                         color: e.isCompleted ? AppColors.crimson : borderColor,
@@ -461,4 +490,3 @@ class _ConsistencyScreenState extends State<ConsistencyScreen> {
     );
   }
 }
-

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_typography.dart';
 import '../../data/models/workout_session.dart';
@@ -18,7 +19,8 @@ class ExerciseExecutionDialog extends StatefulWidget {
   });
 
   @override
-  State<ExerciseExecutionDialog> createState() => _ExerciseExecutionDialogState();
+  State<ExerciseExecutionDialog> createState() =>
+      _ExerciseExecutionDialogState();
 }
 
 class _ExerciseExecutionDialogState extends State<ExerciseExecutionDialog> {
@@ -77,13 +79,15 @@ class _ExerciseExecutionDialogState extends State<ExerciseExecutionDialog> {
     setState(() {
       final lastWeight = _sets.isNotEmpty ? _sets.last.weightKg : 0.0;
       final lastReps = _sets.isNotEmpty ? _sets.last.actualReps : 10;
-      _sets.add(SetLog(
-        setNumber: _sets.length + 1,
-        targetReps: widget.exerciseLog.targetReps,
-        actualReps: lastReps,
-        weightKg: lastWeight,
-        isCompleted: false,
-      ));
+      _sets.add(
+        SetLog(
+          setNumber: _sets.length + 1,
+          targetReps: widget.exerciseLog.targetReps,
+          actualReps: lastReps,
+          weightKg: lastWeight,
+          isCompleted: false,
+        ),
+      );
     });
   }
 
@@ -109,7 +113,10 @@ class _ExerciseExecutionDialogState extends State<ExerciseExecutionDialog> {
         isCompleted: true,
       );
     }
-    await widget.state.markExerciseDone(widget.sessionId, widget.exerciseLog.exerciseId);
+    await widget.state.markExerciseDone(
+      widget.sessionId,
+      widget.exerciseLog.exerciseId,
+    );
     if (mounted) {
       Navigator.of(context).pop(true);
     }
@@ -118,10 +125,16 @@ class _ExerciseExecutionDialogState extends State<ExerciseExecutionDialog> {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final surfaceColor = isDark ? AppColors.darkSurface : AppColors.lightSurface;
+    final surfaceColor = isDark
+        ? AppColors.darkSurface
+        : AppColors.lightSurface;
     final borderColor = isDark ? AppColors.darkBorder : AppColors.lightBorder;
-    final textColor = isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary;
-    final textMuted = isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary;
+    final textColor = isDark
+        ? AppColors.darkTextPrimary
+        : AppColors.lightTextPrimary;
+    final textMuted = isDark
+        ? AppColors.darkTextSecondary
+        : AppColors.lightTextSecondary;
 
     return Dialog(
       backgroundColor: surfaceColor,
@@ -145,7 +158,10 @@ class _ExerciseExecutionDialogState extends State<ExerciseExecutionDialog> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 3,
+                          ),
                           decoration: BoxDecoration(
                             color: AppColors.crimson.withValues(alpha: 0.15),
                             borderRadius: BorderRadius.circular(4),
@@ -170,7 +186,9 @@ class _ExerciseExecutionDialogState extends State<ExerciseExecutionDialog> {
                         const SizedBox(height: 2),
                         Text(
                           'Target: ${widget.exerciseLog.targetSets} sets × ${widget.exerciseLog.targetReps} reps',
-                          style: AppTypography.bodyMedium.copyWith(color: textMuted),
+                          style: AppTypography.bodyMedium.copyWith(
+                            color: textMuted,
+                          ),
                         ),
                       ],
                     ),
@@ -198,14 +216,20 @@ class _ExerciseExecutionDialogState extends State<ExerciseExecutionDialog> {
                         padding: const EdgeInsets.all(12),
                         margin: const EdgeInsets.only(bottom: 16),
                         decoration: BoxDecoration(
-                          color: isDark ? AppColors.darkSurfaceElevated : AppColors.lightSurfaceElevated,
+                          color: isDark
+                              ? AppColors.darkSurfaceElevated
+                              : AppColors.lightSurfaceElevated,
                           borderRadius: BorderRadius.circular(10),
                           border: Border.all(color: borderColor),
                         ),
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Icon(Icons.info_outline, size: 16, color: AppColors.crimson),
+                            const Icon(
+                              Icons.info_outline,
+                              size: 16,
+                              color: AppColors.crimson,
+                            ),
                             const SizedBox(width: 8),
                             Expanded(
                               child: Text(
@@ -228,21 +252,27 @@ class _ExerciseExecutionDialogState extends State<ExerciseExecutionDialog> {
                           width: 44,
                           child: Text(
                             'SET',
-                            style: AppTypography.labelSmall.copyWith(color: textMuted),
+                            style: AppTypography.labelSmall.copyWith(
+                              color: textMuted,
+                            ),
                           ),
                         ),
                         Expanded(
                           flex: 3,
                           child: Text(
                             'WEIGHT (KG)',
-                            style: AppTypography.labelSmall.copyWith(color: textMuted),
+                            style: AppTypography.labelSmall.copyWith(
+                              color: textMuted,
+                            ),
                           ),
                         ),
                         Expanded(
                           flex: 3,
                           child: Text(
                             'REPS',
-                            style: AppTypography.labelSmall.copyWith(color: textMuted),
+                            style: AppTypography.labelSmall.copyWith(
+                              color: textMuted,
+                            ),
                           ),
                         ),
                         SizedBox(
@@ -250,7 +280,9 @@ class _ExerciseExecutionDialogState extends State<ExerciseExecutionDialog> {
                           child: Text(
                             'DONE',
                             textAlign: TextAlign.center,
-                            style: AppTypography.labelSmall.copyWith(color: textMuted),
+                            style: AppTypography.labelSmall.copyWith(
+                              color: textMuted,
+                            ),
                           ),
                         ),
                       ],
@@ -262,14 +294,23 @@ class _ExerciseExecutionDialogState extends State<ExerciseExecutionDialog> {
                       final set = _sets[index];
                       return Container(
                         margin: const EdgeInsets.only(bottom: 8),
-                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 8,
+                        ),
                         decoration: BoxDecoration(
                           color: set.isCompleted
-                              ? AppColors.crimson.withValues(alpha: isDark ? 0.1 : 0.05)
-                              : (isDark ? AppColors.darkSurfaceElevated : AppColors.lightSurfaceElevated),
+                              ? AppColors.crimson.withValues(
+                                  alpha: isDark ? 0.1 : 0.05,
+                                )
+                              : (isDark
+                                    ? AppColors.darkSurfaceElevated
+                                    : AppColors.lightSurfaceElevated),
                           borderRadius: BorderRadius.circular(10),
                           border: Border.all(
-                            color: set.isCompleted ? AppColors.crimson : borderColor,
+                            color: set.isCompleted
+                                ? AppColors.crimson
+                                : borderColor,
                             width: set.isCompleted ? 1.2 : 1,
                           ),
                         ),
@@ -300,7 +341,11 @@ class _ExerciseExecutionDialogState extends State<ExerciseExecutionDialog> {
                                         border: Border.all(color: borderColor),
                                         borderRadius: BorderRadius.circular(4),
                                       ),
-                                      child: Icon(Icons.remove, size: 14, color: textMuted),
+                                      child: Icon(
+                                        Icons.remove,
+                                        size: 14,
+                                        color: textMuted,
+                                      ),
                                     ),
                                   ),
                                   Expanded(
@@ -322,7 +367,11 @@ class _ExerciseExecutionDialogState extends State<ExerciseExecutionDialog> {
                                         border: Border.all(color: borderColor),
                                         borderRadius: BorderRadius.circular(4),
                                       ),
-                                      child: Icon(Icons.add, size: 14, color: textMuted),
+                                      child: Icon(
+                                        Icons.add,
+                                        size: 14,
+                                        color: textMuted,
+                                      ),
                                     ),
                                   ),
                                 ],
@@ -343,7 +392,11 @@ class _ExerciseExecutionDialogState extends State<ExerciseExecutionDialog> {
                                         border: Border.all(color: borderColor),
                                         borderRadius: BorderRadius.circular(4),
                                       ),
-                                      child: Icon(Icons.remove, size: 14, color: textMuted),
+                                      child: Icon(
+                                        Icons.remove,
+                                        size: 14,
+                                        color: textMuted,
+                                      ),
                                     ),
                                   ),
                                   Expanded(
@@ -365,7 +418,11 @@ class _ExerciseExecutionDialogState extends State<ExerciseExecutionDialog> {
                                         border: Border.all(color: borderColor),
                                         borderRadius: BorderRadius.circular(4),
                                       ),
-                                      child: Icon(Icons.add, size: 14, color: textMuted),
+                                      child: Icon(
+                                        Icons.add,
+                                        size: 14,
+                                        color: textMuted,
+                                      ),
                                     ),
                                   ),
                                 ],
@@ -380,15 +437,23 @@ class _ExerciseExecutionDialogState extends State<ExerciseExecutionDialog> {
                                 width: 34,
                                 height: 34,
                                 decoration: BoxDecoration(
-                                  color: set.isCompleted ? AppColors.crimson : Colors.transparent,
+                                  color: set.isCompleted
+                                      ? AppColors.crimson
+                                      : Colors.transparent,
                                   borderRadius: BorderRadius.circular(6),
                                   border: Border.all(
-                                    color: set.isCompleted ? AppColors.crimson : borderColor,
+                                    color: set.isCompleted
+                                        ? AppColors.crimson
+                                        : borderColor,
                                     width: 1.5,
                                   ),
                                 ),
                                 child: set.isCompleted
-                                    ? const Icon(Icons.check_rounded, size: 20, color: Colors.white)
+                                    ? const Icon(
+                                        Icons.check_rounded,
+                                        size: 20,
+                                        color: Colors.white,
+                                      )
                                     : null,
                               ),
                             ),
@@ -403,10 +468,16 @@ class _ExerciseExecutionDialogState extends State<ExerciseExecutionDialog> {
                         TextButton.icon(
                           onPressed: _addSet,
                           icon: const Icon(Icons.add, size: 16),
-                          label: const Text('Add Set', style: TextStyle(fontSize: 12)),
+                          label: const Text(
+                            'Add Set',
+                            style: TextStyle(fontSize: 12),
+                          ),
                           style: TextButton.styleFrom(
                             foregroundColor: AppColors.crimson,
-                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 4,
+                            ),
                           ),
                         ),
                         if (_sets.length > 1) ...[
@@ -414,10 +485,16 @@ class _ExerciseExecutionDialogState extends State<ExerciseExecutionDialog> {
                           TextButton.icon(
                             onPressed: () => _removeSet(_sets.length - 1),
                             icon: const Icon(Icons.remove, size: 16),
-                            label: const Text('Remove Set', style: TextStyle(fontSize: 12)),
+                            label: const Text(
+                              'Remove Set',
+                              style: TextStyle(fontSize: 12),
+                            ),
                             style: TextButton.styleFrom(
                               foregroundColor: textMuted,
-                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 8,
+                                vertical: 4,
+                              ),
                             ),
                           ),
                         ],
@@ -458,7 +535,10 @@ class _ExerciseExecutionDialogState extends State<ExerciseExecutionDialog> {
                         widget.exerciseLog.isCompleted
                             ? 'Save & Keep Completed'
                             : 'Mark Exercise Completed',
-                        style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 14,
+                        ),
                       ),
                     ),
                   ),
@@ -475,9 +555,7 @@ class _ExerciseExecutionDialogState extends State<ExerciseExecutionDialog> {
                       },
                       icon: const Icon(Icons.undo_rounded, size: 16),
                       label: const Text('Mark as Incomplete (Undo)'),
-                      style: TextButton.styleFrom(
-                        foregroundColor: textMuted,
-                      ),
+                      style: TextButton.styleFrom(foregroundColor: textMuted),
                     ),
                   ],
                 ],
@@ -489,4 +567,3 @@ class _ExerciseExecutionDialogState extends State<ExerciseExecutionDialog> {
     );
   }
 }
-

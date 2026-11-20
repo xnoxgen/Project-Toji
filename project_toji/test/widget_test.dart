@@ -55,8 +55,18 @@ void main() {
         targetSets: 2,
         isCompleted: true,
         sets: [
-          SetLog(setNumber: 1, actualReps: 10, weightKg: 80.0, isCompleted: true),
-          SetLog(setNumber: 2, actualReps: 8, weightKg: 80.0, isCompleted: true),
+          SetLog(
+            setNumber: 1,
+            actualReps: 10,
+            weightKg: 80.0,
+            isCompleted: true,
+          ),
+          SetLog(
+            setNumber: 2,
+            actualReps: 8,
+            weightKg: 80.0,
+            isCompleted: true,
+          ),
         ],
       );
 
@@ -67,7 +77,12 @@ void main() {
         targetSets: 1,
         isCompleted: false,
         sets: [
-          SetLog(setNumber: 1, actualReps: 10, weightKg: 60.0, isCompleted: false),
+          SetLog(
+            setNumber: 1,
+            actualReps: 10,
+            weightKg: 60.0,
+            isCompleted: false,
+          ),
         ],
       );
 
@@ -122,31 +137,37 @@ void main() {
 
       final now = DateTime.now();
       final todaySession = state.getOrCreateSessionForDate(now);
-      await state.markExerciseDone(todaySession.id, todaySession.exercises.first.exerciseId);
+      await state.markExerciseDone(
+        todaySession.id,
+        todaySession.exercises.first.exerciseId,
+      );
 
       expect(state.currentStreak >= 1, true);
     });
 
-    test('Clicking Complete button marks exercise completed and updates session', () async {
-      SharedPreferences.setMockInitialValues({});
-      final storage = await StorageService.init();
-      final state = PhysiqueState(storage);
+    test(
+      'Clicking Complete button marks exercise completed and updates session',
+      () async {
+        SharedPreferences.setMockInitialValues({});
+        final storage = await StorageService.init();
+        final state = PhysiqueState(storage);
 
-      final now = DateTime.now();
-      final session = state.getOrCreateSessionForDate(now);
-      final firstEx = session.exercises.first;
-      expect(firstEx.isCompleted, false);
+        final now = DateTime.now();
+        final session = state.getOrCreateSessionForDate(now);
+        final firstEx = session.exercises.first;
+        expect(firstEx.isCompleted, false);
 
-      // Click complete
-      await state.markExerciseDone(session.id, firstEx.exerciseId);
-      final updated = state.getOrCreateSessionForDate(now);
-      expect(updated.exercises.first.isCompleted, true);
-      expect(updated.completedExercisesCount >= 1, true);
+        // Click complete
+        await state.markExerciseDone(session.id, firstEx.exerciseId);
+        final updated = state.getOrCreateSessionForDate(now);
+        expect(updated.exercises.first.isCompleted, true);
+        expect(updated.completedExercisesCount >= 1, true);
 
-      // Undo completion
-      await state.undoExerciseCompletion(session.id, firstEx.exerciseId);
-      final reverted = state.getOrCreateSessionForDate(now);
-      expect(reverted.exercises.first.isCompleted, false);
-    });
+        // Undo completion
+        await state.undoExerciseCompletion(session.id, firstEx.exerciseId);
+        final reverted = state.getOrCreateSessionForDate(now);
+        expect(reverted.exercises.first.isCompleted, false);
+      },
+    );
   });
 }

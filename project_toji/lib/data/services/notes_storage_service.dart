@@ -1,5 +1,7 @@
 import 'dart:convert';
+
 import 'package:shared_preferences/shared_preferences.dart';
+
 import '../models/note_model.dart';
 import '../models/reminder_model.dart';
 
@@ -24,6 +26,7 @@ class NotesStorageService {
     }
     try {
       final list = jsonDecode(raw) as List<dynamic>;
+      if (list.isEmpty) return _defaultNotes();
       return list
           .map((item) => NoteModel.fromJson(item as Map<String, dynamic>))
           .toList();
@@ -46,6 +49,7 @@ class NotesStorageService {
     }
     try {
       final list = jsonDecode(raw) as List<dynamic>;
+      if (list.isEmpty) return _defaultReminders();
       return list
           .map((item) => ReminderModel.fromJson(item as Map<String, dynamic>))
           .toList();
@@ -60,17 +64,19 @@ class NotesStorageService {
     await _prefs.setString(_keyReminders, encoded);
   }
 
-  // Sample Starter Notes
+  // Sample Starter Notes with Rich Text & Labels
   List<NoteModel> _defaultNotes() {
     final now = DateTime.now();
     return [
       NoteModel(
         id: 'default_note_1',
         title: 'Project Toji — Philosophy & Rules',
-        content: '1. Discipline beats motivation every single day.\n'
+        content:
+            '1. Discipline beats motivation every single day.\n'
             '2. Progressive overload on compound lifts.\n'
             '3. Prioritize protein and restorative sleep.\n'
             '4. Track workouts and body metrics relentlessly.',
+        labelIds: const ['label_important', 'label_personal'],
         category: 'Gym',
         isPinned: true,
         createdAt: now.subtract(const Duration(days: 2)),
@@ -79,10 +85,12 @@ class NotesStorageService {
       NoteModel(
         id: 'default_note_2',
         title: 'Weekly Meal Prep Strategy',
-        content: '• Chicken breast: 2.5 kg grilled with lemon herb seasoning\n'
+        content:
+            '• Chicken breast: 2.5 kg grilled with lemon herb seasoning\n'
             '• Jasmine rice: 1 kg dry weighed into 5 containers\n'
             '• Steamed broccoli and asparagus for micronutrients\n'
             '• Electrolytes and 4 liters of water daily.',
+        labelIds: const ['label_todo', 'label_personal'],
         category: 'Personal',
         isPinned: false,
         createdAt: now.subtract(const Duration(days: 1)),
@@ -91,9 +99,11 @@ class NotesStorageService {
       NoteModel(
         id: 'default_note_3',
         title: 'Semester Study Timetable',
-        content: 'Monday & Wednesday: Discrete Mathematics and Data Structures.\n'
+        content:
+            'Monday & Wednesday: Discrete Mathematics and Data Structures.\n'
             'Tuesday & Thursday: Operating Systems and Algorithms lab.\n'
             'Friday: Project revision and paper reading.',
+        labelIds: const ['label_study', 'label_work'],
         category: 'College',
         isPinned: false,
         createdAt: now.subtract(const Duration(hours: 12)),
@@ -113,15 +123,20 @@ class NotesStorageService {
         dateTime: DateTime(now.year, now.month, now.day, 19, 30),
         priority: 'high',
         isCompleted: false,
+        isNotificationEnabled: true,
+        advanceMinutes: 10,
         createdAt: now.subtract(const Duration(hours: 4)),
       ),
       ReminderModel(
         id: 102,
         title: 'Mobility & Hip Flexor Stretching',
-        description: '15 minutes of foam rolling and deep pigeon stretch before bed.',
+        description:
+            '15 minutes of foam rolling and deep pigeon stretch before bed.',
         dateTime: DateTime(now.year, now.month, now.day, 21, 30),
         priority: 'medium',
         isCompleted: false,
+        isNotificationEnabled: true,
+        advanceMinutes: 15,
         createdAt: now.subtract(const Duration(hours: 3)),
       ),
     ];

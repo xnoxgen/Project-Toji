@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
 import 'app_colors.dart';
 import 'app_typography.dart';
 
@@ -60,9 +61,16 @@ class AppTheme {
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
         fillColor: AppColors.darkSurfaceElevated,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-        hintStyle: AppTypography.bodyMedium.copyWith(color: AppColors.darkTextMuted),
-        labelStyle: AppTypography.bodyMedium.copyWith(color: AppColors.darkTextSecondary),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 14,
+        ),
+        hintStyle: AppTypography.bodyMedium.copyWith(
+          color: AppColors.darkTextMuted,
+        ),
+        labelStyle: AppTypography.bodyMedium.copyWith(
+          color: AppColors.darkTextSecondary,
+        ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
           borderSide: const BorderSide(color: AppColors.darkBorder, width: 1),
@@ -89,7 +97,9 @@ class AppTheme {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
           ),
-          textStyle: AppTypography.titleMedium.copyWith(fontWeight: FontWeight.w600),
+          textStyle: AppTypography.titleMedium.copyWith(
+            fontWeight: FontWeight.w600,
+          ),
         ),
       ),
       outlinedButtonTheme: OutlinedButtonThemeData(
@@ -100,13 +110,17 @@ class AppTheme {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
           ),
-          textStyle: AppTypography.titleMedium.copyWith(fontWeight: FontWeight.w500),
+          textStyle: AppTypography.titleMedium.copyWith(
+            fontWeight: FontWeight.w500,
+          ),
         ),
       ),
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
           foregroundColor: AppColors.crimson,
-          textStyle: AppTypography.bodyLarge.copyWith(fontWeight: FontWeight.w600),
+          textStyle: AppTypography.bodyLarge.copyWith(
+            fontWeight: FontWeight.w600,
+          ),
         ),
       ),
       useMaterial3: true,
@@ -169,9 +183,16 @@ class AppTheme {
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
         fillColor: AppColors.lightSurfaceElevated,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-        hintStyle: AppTypography.bodyMedium.copyWith(color: AppColors.lightTextMuted),
-        labelStyle: AppTypography.bodyMedium.copyWith(color: AppColors.lightTextSecondary),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 14,
+        ),
+        hintStyle: AppTypography.bodyMedium.copyWith(
+          color: AppColors.lightTextMuted,
+        ),
+        labelStyle: AppTypography.bodyMedium.copyWith(
+          color: AppColors.lightTextSecondary,
+        ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
           borderSide: const BorderSide(color: AppColors.lightBorder, width: 1),
@@ -198,7 +219,9 @@ class AppTheme {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
           ),
-          textStyle: AppTypography.titleMedium.copyWith(fontWeight: FontWeight.w600),
+          textStyle: AppTypography.titleMedium.copyWith(
+            fontWeight: FontWeight.w600,
+          ),
         ),
       ),
       outlinedButtonTheme: OutlinedButtonThemeData(
@@ -209,17 +232,20 @@ class AppTheme {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
           ),
-          textStyle: AppTypography.titleMedium.copyWith(fontWeight: FontWeight.w500),
+          textStyle: AppTypography.titleMedium.copyWith(
+            fontWeight: FontWeight.w500,
+          ),
         ),
       ),
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
           foregroundColor: AppColors.crimson,
-          textStyle: AppTypography.bodyLarge.copyWith(fontWeight: FontWeight.w600),
+          textStyle: AppTypography.bodyLarge.copyWith(
+            fontWeight: FontWeight.w600,
+          ),
         ),
       ),
       useMaterial3: true,
     );
   }
 }
-

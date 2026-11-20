@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../../state/physique_state.dart';
 
 class AddMeasurementDialog extends StatefulWidget {
@@ -73,7 +74,9 @@ class _AddMeasurementDialogState extends State<AddMeasurementDialog> {
           children: [
             DropdownButtonFormField<String>(
               initialValue: _selectedMetric,
-              decoration: const InputDecoration(labelText: 'Measurement Metric'),
+              decoration: const InputDecoration(
+                labelText: 'Measurement Metric',
+              ),
               items: _metricNames.entries.map((e) {
                 return DropdownMenuItem(value: e.key, child: Text(e.value));
               }).toList(),
@@ -82,11 +85,10 @@ class _AddMeasurementDialogState extends State<AddMeasurementDialog> {
             const SizedBox(height: 12),
             TextField(
               controller: _valController,
-              keyboardType: const TextInputType.numberWithOptions(decimal: true),
-              decoration: InputDecoration(
-                labelText: 'Value',
-                suffixText: unit,
+              keyboardType: const TextInputType.numberWithOptions(
+                decimal: true,
               ),
+              decoration: InputDecoration(labelText: 'Value', suffixText: unit),
             ),
             const SizedBox(height: 12),
             ListTile(

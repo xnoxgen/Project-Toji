@@ -57,8 +57,7 @@ class AppSettings {
       defaultRestSeconds: (json['defaultRestSeconds'] as num?)?.toInt() ?? 90,
       enableSound: json['enableSound'] as bool? ?? true,
       enableVibration: json['enableVibration'] as bool? ?? true,
-      hasCompletedOnboarding:
-          json['hasCompletedOnboarding'] as bool? ?? false,
+      hasCompletedOnboarding: json['hasCompletedOnboarding'] as bool? ?? false,
       lastCheckInDate: json['lastCheckInDate'] != null
           ? DateTime.parse(json['lastCheckInDate'] as String)
           : null,
@@ -68,4 +67,3 @@ class AppSettings {
     );
   }
 }
-

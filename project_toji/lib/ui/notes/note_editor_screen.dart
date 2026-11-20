@@ -1,16 +1,28 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_quill/flutter_quill.dart';
+
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_typography.dart';
 import '../../data/models/note_model.dart';
+import '../../data/models/reminder_model.dart';
+import '../../state/notes_state.dart';
+import 'reminder_editor_dialog.dart';
+import 'widgets/formatting_toolbar.dart';
+import 'widgets/label_chip.dart';
+import 'widgets/label_selector_dialog.dart';
 
 class NoteEditorScreen extends StatefulWidget {
   final NoteModel? initialNote;
+  final NotesState notesState;
   final ValueChanged<NoteModel> onSave;
   final ValueChanged<String>? onDelete;
 
   const NoteEditorScreen({
     super.key,
     this.initialNote,
+    required this.notesState,
     required this.onSave,
     this.onDelete,
   });
@@ -21,32 +33,66 @@ class NoteEditorScreen extends StatefulWidget {
 
 class _NoteEditorScreenState extends State<NoteEditorScreen> {
   late TextEditingController _titleController;
-  late TextEditingController _contentController;
-  late String _selectedCategory;
-  late bool _isPinned;
-  bool _hasChanges = false;
+  late QuillController _quillController;
+  late FocusNode _editorFocusNode;
+  late ScrollController _editorScrollController;
 
-  final List<String> _categories = [
-    'Personal',
-    'College',
-    'Work',
-    'Gym',
-    'Other',
-  ];
+  late List<String> _selectedLabelIds;
+  late bool _isPinned;
+  int? _reminderId;
+  DateTime? _reminderDateTime;
+
+  bool _hasChanges = false;
 
   @override
   void initState() {
     super.initState();
-    _titleController = TextEditingController(text: widget.initialNote?.title ?? '');
-    _contentController = TextEditingController(text: widget.initialNote?.content ?? '');
-    _selectedCategory = widget.initialNote?.category ?? 'Personal';
+    _titleController = TextEditingController(
+      text: widget.initialNote?.title ?? '',
+    );
+    _selectedLabelIds = List<String>.from(widget.initialNote?.labelIds ?? []);
     _isPinned = widget.initialNote?.isPinned ?? false;
+    _reminderId = widget.initialNote?.reminderId;
+    _reminderDateTime = widget.initialNote?.reminderDateTime;
 
-    _titleController.addListener(_onTextChanged);
-    _contentController.addListener(_onTextChanged);
+    _editorFocusNode = FocusNode();
+    _editorScrollController = ScrollController();
+
+    // Initialize Quill Document
+    Document document;
+    if (widget.initialNote?.contentJson != null &&
+        widget.initialNote!.contentJson!.trim().isNotEmpty) {
+      try {
+        final decoded = jsonDecode(widget.initialNote!.contentJson!);
+        document = Document.fromJson(decoded as List<dynamic>);
+      } catch (_) {
+        document = _fallbackDocument(widget.initialNote?.content ?? '');
+      }
+    } else if (widget.initialNote?.content != null &&
+        widget.initialNote!.content.isNotEmpty) {
+      document = _fallbackDocument(widget.initialNote!.content);
+    } else {
+      document = Document();
+    }
+
+    _quillController = QuillController(
+      document: document,
+      selection: const TextSelection.collapsed(offset: 0),
+    );
+
+    _titleController.addListener(_onChanged);
+    _quillController.addListener(_onChanged);
   }
 
-  void _onTextChanged() {
+  Document _fallbackDocument(String plainText) {
+    final doc = Document();
+    if (plainText.isNotEmpty) {
+      doc.insert(0, plainText);
+    }
+    return doc;
+  }
+
+  void _onChanged() {
     if (!_hasChanges) {
       setState(() {
         _hasChanges = true;
@@ -57,33 +103,44 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
   @override
   void dispose() {
     _titleController.dispose();
-    _contentController.dispose();
+    _quillController.dispose();
+    _editorFocusNode.dispose();
+    _editorScrollController.dispose();
     super.dispose();
   }
 
   void _saveAndExit() {
     final title = _titleController.text.trim();
-    final content = _contentController.text.trim();
+    final plainText = _quillController.document.toPlainText().trim();
+    final deltaJson = jsonEncode(_quillController.document.toDelta().toJson());
 
-    if (title.isEmpty && content.isEmpty) {
+    // If completely empty, just close
+    if (title.isEmpty && plainText.isEmpty) {
       Navigator.of(context).pop();
       return;
     }
 
     final now = DateTime.now();
-    final note = widget.initialNote?.copyWith(
+    final note =
+        widget.initialNote?.copyWith(
           title: title.isEmpty ? 'Untitled Note' : title,
-          content: content,
-          category: _selectedCategory,
+          content: plainText,
+          contentJson: deltaJson,
+          labelIds: _selectedLabelIds,
           isPinned: _isPinned,
+          reminderId: _reminderId,
+          reminderDateTime: _reminderDateTime,
           updatedAt: now,
         ) ??
         NoteModel(
           id: 'note_${now.millisecondsSinceEpoch}',
           title: title.isEmpty ? 'Untitled Note' : title,
-          content: content,
-          category: _selectedCategory,
+          content: plainText,
+          contentJson: deltaJson,
+          labelIds: _selectedLabelIds,
           isPinned: _isPinned,
+          reminderId: _reminderId,
+          reminderDateTime: _reminderDateTime,
           createdAt: now,
           updatedAt: now,
         );
@@ -98,18 +155,24 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
       builder: (ctx) {
         final isDark = Theme.of(ctx).brightness == Brightness.dark;
         return AlertDialog(
-          backgroundColor: isDark ? AppColors.darkSurface : AppColors.lightSurface,
+          backgroundColor: isDark
+              ? AppColors.darkSurface
+              : AppColors.lightSurface,
           title: Text(
             'Delete Note?',
             style: AppTypography.titleMedium.copyWith(
-              color: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary,
+              color: isDark
+                  ? AppColors.darkTextPrimary
+                  : AppColors.lightTextPrimary,
               fontWeight: FontWeight.w700,
             ),
           ),
           content: Text(
-            'This action cannot be undone. Are you sure you want to delete this note?',
+            'This action cannot be undone. Are you sure you want to delete this note and its associated reminders?',
             style: AppTypography.bodyMedium.copyWith(
-              color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
+              color: isDark
+                  ? AppColors.darkTextSecondary
+                  : AppColors.lightTextSecondary,
             ),
           ),
           actions: [
@@ -118,7 +181,9 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
               child: Text(
                 'Cancel',
                 style: TextStyle(
-                  color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
+                  color: isDark
+                      ? AppColors.darkTextSecondary
+                      : AppColors.lightTextSecondary,
                 ),
               ),
             ),
@@ -126,7 +191,10 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
               onPressed: () => Navigator.of(ctx).pop(true),
               child: const Text(
                 'Delete',
-                style: TextStyle(color: AppColors.crimson, fontWeight: FontWeight.w700),
+                style: TextStyle(
+                  color: AppColors.crimson,
+                  fontWeight: FontWeight.w700,
+                ),
               ),
             ),
           ],
@@ -142,14 +210,83 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
     }
   }
 
+  void _openLabelSelector() {
+    showDialog(
+      context: context,
+      builder: (_) => LabelSelectorDialog(
+        notesState: widget.notesState,
+        initialSelectedIds: _selectedLabelIds,
+        onSelectionChanged: (updated) {
+          setState(() {
+            _selectedLabelIds = updated;
+            _hasChanges = true;
+          });
+        },
+      ),
+    );
+  }
+
+  void _manageReminder() {
+    ReminderModel? existingReminder;
+    if (_reminderId != null) {
+      existingReminder = widget.notesState.reminders
+          .where((r) => r.id == _reminderId)
+          .firstOrNull;
+    }
+
+    final noteTitle = _titleController.text.trim().isEmpty
+        ? 'Untitled Note'
+        : _titleController.text.trim();
+
+    showDialog(
+      context: context,
+      builder: (_) => ReminderEditorDialog(
+        initialReminder: existingReminder,
+        associatedNoteId: widget.initialNote?.id,
+        associatedNoteTitle: noteTitle,
+        onSave: (reminder) {
+          if (existingReminder == null) {
+            widget.notesState.addReminder(reminder);
+          } else {
+            widget.notesState.updateReminder(reminder);
+          }
+          setState(() {
+            _reminderId = reminder.id;
+            _reminderDateTime = reminder.dateTime;
+            _hasChanges = true;
+          });
+        },
+        onDelete: (id) {
+          widget.notesState.deleteReminder(id);
+          setState(() {
+            _reminderId = null;
+            _reminderDateTime = null;
+            _hasChanges = true;
+          });
+        },
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final bg = isDark ? AppColors.darkBackground : AppColors.lightBackground;
-    final surfaceColor = isDark ? AppColors.darkSurface : AppColors.lightSurface;
+    final surfaceColor = isDark
+        ? AppColors.darkSurface
+        : AppColors.lightSurface;
     final borderColor = isDark ? AppColors.darkBorder : AppColors.lightBorder;
-    final textPrimary = isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary;
-    final textMuted = isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary;
+    final textPrimary = isDark
+        ? AppColors.darkTextPrimary
+        : AppColors.lightTextPrimary;
+    final textMuted = isDark
+        ? AppColors.darkTextSecondary
+        : AppColors.lightTextSecondary;
+
+    final assignedLabels = _selectedLabelIds
+        .map((id) => widget.notesState.getLabelById(id))
+        .whereType<dynamic>()
+        .toList();
 
     return PopScope(
       canPop: true,
@@ -169,11 +306,28 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
             onPressed: _saveAndExit,
           ),
           actions: [
+            // Reminder Button
+            IconButton(
+              icon: Icon(
+                _reminderDateTime != null
+                    ? Icons.notifications_active_rounded
+                    : Icons.notifications_none_rounded,
+                color: _reminderDateTime != null
+                    ? AppColors.crimson
+                    : textMuted,
+                size: 22,
+              ),
+              tooltip: _reminderDateTime != null
+                  ? 'Reminder set: ${_reminderDateTime!.toString().substring(0, 16)}'
+                  : 'Add reminder for this note',
+              onPressed: _manageReminder,
+            ),
             // Pin Toggle
             IconButton(
               icon: Icon(
                 _isPinned ? Icons.push_pin_rounded : Icons.push_pin_outlined,
                 color: _isPinned ? AppColors.crimson : textMuted,
+                size: 22,
               ),
               tooltip: _isPinned ? 'Unpin note' : 'Pin note',
               onPressed: () {
@@ -186,7 +340,7 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
             // Delete button (only when editing existing note)
             if (widget.initialNote != null)
               IconButton(
-                icon: const Icon(Icons.delete_outline_rounded),
+                icon: const Icon(Icons.delete_outline_rounded, size: 22),
                 color: AppColors.crimson,
                 tooltip: 'Delete note',
                 onPressed: _confirmDelete,
@@ -214,56 +368,79 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
         body: SafeArea(
           child: Column(
             children: [
-              // Category selector bar
+              // Labels Selector Bar
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 8,
+                ),
                 decoration: BoxDecoration(
-                  border: Border(bottom: BorderSide(color: borderColor, width: 0.8)),
+                  border: Border(
+                    bottom: BorderSide(color: borderColor, width: 0.8),
+                  ),
                 ),
                 child: Row(
                   children: [
-                    Text(
-                      'Category:',
-                      style: AppTypography.labelSmall.copyWith(
-                        color: textMuted,
-                        fontWeight: FontWeight.w600,
-                      ),
+                    Icon(
+                      Icons.label_outline_rounded,
+                      size: 16,
+                      color: textMuted,
                     ),
-                    const SizedBox(width: 10),
+                    const SizedBox(width: 8),
                     Expanded(
                       child: SingleChildScrollView(
                         scrollDirection: Axis.horizontal,
                         child: Row(
-                          children: _categories.map((cat) {
-                            final isSel = _selectedCategory == cat;
-                            return Padding(
-                              padding: const EdgeInsets.only(right: 6),
-                              child: ChoiceChip(
-                                label: Text(cat),
-                                selected: isSel,
-                                onSelected: (selected) {
-                                  if (selected) {
+                          children: [
+                            ...assignedLabels.map((l) {
+                              return Padding(
+                                padding: const EdgeInsets.only(right: 6),
+                                child: LabelChipWidget(
+                                  label: l,
+                                  compact: true,
+                                  onDelete: () {
                                     setState(() {
-                                      _selectedCategory = cat;
+                                      _selectedLabelIds.remove(l.id);
                                       _hasChanges = true;
                                     });
-                                  }
-                                },
-                                selectedColor: AppColors.crimson.withAlpha(40),
-                                backgroundColor: surfaceColor,
-                                labelStyle: TextStyle(
-                                  fontSize: 12,
-                                  color: isSel ? AppColors.crimson : textMuted,
-                                  fontWeight: isSel ? FontWeight.w700 : FontWeight.w500,
+                                  },
                                 ),
-                                side: BorderSide(
-                                  color: isSel ? AppColors.crimson : borderColor,
-                                  width: isSel ? 1.5 : 1,
-                                ),
-                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                              );
+                            }),
+                            ActionChip(
+                              label: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  const Icon(
+                                    Icons.add,
+                                    size: 13,
+                                    color: AppColors.crimson,
+                                  ),
+                                  const SizedBox(width: 4),
+                                  Text(
+                                    assignedLabels.isEmpty
+                                        ? 'Add Labels'
+                                        : 'Edit Labels',
+                                    style: const TextStyle(
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.w600,
+                                      color: AppColors.crimson,
+                                    ),
+                                  ),
+                                ],
                               ),
-                            );
-                          }).toList(),
+                              backgroundColor: surfaceColor,
+                              side: BorderSide(color: borderColor),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(16),
+                              ),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 8,
+                                vertical: 2,
+                              ),
+                              onPressed: _openLabelSelector,
+                            ),
+                          ],
                         ),
                       ),
                     ),
@@ -273,7 +450,7 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
 
               // Title input
               Padding(
-                padding: const EdgeInsets.fromLTRB(20, 16, 20, 8),
+                padding: const EdgeInsets.fromLTRB(20, 14, 20, 6),
                 child: TextField(
                   controller: _titleController,
                   style: AppTypography.titleLarge.copyWith(
@@ -295,30 +472,26 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
                 ),
               ),
 
-              const Divider(height: 1),
+              // Formatting Toolbar
+              FormattingToolbar(controller: _quillController),
 
-              // Content input
+              // Rich Text Editor
               Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 14, 20, 20),
-                  child: TextField(
-                    controller: _contentController,
-                    maxLines: null,
-                    expands: true,
-                    textAlignVertical: TextAlignVertical.top,
-                    style: AppTypography.bodyMedium.copyWith(
-                      color: textPrimary,
-                      height: 1.6,
-                      fontSize: 15,
-                    ),
-                    decoration: InputDecoration(
-                      hintText: 'Start writing your note, ideas or workout thoughts...',
-                      hintStyle: AppTypography.bodyMedium.copyWith(
-                        color: textMuted.withAlpha(120),
-                        fontSize: 15,
-                      ),
-                      border: InputBorder.none,
-                      contentPadding: EdgeInsets.zero,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 12,
+                  ),
+                  child: QuillEditor.basic(
+                    controller: _quillController,
+                    focusNode: _editorFocusNode,
+                    scrollController: _editorScrollController,
+                    config: QuillEditorConfig(
+                      placeholder: 'Start writing your rich note...',
+                      scrollable: true,
+                      expands: true,
+                      padding: EdgeInsets.zero,
+                      autoFocus: false,
                     ),
                   ),
                 ),

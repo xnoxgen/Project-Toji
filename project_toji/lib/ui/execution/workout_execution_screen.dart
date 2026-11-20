@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_typography.dart';
 import '../../data/models/workout_session.dart';
@@ -47,7 +48,9 @@ class _WorkoutExecutionScreenState extends State<WorkoutExecutionScreen> {
       ),
     ).then((_) {
       // Check if all exercises are now completed
-      final updatedSession = widget.state.getOrCreateSessionForDate(_getDateForDayOfWeek(_selectedDayOfWeek));
+      final updatedSession = widget.state.getOrCreateSessionForDate(
+        _getDateForDayOfWeek(_selectedDayOfWeek),
+      );
       if (updatedSession.isCompleted) {
         _showCompletionSummary(updatedSession);
       }
@@ -73,11 +76,19 @@ class _WorkoutExecutionScreenState extends State<WorkoutExecutionScreen> {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final surfaceColor = isDark ? AppColors.darkSurface : AppColors.lightSurface;
-    final elevatedColor = isDark ? AppColors.darkSurfaceElevated : AppColors.lightSurfaceElevated;
+    final surfaceColor = isDark
+        ? AppColors.darkSurface
+        : AppColors.lightSurface;
+    final elevatedColor = isDark
+        ? AppColors.darkSurfaceElevated
+        : AppColors.lightSurfaceElevated;
     final borderColor = isDark ? AppColors.darkBorder : AppColors.lightBorder;
-    final textColor = isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary;
-    final textMuted = isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary;
+    final textColor = isDark
+        ? AppColors.darkTextPrimary
+        : AppColors.lightTextPrimary;
+    final textMuted = isDark
+        ? AppColors.darkTextSecondary
+        : AppColors.lightTextSecondary;
 
     final targetDate = _getDateForDayOfWeek(_selectedDayOfWeek);
     final session = widget.state.getOrCreateSessionForDate(targetDate);
@@ -115,7 +126,10 @@ class _WorkoutExecutionScreenState extends State<WorkoutExecutionScreen> {
             children: [
               // Weekday Selector Bar
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 12,
+                ),
                 color: surfaceColor,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -123,9 +137,16 @@ class _WorkoutExecutionScreenState extends State<WorkoutExecutionScreen> {
                     final dayNum = d['day'] as int;
                     final isSelected = dayNum == _selectedDayOfWeek;
                     final isToday = dayNum == DateTime.now().weekday;
-                    final isDayCompleted = widget.state.completedDateKeys.contains(
-                      widget.state.getOrCreateSessionForDate(_getDateForDayOfWeek(dayNum)).date.toIso8601String().substring(0, 10),
-                    );
+                    final isDayCompleted = widget.state.completedDateKeys
+                        .contains(
+                          widget.state
+                              .getOrCreateSessionForDate(
+                                _getDateForDayOfWeek(dayNum),
+                              )
+                              .date
+                              .toIso8601String()
+                              .substring(0, 10),
+                        );
 
                     return Expanded(
                       child: Padding(
@@ -143,15 +164,19 @@ class _WorkoutExecutionScreenState extends State<WorkoutExecutionScreen> {
                               color: isSelected
                                   ? AppColors.crimson
                                   : (isToday
-                                      ? (isDark ? elevatedColor : elevatedColor)
-                                      : Colors.transparent),
+                                        ? (isDark
+                                              ? elevatedColor
+                                              : elevatedColor)
+                                        : Colors.transparent),
                               borderRadius: BorderRadius.circular(10),
                               border: Border.all(
                                 color: isSelected
                                     ? AppColors.crimson
                                     : (isToday
-                                        ? AppColors.crimson.withValues(alpha: 0.5)
-                                        : borderColor),
+                                          ? AppColors.crimson.withValues(
+                                              alpha: 0.5,
+                                            )
+                                          : borderColor),
                                 width: 1,
                               ),
                             ),
@@ -163,7 +188,9 @@ class _WorkoutExecutionScreenState extends State<WorkoutExecutionScreen> {
                                     color: isSelected
                                         ? Colors.white
                                         : (isToday ? textColor : textMuted),
-                                    fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+                                    fontWeight: isSelected
+                                        ? FontWeight.w700
+                                        : FontWeight.w500,
                                     fontSize: 10,
                                   ),
                                 ),
@@ -172,7 +199,9 @@ class _WorkoutExecutionScreenState extends State<WorkoutExecutionScreen> {
                                   Icon(
                                     Icons.check_circle_rounded,
                                     size: 10,
-                                    color: isSelected ? Colors.white : AppColors.crimson,
+                                    color: isSelected
+                                        ? Colors.white
+                                        : AppColors.crimson,
                                   ),
                                 ] else ...[
                                   Container(
@@ -182,7 +211,9 @@ class _WorkoutExecutionScreenState extends State<WorkoutExecutionScreen> {
                                       shape: BoxShape.circle,
                                       color: isSelected
                                           ? Colors.white
-                                          : (isToday ? AppColors.crimson : Colors.transparent),
+                                          : (isToday
+                                                ? AppColors.crimson
+                                                : Colors.transparent),
                                     ),
                                   ),
                                 ],
@@ -218,7 +249,9 @@ class _WorkoutExecutionScreenState extends State<WorkoutExecutionScreen> {
                               Text(
                                 dayPlan.focusName.isNotEmpty
                                     ? dayPlan.focusName
-                                    : (dayPlan.isRestDay ? 'Rest & Recovery' : 'Workout Session'),
+                                    : (dayPlan.isRestDay
+                                          ? 'Rest & Recovery'
+                                          : 'Workout Session'),
                                 style: AppTypography.titleLarge.copyWith(
                                   color: textColor,
                                   fontSize: 18,
@@ -229,14 +262,19 @@ class _WorkoutExecutionScreenState extends State<WorkoutExecutionScreen> {
                                 dayPlan.isRestDay
                                     ? 'Scheduled active recovery or rest'
                                     : '${session.completedExercisesCount} of ${session.totalExercisesCount} exercises finished',
-                                style: AppTypography.bodyMedium.copyWith(color: textMuted),
+                                style: AppTypography.bodyMedium.copyWith(
+                                  color: textMuted,
+                                ),
                               ),
                             ],
                           ),
                         ),
                         if (session.isCompleted) ...[
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 10,
+                              vertical: 5,
+                            ),
                             decoration: BoxDecoration(
                               color: AppColors.crimson.withValues(alpha: 0.15),
                               borderRadius: BorderRadius.circular(20),
@@ -244,7 +282,11 @@ class _WorkoutExecutionScreenState extends State<WorkoutExecutionScreen> {
                             ),
                             child: Row(
                               children: [
-                                const Icon(Icons.check_rounded, size: 14, color: AppColors.crimson),
+                                const Icon(
+                                  Icons.check_rounded,
+                                  size: 14,
+                                  color: AppColors.crimson,
+                                ),
                                 const SizedBox(width: 4),
                                 Text(
                                   'COMPLETED',
@@ -267,16 +309,20 @@ class _WorkoutExecutionScreenState extends State<WorkoutExecutionScreen> {
                         ],
                       ],
                     ),
-                    if (!dayPlan.isRestDay && session.totalExercisesCount > 0) ...[
+                    if (!dayPlan.isRestDay &&
+                        session.totalExercisesCount > 0) ...[
                       const SizedBox(height: 12),
                       ClipRRect(
                         borderRadius: BorderRadius.circular(6),
                         child: LinearProgressIndicator(
                           value: session.totalExercisesCount > 0
-                              ? (session.completedExercisesCount / session.totalExercisesCount)
+                              ? (session.completedExercisesCount /
+                                    session.totalExercisesCount)
                               : 0.0,
                           backgroundColor: elevatedColor,
-                          valueColor: const AlwaysStoppedAnimation<Color>(AppColors.crimson),
+                          valueColor: const AlwaysStoppedAnimation<Color>(
+                            AppColors.crimson,
+                          ),
                           minHeight: 6,
                         ),
                       ),
@@ -288,28 +334,41 @@ class _WorkoutExecutionScreenState extends State<WorkoutExecutionScreen> {
               // Exercises List or Rest Day State
               Expanded(
                 child: dayPlan.isRestDay && session.exercises.isEmpty
-                    ? _buildRestDayState(isDark, surfaceColor, borderColor, textColor, textMuted)
+                    ? _buildRestDayState(
+                        isDark,
+                        surfaceColor,
+                        borderColor,
+                        textColor,
+                        textMuted,
+                      )
                     : session.exercises.isEmpty
-                        ? _buildEmptyState(isDark, surfaceColor, borderColor, textColor, textMuted)
-                        : ListView.separated(
-                            padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
-                            itemCount: session.exercises.length,
-                            separatorBuilder: (ctx, i) => const SizedBox(height: 10),
-                            itemBuilder: (ctx, index) {
-                              final ex = session.exercises[index];
-                              return _buildExerciseCard(
-                                session,
-                                ex,
-                                index,
-                                isDark,
-                                surfaceColor,
-                                elevatedColor,
-                                borderColor,
-                                textColor,
-                                textMuted,
-                              );
-                            },
-                          ),
+                    ? _buildEmptyState(
+                        isDark,
+                        surfaceColor,
+                        borderColor,
+                        textColor,
+                        textMuted,
+                      )
+                    : ListView.separated(
+                        padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
+                        itemCount: session.exercises.length,
+                        separatorBuilder: (ctx, i) =>
+                            const SizedBox(height: 10),
+                        itemBuilder: (ctx, index) {
+                          final ex = session.exercises[index];
+                          return _buildExerciseCard(
+                            session,
+                            ex,
+                            index,
+                            isDark,
+                            surfaceColor,
+                            elevatedColor,
+                            borderColor,
+                            textColor,
+                            textMuted,
+                          );
+                        },
+                      ),
               ),
             ],
           ),
@@ -354,9 +413,15 @@ class _WorkoutExecutionScreenState extends State<WorkoutExecutionScreen> {
               InkWell(
                 onTap: () async {
                   if (ex.isCompleted) {
-                    await widget.state.undoExerciseCompletion(session.id, ex.exerciseId);
+                    await widget.state.undoExerciseCompletion(
+                      session.id,
+                      ex.exerciseId,
+                    );
                   } else {
-                    await widget.state.markExerciseDone(session.id, ex.exerciseId);
+                    await widget.state.markExerciseDone(
+                      session.id,
+                      ex.exerciseId,
+                    );
                   }
                 },
                 borderRadius: BorderRadius.circular(8),
@@ -364,9 +429,7 @@ class _WorkoutExecutionScreenState extends State<WorkoutExecutionScreen> {
                   width: 38,
                   height: 38,
                   decoration: BoxDecoration(
-                    color: ex.isCompleted
-                        ? AppColors.crimson
-                        : elevatedColor,
+                    color: ex.isCompleted ? AppColors.crimson : elevatedColor,
                     borderRadius: BorderRadius.circular(8),
                     border: Border.all(
                       color: ex.isCompleted ? AppColors.crimson : borderColor,
@@ -374,7 +437,9 @@ class _WorkoutExecutionScreenState extends State<WorkoutExecutionScreen> {
                     ),
                   ),
                   child: Icon(
-                    ex.isCompleted ? Icons.check_rounded : Icons.fitness_center_rounded,
+                    ex.isCompleted
+                        ? Icons.check_rounded
+                        : Icons.fitness_center_rounded,
                     size: 18,
                     color: ex.isCompleted ? Colors.white : textMuted,
                   ),
@@ -390,7 +455,10 @@ class _WorkoutExecutionScreenState extends State<WorkoutExecutionScreen> {
                     Row(
                       children: [
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 6,
+                            vertical: 2,
+                          ),
                           decoration: BoxDecoration(
                             color: elevatedColor,
                             borderRadius: BorderRadius.circular(4),
@@ -406,16 +474,26 @@ class _WorkoutExecutionScreenState extends State<WorkoutExecutionScreen> {
                         if (ex.isCompleted) ...[
                           const SizedBox(width: 6),
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 6,
+                              vertical: 2,
+                            ),
                             decoration: BoxDecoration(
                               color: AppColors.crimson.withValues(alpha: 0.15),
                               borderRadius: BorderRadius.circular(4),
-                              border: Border.all(color: AppColors.crimson, width: 0.8),
+                              border: Border.all(
+                                color: AppColors.crimson,
+                                width: 0.8,
+                              ),
                             ),
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                const Icon(Icons.check, size: 9, color: AppColors.crimson),
+                                const Icon(
+                                  Icons.check,
+                                  size: 9,
+                                  color: AppColors.crimson,
+                                ),
                                 const SizedBox(width: 3),
                                 Text(
                                   'COMPLETED',
@@ -440,11 +518,15 @@ class _WorkoutExecutionScreenState extends State<WorkoutExecutionScreen> {
                       ex.name,
                       style: AppTypography.titleMedium.copyWith(
                         color: ex.isCompleted
-                            ? (isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary)
+                            ? (isDark
+                                  ? AppColors.darkTextSecondary
+                                  : AppColors.lightTextSecondary)
                             : textColor,
                         fontSize: 15,
                         fontWeight: FontWeight.w600,
-                        decoration: ex.isCompleted ? TextDecoration.lineThrough : null,
+                        decoration: ex.isCompleted
+                            ? TextDecoration.lineThrough
+                            : null,
                       ),
                     ),
                     const SizedBox(height: 2),
@@ -464,12 +546,19 @@ class _WorkoutExecutionScreenState extends State<WorkoutExecutionScreen> {
               InkWell(
                 onTap: () async {
                   if (ex.isCompleted) {
-                    await widget.state.undoExerciseCompletion(session.id, ex.exerciseId);
-                  } else {
-                    await widget.state.markExerciseDone(session.id, ex.exerciseId);
-                    final updatedSession = widget.state.getOrCreateSessionForDate(
-                      _getDateForDayOfWeek(_selectedDayOfWeek),
+                    await widget.state.undoExerciseCompletion(
+                      session.id,
+                      ex.exerciseId,
                     );
+                  } else {
+                    await widget.state.markExerciseDone(
+                      session.id,
+                      ex.exerciseId,
+                    );
+                    final updatedSession = widget.state
+                        .getOrCreateSessionForDate(
+                          _getDateForDayOfWeek(_selectedDayOfWeek),
+                        );
                     if (updatedSession.isCompleted) {
                       _showCompletionSummary(updatedSession);
                     }
@@ -478,7 +567,10 @@ class _WorkoutExecutionScreenState extends State<WorkoutExecutionScreen> {
                 borderRadius: BorderRadius.circular(8),
                 child: AnimatedContainer(
                   duration: const Duration(milliseconds: 200),
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 7,
+                  ),
                   decoration: BoxDecoration(
                     color: ex.isCompleted
                         ? AppColors.crimson
@@ -497,7 +589,9 @@ class _WorkoutExecutionScreenState extends State<WorkoutExecutionScreen> {
                             ? Icons.check_circle_rounded
                             : Icons.check_circle_outline_rounded,
                         size: 15,
-                        color: ex.isCompleted ? Colors.white : AppColors.crimson,
+                        color: ex.isCompleted
+                            ? Colors.white
+                            : AppColors.crimson,
                       ),
                       const SizedBox(width: 5),
                       Text(
@@ -540,7 +634,11 @@ class _WorkoutExecutionScreenState extends State<WorkoutExecutionScreen> {
                 shape: BoxShape.circle,
                 border: Border.all(color: borderColor),
               ),
-              child: const Icon(Icons.bed_rounded, size: 36, color: AppColors.crimson),
+              child: const Icon(
+                Icons.bed_rounded,
+                size: 36,
+                color: AppColors.crimson,
+              ),
             ),
             const SizedBox(height: 18),
             Text(
@@ -590,4 +688,3 @@ class _WorkoutExecutionScreenState extends State<WorkoutExecutionScreen> {
     );
   }
 }
-

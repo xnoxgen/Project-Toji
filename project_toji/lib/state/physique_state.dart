@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../data/models/user_profile.dart';
 import '../data/models/app_settings.dart';
 import '../data/models/body_measurement.dart';
@@ -42,7 +43,8 @@ class PhysiqueState extends ChangeNotifier {
   void _loadFromStorage() {
     _profile = _storage.loadUserProfile() ?? DefaultData.defaultProfile;
     _settings = _storage.loadAppSettings();
-    _weeklyPlans = _storage.loadWeeklyPlans() ?? DefaultData.createInitialWeeklyPlan();
+    _weeklyPlans =
+        _storage.loadWeeklyPlans() ?? DefaultData.createInitialWeeklyPlan();
     _customExercises = _storage.loadCustomExercises();
     _measurements = _storage.loadMeasurements();
     _sessions = _storage.loadWorkoutSessions();
@@ -66,31 +68,37 @@ class PhysiqueState extends ChangeNotifier {
       ),
     ];
     if (_profile.waistCm != null) {
-      initial.add(BodyMeasurement(
-        id: 'init_waist',
-        date: now.subtract(const Duration(days: 7)),
-        metricType: 'waist',
-        value: _profile.waistCm!,
-        unit: 'cm',
-      ));
+      initial.add(
+        BodyMeasurement(
+          id: 'init_waist',
+          date: now.subtract(const Duration(days: 7)),
+          metricType: 'waist',
+          value: _profile.waistCm!,
+          unit: 'cm',
+        ),
+      );
     }
     if (_profile.chestCm != null) {
-      initial.add(BodyMeasurement(
-        id: 'init_chest',
-        date: now.subtract(const Duration(days: 7)),
-        metricType: 'chest',
-        value: _profile.chestCm!,
-        unit: 'cm',
-      ));
+      initial.add(
+        BodyMeasurement(
+          id: 'init_chest',
+          date: now.subtract(const Duration(days: 7)),
+          metricType: 'chest',
+          value: _profile.chestCm!,
+          unit: 'cm',
+        ),
+      );
     }
     if (_profile.bicepsCm != null) {
-      initial.add(BodyMeasurement(
-        id: 'init_biceps',
-        date: now.subtract(const Duration(days: 7)),
-        metricType: 'biceps',
-        value: _profile.bicepsCm!,
-        unit: 'cm',
-      ));
+      initial.add(
+        BodyMeasurement(
+          id: 'init_biceps',
+          date: now.subtract(const Duration(days: 7)),
+          metricType: 'biceps',
+          value: _profile.bicepsCm!,
+          unit: 'cm',
+        ),
+      );
     }
     _measurements = initial;
     _storage.saveMeasurements(_measurements);
@@ -119,13 +127,27 @@ class PhysiqueState extends ChangeNotifier {
     final now = DateTime.now();
     addMeasurement('weight', prof.currentWeightKg, date: now);
     if (prof.waistCm != null) addMeasurement('waist', prof.waistCm!, date: now);
-    if (prof.chestCm != null) addMeasurement('chest', prof.chestCm!, date: now);
-    if (prof.bicepsCm != null) addMeasurement('biceps', prof.bicepsCm!, date: now);
-    if (prof.shoulderCm != null) addMeasurement('shoulders', prof.shoulderCm!, date: now);
-    if (prof.forearmCm != null) addMeasurement('forearms', prof.forearmCm!, date: now);
-    if (prof.thighCm != null) addMeasurement('thighs', prof.thighCm!, date: now);
-    if (prof.calfCm != null) addMeasurement('calves', prof.calfCm!, date: now);
-    if (prof.neckCm != null) addMeasurement('neck', prof.neckCm!, date: now);
+    if (prof.chestCm != null) {
+      addMeasurement('chest', prof.chestCm!, date: now);
+    }
+    if (prof.bicepsCm != null) {
+      addMeasurement('biceps', prof.bicepsCm!, date: now);
+    }
+    if (prof.shoulderCm != null) {
+      addMeasurement('shoulders', prof.shoulderCm!, date: now);
+    }
+    if (prof.forearmCm != null) {
+      addMeasurement('forearms', prof.forearmCm!, date: now);
+    }
+    if (prof.thighCm != null) {
+      addMeasurement('thighs', prof.thighCm!, date: now);
+    }
+    if (prof.calfCm != null) {
+      addMeasurement('calves', prof.calfCm!, date: now);
+    }
+    if (prof.neckCm != null) {
+      addMeasurement('neck', prof.neckCm!, date: now);
+    }
   }
 
   // --- Settings & Theme ---
@@ -169,14 +191,14 @@ class PhysiqueState extends ChangeNotifier {
     final current = getDayPlan(dayOfWeek);
     final updatedList = List<PlannedExercise>.from(current.exercises)
       ..add(exercise.copyWith(orderIndex: current.exercises.length));
-    final updated = current.copyWith(
-      isRestDay: false,
-      exercises: updatedList,
-    );
+    final updated = current.copyWith(isRestDay: false, exercises: updatedList);
     await updateDayPlan(updated);
   }
 
-  Future<void> removeExerciseFromDay(int dayOfWeek, String plannedExerciseId) async {
+  Future<void> removeExerciseFromDay(
+    int dayOfWeek,
+    String plannedExerciseId,
+  ) async {
     final current = getDayPlan(dayOfWeek);
     final updatedList = current.exercises
         .where((e) => e.id != plannedExerciseId)
@@ -188,7 +210,11 @@ class PhysiqueState extends ChangeNotifier {
     await updateDayPlan(current.copyWith(exercises: updatedList));
   }
 
-  Future<void> reorderExercises(int dayOfWeek, int oldIndex, int newIndex) async {
+  Future<void> reorderExercises(
+    int dayOfWeek,
+    int oldIndex,
+    int newIndex,
+  ) async {
     final current = getDayPlan(dayOfWeek);
     final list = List<PlannedExercise>.from(current.exercises);
     if (oldIndex < newIndex) {
@@ -202,7 +228,10 @@ class PhysiqueState extends ChangeNotifier {
     await updateDayPlan(current.copyWith(exercises: list));
   }
 
-  Future<void> duplicateExercise(int dayOfWeek, String plannedExerciseId) async {
+  Future<void> duplicateExercise(
+    int dayOfWeek,
+    String plannedExerciseId,
+  ) async {
     final current = getDayPlan(dayOfWeek);
     final index = current.exercises.indexKey((e) => e.id == plannedExerciseId);
     if (index == -1) return;
@@ -220,7 +249,10 @@ class PhysiqueState extends ChangeNotifier {
     await updateDayPlan(current.copyWith(exercises: list));
   }
 
-  Future<void> updatePlannedExercise(int dayOfWeek, PlannedExercise exercise) async {
+  Future<void> updatePlannedExercise(
+    int dayOfWeek,
+    PlannedExercise exercise,
+  ) async {
     final current = getDayPlan(dayOfWeek);
     final list = current.exercises.map((e) {
       return e.id == exercise.id ? exercise : e;
@@ -228,12 +260,15 @@ class PhysiqueState extends ChangeNotifier {
     await updateDayPlan(current.copyWith(exercises: list));
   }
 
-  Future<void> updateDayFocus(int dayOfWeek, String focusName, bool isRestDay) async {
+  Future<void> updateDayFocus(
+    int dayOfWeek,
+    String focusName,
+    bool isRestDay,
+  ) async {
     final current = getDayPlan(dayOfWeek);
-    await updateDayPlan(current.copyWith(
-      focusName: focusName,
-      isRestDay: isRestDay,
-    ));
+    await updateDayPlan(
+      current.copyWith(focusName: focusName, isRestDay: isRestDay),
+    );
   }
 
   Future<void> addCustomExercise(ExerciseDefinition exercise) async {
@@ -288,7 +323,9 @@ class PhysiqueState extends ChangeNotifier {
       id: 'session_$key',
       date: DateTime(date.year, date.month, date.day),
       dayOfWeek: date.weekday,
-      workoutName: dayPlan.focusName.isNotEmpty ? dayPlan.focusName : 'Daily Workout',
+      workoutName: dayPlan.focusName.isNotEmpty
+          ? dayPlan.focusName
+          : 'Daily Workout',
       isCompleted: false,
       exercises: sessionExercises,
       startedAt: DateTime.now(),
@@ -333,7 +370,9 @@ class PhysiqueState extends ChangeNotifier {
     if (sessionIndex == -1) return;
     final session = _sessions[sessionIndex];
 
-    final exerciseIndex = session.exercises.indexWhere((e) => e.exerciseId == exerciseId);
+    final exerciseIndex = session.exercises.indexWhere(
+      (e) => e.exerciseId == exerciseId,
+    );
     if (exerciseIndex == -1) return;
     final exercise = session.exercises[exerciseIndex];
 
@@ -346,7 +385,8 @@ class PhysiqueState extends ChangeNotifier {
       );
     }
 
-    final allSetsCompleted = sets.isNotEmpty && sets.every((s) => s.isCompleted);
+    final allSetsCompleted =
+        sets.isNotEmpty && sets.every((s) => s.isCompleted);
     final updatedExercise = exercise.copyWith(
       sets: sets,
       isCompleted: allSetsCompleted,
@@ -355,11 +395,14 @@ class PhysiqueState extends ChangeNotifier {
     final exercises = List<SessionExerciseLog>.from(session.exercises);
     exercises[exerciseIndex] = updatedExercise;
 
-    final allExercisesDone = exercises.isNotEmpty && exercises.every((e) => e.isCompleted);
+    final allExercisesDone =
+        exercises.isNotEmpty && exercises.every((e) => e.isCompleted);
     final updatedSession = session.copyWith(
       exercises: exercises,
       isCompleted: allExercisesDone,
-      completedAt: allExercisesDone ? (session.completedAt ?? DateTime.now()) : null,
+      completedAt: allExercisesDone
+          ? (session.completedAt ?? DateTime.now())
+          : null,
     );
 
     await saveSession(updatedSession);
@@ -370,21 +413,23 @@ class PhysiqueState extends ChangeNotifier {
     if (sessionIndex == -1) return;
     final session = _sessions[sessionIndex];
 
-    final exerciseIndex = session.exercises.indexWhere((e) => e.exerciseId == exerciseId);
+    final exerciseIndex = session.exercises.indexWhere(
+      (e) => e.exerciseId == exerciseId,
+    );
     if (exerciseIndex == -1) return;
     final exercise = session.exercises[exerciseIndex];
 
     // Mark all sets as completed if not already
-    final sets = exercise.sets.map((s) => s.copyWith(isCompleted: true)).toList();
-    final updatedExercise = exercise.copyWith(
-      sets: sets,
-      isCompleted: true,
-    );
+    final sets = exercise.sets
+        .map((s) => s.copyWith(isCompleted: true))
+        .toList();
+    final updatedExercise = exercise.copyWith(sets: sets, isCompleted: true);
 
     final exercises = List<SessionExerciseLog>.from(session.exercises);
     exercises[exerciseIndex] = updatedExercise;
 
-    final allDone = exercises.isNotEmpty && exercises.every((e) => e.isCompleted);
+    final allDone =
+        exercises.isNotEmpty && exercises.every((e) => e.isCompleted);
     final updatedSession = session.copyWith(
       exercises: exercises,
       isCompleted: allDone,
@@ -394,20 +439,24 @@ class PhysiqueState extends ChangeNotifier {
     await saveSession(updatedSession);
   }
 
-  Future<void> undoExerciseCompletion(String sessionId, String exerciseId) async {
+  Future<void> undoExerciseCompletion(
+    String sessionId,
+    String exerciseId,
+  ) async {
     final sessionIndex = _sessions.indexWhere((s) => s.id == sessionId);
     if (sessionIndex == -1) return;
     final session = _sessions[sessionIndex];
 
-    final exerciseIndex = session.exercises.indexWhere((e) => e.exerciseId == exerciseId);
+    final exerciseIndex = session.exercises.indexWhere(
+      (e) => e.exerciseId == exerciseId,
+    );
     if (exerciseIndex == -1) return;
     final exercise = session.exercises[exerciseIndex];
 
-    final sets = exercise.sets.map((s) => s.copyWith(isCompleted: false)).toList();
-    final updatedExercise = exercise.copyWith(
-      sets: sets,
-      isCompleted: false,
-    );
+    final sets = exercise.sets
+        .map((s) => s.copyWith(isCompleted: false))
+        .toList();
+    final updatedExercise = exercise.copyWith(sets: sets, isCompleted: false);
 
     final exercises = List<SessionExerciseLog>.from(session.exercises);
     exercises[exerciseIndex] = updatedExercise;
@@ -476,7 +525,8 @@ class PhysiqueState extends ChangeNotifier {
     final completedKeys = completedDateKeys;
     if (completedKeys.isEmpty) return 0;
 
-    final sortedDates = completedKeys.map((k) => DateTime.parse(k)).toList()..sort();
+    final sortedDates = completedKeys.map((k) => DateTime.parse(k)).toList()
+      ..sort();
     int longest = 1;
     int current = 1;
 
@@ -515,7 +565,12 @@ class PhysiqueState extends ChangeNotifier {
   }
 
   // --- Progress & Analytics ---
-  Future<void> addMeasurement(String metricType, double value, {DateTime? date, String? notes}) async {
+  Future<void> addMeasurement(
+    String metricType,
+    double value, {
+    DateTime? date,
+    String? notes,
+  }) async {
     final entry = BodyMeasurement(
       id: 'm_${DateTime.now().millisecondsSinceEpoch}_$metricType',
       date: date ?? DateTime.now(),
@@ -546,8 +601,13 @@ class PhysiqueState extends ChangeNotifier {
     notifyListeners();
   }
 
-  List<BodyMeasurement> getMeasurementsForMetric(String metricType, {String period = '30d'}) {
-    final allForMetric = _measurements.where((m) => m.metricType == metricType).toList();
+  List<BodyMeasurement> getMeasurementsForMetric(
+    String metricType, {
+    String period = '30d',
+  }) {
+    final allForMetric = _measurements
+        .where((m) => m.metricType == metricType)
+        .toList();
     if (allForMetric.isEmpty) return [];
 
     final now = DateTime.now();
@@ -572,27 +632,35 @@ class PhysiqueState extends ChangeNotifier {
         cutoff = DateTime(2000);
     }
 
-    final filtered = allForMetric.where((m) => m.date.isAfter(cutoff) || m.date.isAtSameMomentAs(cutoff)).toList();
+    final filtered = allForMetric
+        .where((m) => m.date.isAfter(cutoff) || m.date.isAtSameMomentAs(cutoff))
+        .toList();
     filtered.sort((a, b) => a.date.compareTo(b.date));
     return filtered.isNotEmpty ? filtered : allForMetric;
   }
 
   double? getLatestMeasurement(String metricType) {
-    final list = _measurements.where((m) => m.metricType == metricType).toList();
+    final list = _measurements
+        .where((m) => m.metricType == metricType)
+        .toList();
     if (list.isEmpty) return null;
     list.sort((a, b) => a.date.compareTo(b.date));
     return list.last.value;
   }
 
   double? getPreviousMeasurement(String metricType) {
-    final list = _measurements.where((m) => m.metricType == metricType).toList();
+    final list = _measurements
+        .where((m) => m.metricType == metricType)
+        .toList();
     if (list.length < 2) return null;
     list.sort((a, b) => a.date.compareTo(b.date));
     return list[list.length - 2].value;
   }
 
   double? getMeasurementDelta(String metricType) {
-    final list = _measurements.where((m) => m.metricType == metricType).toList();
+    final list = _measurements
+        .where((m) => m.metricType == metricType)
+        .toList();
     if (list.length < 2) return 0.0;
     list.sort((a, b) => a.date.compareTo(b.date));
     return list.last.value - list.first.value;
@@ -624,7 +692,10 @@ class PhysiqueState extends ChangeNotifier {
   }
 
   // Exercise strength progression (Max weight recorded per date)
-  List<Map<String, dynamic>> getExerciseStrengthProgression(String exerciseName, {String period = '3m'}) {
+  List<Map<String, dynamic>> getExerciseStrengthProgression(
+    String exerciseName, {
+    String period = '3m',
+  }) {
     final result = <Map<String, dynamic>>[];
     for (final session in _sessions) {
       for (final ex in session.exercises) {
@@ -636,15 +707,14 @@ class PhysiqueState extends ChangeNotifier {
             }
           }
           if (maxWeight > 0.0) {
-            result.add({
-              'date': session.date,
-              'weight': maxWeight,
-            });
+            result.add({'date': session.date, 'weight': maxWeight});
           }
         }
       }
     }
-    result.sort((a, b) => (a['date'] as DateTime).compareTo(b['date'] as DateTime));
+    result.sort(
+      (a, b) => (a['date'] as DateTime).compareTo(b['date'] as DateTime),
+    );
     return result;
   }
 
@@ -672,13 +742,27 @@ class PhysiqueState extends ChangeNotifier {
     // Save as body measurements too
     final now = checkin.date;
     addMeasurement('weight', checkin.weightKg, date: now);
-    if (checkin.waistCm != null) addMeasurement('waist', checkin.waistCm!, date: now);
-    if (checkin.chestCm != null) addMeasurement('chest', checkin.chestCm!, date: now);
-    if (checkin.bicepsCm != null) addMeasurement('biceps', checkin.bicepsCm!, date: now);
-    if (checkin.thighsCm != null) addMeasurement('thighs', checkin.thighsCm!, date: now);
-    if (checkin.forearmsCm != null) addMeasurement('forearms', checkin.forearmsCm!, date: now);
-    if (checkin.calvesCm != null) addMeasurement('calves', checkin.calvesCm!, date: now);
-    if (checkin.neckCm != null) addMeasurement('neck', checkin.neckCm!, date: now);
+    if (checkin.waistCm != null) {
+      addMeasurement('waist', checkin.waistCm!, date: now);
+    }
+    if (checkin.chestCm != null) {
+      addMeasurement('chest', checkin.chestCm!, date: now);
+    }
+    if (checkin.bicepsCm != null) {
+      addMeasurement('biceps', checkin.bicepsCm!, date: now);
+    }
+    if (checkin.thighsCm != null) {
+      addMeasurement('thighs', checkin.thighsCm!, date: now);
+    }
+    if (checkin.forearmsCm != null) {
+      addMeasurement('forearms', checkin.forearmsCm!, date: now);
+    }
+    if (checkin.calvesCm != null) {
+      addMeasurement('calves', checkin.calvesCm!, date: now);
+    }
+    if (checkin.neckCm != null) {
+      addMeasurement('neck', checkin.neckCm!, date: now);
+    }
 
     _settings = _settings.copyWith(
       lastCheckInDate: now,
@@ -721,7 +805,7 @@ class PhysiqueState extends ChangeNotifier {
       'Thursday',
       'Friday',
       'Saturday',
-      'Sunday'
+      'Sunday',
     ];
     if (dayOfWeek >= 1 && dayOfWeek <= 7) return days[dayOfWeek - 1];
     return 'Day';
@@ -738,4 +822,3 @@ extension _IterableExt<T> on Iterable<T> {
     return -1;
   }
 }
-

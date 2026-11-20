@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart' hide TextDirection;
+
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../data/models/reminder_model.dart';
@@ -31,16 +32,31 @@ class ReminderCard extends StatelessWidget {
     }
   }
 
+  String _advanceNotificationLabel(int minutes) {
+    if (minutes <= 0) return 'At time';
+    if (minutes == 5) return '5m before';
+    if (minutes == 10) return '10m before';
+    if (minutes == 15) return '15m before';
+    return '${minutes}m before';
+  }
+
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final surfaceColor = isDark ? AppColors.darkSurface : AppColors.lightSurface;
+    final surfaceColor = isDark
+        ? AppColors.darkSurface
+        : AppColors.lightSurface;
     final borderColor = isDark ? AppColors.darkBorder : AppColors.lightBorder;
-    final textPrimary = isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary;
-    final textMuted = isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary;
+    final textPrimary = isDark
+        ? AppColors.darkTextPrimary
+        : AppColors.lightTextPrimary;
+    final textMuted = isDark
+        ? AppColors.darkTextSecondary
+        : AppColors.lightTextSecondary;
 
     final priColor = _priorityColor(reminder.priority);
-    final dateStr = DateFormat('EEE, MMM d • hh:mm a').format(reminder.dateTime);
+    final dateStr = DateFormat('EEE, MMM d • hh:mm a')
+        .format(reminder.dateTime);
 
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
@@ -80,7 +96,9 @@ class ReminderCard extends StatelessWidget {
                       border: Border.all(
                         color: reminder.isCompleted
                             ? AppColors.crimson
-                            : (reminder.isOverdue ? AppColors.crimson : textMuted),
+                            : (reminder.isOverdue
+                                  ? AppColors.crimson
+                                  : textMuted),
                         width: 2,
                       ),
                     ),
@@ -95,15 +113,23 @@ class ReminderCard extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Badges row: Priority + Overdue indicator
-                      Row(
+                      // Badges row: Priority + Advance notice + Overdue
+                      Wrap(
+                        spacing: 6,
+                        runSpacing: 4,
                         children: [
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 7,
+                              vertical: 3,
+                            ),
                             decoration: BoxDecoration(
                               color: priColor.withAlpha(25),
                               borderRadius: BorderRadius.circular(5),
-                              border: Border.all(color: priColor.withAlpha(70), width: 1),
+                              border: Border.all(
+                                color: priColor.withAlpha(70),
+                                width: 1,
+                              ),
                             ),
                             child: Text(
                               '${reminder.priority.toUpperCase()} PRIORITY',
@@ -115,19 +141,64 @@ class ReminderCard extends StatelessWidget {
                               ),
                             ),
                           ),
-                          if (reminder.isOverdue) ...[
-                            const SizedBox(width: 6),
+                          if (reminder.isNotificationEnabled)
                             Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 7,
+                                vertical: 3,
+                              ),
                               decoration: BoxDecoration(
-                                color: AppColors.crimson.withAlpha(30),
+                                color: surfaceColor,
                                 borderRadius: BorderRadius.circular(5),
-                                border: Border.all(color: AppColors.crimson.withAlpha(80), width: 1),
+                                border: Border.all(
+                                  color: borderColor,
+                                  width: 1,
+                                ),
                               ),
                               child: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  const Icon(Icons.warning_amber_rounded, size: 10, color: AppColors.crimson),
+                                  const Icon(
+                                    Icons.notifications_active_rounded,
+                                    size: 10,
+                                    color: AppColors.crimson,
+                                  ),
+                                  const SizedBox(width: 4),
+                                  Text(
+                                    _advanceNotificationLabel(
+                                      reminder.advanceMinutes,
+                                    ),
+                                    style: TextStyle(
+                                      fontSize: 9,
+                                      fontWeight: FontWeight.w600,
+                                      color: textMuted,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          if (reminder.isOverdue)
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 7,
+                                vertical: 3,
+                              ),
+                              decoration: BoxDecoration(
+                                color: AppColors.crimson.withAlpha(30),
+                                borderRadius: BorderRadius.circular(5),
+                                border: Border.all(
+                                  color: AppColors.crimson.withAlpha(80),
+                                  width: 1,
+                                ),
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  const Icon(
+                                    Icons.warning_amber_rounded,
+                                    size: 10,
+                                    color: AppColors.crimson,
+                                  ),
                                   const SizedBox(width: 3),
                                   Text(
                                     'OVERDUE',
@@ -141,7 +212,6 @@ class ReminderCard extends StatelessWidget {
                                 ],
                               ),
                             ),
-                          ],
                         ],
                       ),
                       const SizedBox(height: 8),
@@ -159,8 +229,33 @@ class ReminderCard extends StatelessWidget {
                         ),
                       ),
 
+                      // Associated Note Link Tag
+                      if (reminder.noteTitle != null &&
+                          reminder.noteTitle!.isNotEmpty) ...[
+                        const SizedBox(height: 4),
+                        Row(
+                          children: [
+                            const Icon(
+                              Icons.link_rounded,
+                              size: 12,
+                              color: AppColors.crimson,
+                            ),
+                            const SizedBox(width: 4),
+                            Text(
+                              'Note: ${reminder.noteTitle}',
+                              style: const TextStyle(
+                                fontSize: 11,
+                                color: AppColors.crimson,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+
                       // Description
-                      if (reminder.description != null && reminder.description!.isNotEmpty) ...[
+                      if (reminder.description != null &&
+                          reminder.description!.isNotEmpty) ...[
                         const SizedBox(height: 4),
                         Text(
                           reminder.description!,
@@ -184,15 +279,21 @@ class ReminderCard extends StatelessWidget {
                           Icon(
                             Icons.alarm_rounded,
                             size: 13,
-                            color: reminder.isOverdue ? AppColors.crimson : textMuted,
+                            color: reminder.isOverdue
+                                ? AppColors.crimson
+                                : textMuted,
                           ),
                           const SizedBox(width: 5),
                           Text(
                             dateStr,
                             style: AppTypography.labelSmall.copyWith(
                               fontSize: 11,
-                              fontWeight: reminder.isOverdue ? FontWeight.w700 : FontWeight.w500,
-                              color: reminder.isOverdue ? AppColors.crimson : textMuted,
+                              fontWeight: reminder.isOverdue
+                                  ? FontWeight.w700
+                                  : FontWeight.w500,
+                              color: reminder.isOverdue
+                                  ? AppColors.crimson
+                                  : textMuted,
                             ),
                           ),
                         ],

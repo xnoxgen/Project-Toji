@@ -1,6 +1,8 @@
 import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart' hide TextDirection;
+
 import '../theme/app_colors.dart';
 import '../theme/app_typography.dart';
 
@@ -9,11 +11,7 @@ class ChartDataPoint {
   final double value;
   final String? label;
 
-  const ChartDataPoint({
-    required this.date,
-    required this.value,
-    this.label,
-  });
+  const ChartDataPoint({required this.date, required this.value, this.label});
 }
 
 class CustomChart extends StatefulWidget {
@@ -61,14 +59,17 @@ class _CustomChartState extends State<CustomChart> {
     return LayoutBuilder(
       builder: (context, constraints) {
         return GestureDetector(
-          onPanDown: (details) => _handleTouch(details.localPosition, constraints.maxWidth),
-          onPanUpdate: (details) => _handleTouch(details.localPosition, constraints.maxWidth),
+          onPanDown: (details) =>
+              _handleTouch(details.localPosition, constraints.maxWidth),
+          onPanUpdate: (details) =>
+              _handleTouch(details.localPosition, constraints.maxWidth),
           onTapUp: (_) => setState(() => _selectedIndex = null),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               // Tooltip if selected
-              if (_selectedIndex != null && _selectedIndex! < widget.dataPoints.length) ...[
+              if (_selectedIndex != null &&
+                  _selectedIndex! < widget.dataPoints.length) ...[
                 _buildTooltip(widget.dataPoints[_selectedIndex!], isDark),
               ] else ...[
                 const SizedBox(height: 24),
@@ -119,7 +120,9 @@ class _CustomChartState extends State<CustomChart> {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
             decoration: BoxDecoration(
-              color: isDark ? AppColors.darkSurfaceElevated : AppColors.lightSurfaceElevated,
+              color: isDark
+                  ? AppColors.darkSurfaceElevated
+                  : AppColors.lightSurfaceElevated,
               borderRadius: BorderRadius.circular(6),
               border: Border.all(
                 color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
@@ -132,7 +135,9 @@ class _CustomChartState extends State<CustomChart> {
                 Text(
                   '$dateStr : ',
                   style: AppTypography.labelSmall.copyWith(
-                    color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
+                    color: isDark
+                        ? AppColors.darkTextSecondary
+                        : AppColors.lightTextSecondary,
                     fontSize: 11,
                   ),
                 ),
@@ -204,7 +209,9 @@ class _ChartPainter extends CustomPainter {
 
     // Grid lines & Y axis labels
     final gridPaint = Paint()
-      ..color = isDark ? AppColors.darkBorderSubtle : AppColors.lightBorderSubtle
+      ..color = isDark
+          ? AppColors.darkBorderSubtle
+          : AppColors.lightBorderSubtle
       ..strokeWidth = 1;
 
     final textStyle = AppTypography.labelSmall.copyWith(
@@ -237,8 +244,8 @@ class _ChartPainter extends CustomPainter {
 
     // Target Value Dashed Line
     if (targetValue != null) {
-      final targetY = paddingT +
-          plotHeight * (1 - ((targetValue! - minY) / (maxY - minY)));
+      final targetY =
+          paddingT + plotHeight * (1 - ((targetValue! - minY) / (maxY - minY)));
       final targetPaint = Paint()
         ..color = AppColors.crimson.withValues(alpha: 0.5)
         ..strokeWidth = 1.2
@@ -259,11 +266,12 @@ class _ChartPainter extends CustomPainter {
           fontWeight: FontWeight.w600,
         ),
       );
-      final tp = TextPainter(
-        text: targetSpan,
-        textDirection: TextDirection.ltr,
-      )..layout();
-      tp.paint(canvas, Offset(size.width - paddingR - tp.width, targetY - tp.height - 2));
+      final tp = TextPainter(text: targetSpan, textDirection: TextDirection.ltr)
+        ..layout();
+      tp.paint(
+        canvas,
+        Offset(size.width - paddingR - tp.width, targetY - tp.height - 2),
+      );
     }
 
     if (dataPoints.length == 1) {
@@ -278,7 +286,8 @@ class _ChartPainter extends CustomPainter {
     final points = <Offset>[];
     for (int i = 0; i < dataPoints.length; i++) {
       final x = paddingL + (plotWidth * (i / (dataPoints.length - 1)));
-      final y = paddingT +
+      final y =
+          paddingT +
           plotHeight * (1 - ((dataPoints[i].value - minY) / (maxY - minY)));
       points.add(Offset(x, y));
     }
@@ -290,7 +299,9 @@ class _ChartPainter extends CustomPainter {
         final p = points[i];
         final isSelected = selectedIndex == i;
         final barPaint = Paint()
-          ..color = isSelected ? AppColors.crimson : AppColors.crimson.withValues(alpha: 0.7);
+          ..color = isSelected
+              ? AppColors.crimson
+              : AppColors.crimson.withValues(alpha: 0.7);
         final rect = RRect.fromRectAndRadius(
           Rect.fromLTWH(
             p.dx - (barWidth / 2),
@@ -350,7 +361,10 @@ class _ChartPainter extends CustomPainter {
 
       // Data Point Dots
       if (showDots) {
-        final dotFill = Paint()..color = isDark ? AppColors.darkBackground : AppColors.lightBackground;
+        final dotFill = Paint()
+          ..color = isDark
+              ? AppColors.darkBackground
+              : AppColors.lightBackground;
         final dotStroke = Paint()
           ..color = AppColors.crimson
           ..strokeWidth = 2
@@ -420,8 +434,13 @@ class _ChartPainter extends CustomPainter {
     }
   }
 
-  void _drawText(Canvas canvas, String text, Offset offset, TextStyle style,
-      {TextAlign align = TextAlign.left}) {
+  void _drawText(
+    Canvas canvas,
+    String text,
+    Offset offset,
+    TextStyle style, {
+    TextAlign align = TextAlign.left,
+  }) {
     final textSpan = TextSpan(text: text, style: style);
     final textPainter = TextPainter(
       text: textSpan,

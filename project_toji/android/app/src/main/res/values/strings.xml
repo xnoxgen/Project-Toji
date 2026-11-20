@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Project Toji</string>
+    <string name="widget_quick_glance_name">Project Toji – Quick Glance</string>
+    <string name="widget_quick_glance_desc">Quick view of today\'s workout completion and current streak.</string>
+    <string name="widget_daily_overview_name">Project Toji – Daily Overview</string>
+    <string name="widget_daily_overview_desc">Daily workout, completion progress, streak, and quick note capture.</string>
+    <string name="widget_dashboard_name">Project Toji – Fitness Dashboard</string>
+    <string name="widget_dashboard_desc">Comprehensive fitness and productivity dashboard with quick actions.</string>
+</resources>

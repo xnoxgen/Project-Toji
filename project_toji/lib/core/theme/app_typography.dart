@@ -63,4 +63,3 @@ class AppTypography {
     fontFeatures: [FontFeature.tabularFigures()],
   );
 }
-

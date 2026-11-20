@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_typography.dart';
 import '../../state/physique_state.dart';
@@ -47,15 +48,19 @@ class SettingsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final surfaceColor = isDark ? AppColors.darkSurface : AppColors.lightSurface;
+    final surfaceColor = isDark
+        ? AppColors.darkSurface
+        : AppColors.lightSurface;
     final borderColor = isDark ? AppColors.darkBorder : AppColors.lightBorder;
-    final textColor = isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary;
-    final textMuted = isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary;
+    final textColor = isDark
+        ? AppColors.darkTextPrimary
+        : AppColors.lightTextPrimary;
+    final textMuted = isDark
+        ? AppColors.darkTextSecondary
+        : AppColors.lightTextSecondary;
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Settings'),
-      ),
+      appBar: AppBar(title: const Text('Settings')),
       body: Center(
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 720),
@@ -85,7 +90,9 @@ class SettingsScreen extends StatelessWidget {
                       children: [
                         CircleAvatar(
                           radius: 26,
-                          backgroundColor: AppColors.crimson.withValues(alpha: 0.15),
+                          backgroundColor: AppColors.crimson.withValues(
+                            alpha: 0.15,
+                          ),
                           child: Text(
                             state.profile.name.isNotEmpty
                                 ? state.profile.name[0].toUpperCase()
@@ -123,14 +130,21 @@ class SettingsScreen extends StatelessWidget {
                           onPressed: () {
                             Navigator.of(context).push(
                               MaterialPageRoute(
-                                builder: (ctx) => ProfileOverviewScreen(state: state),
+                                builder: (ctx) =>
+                                    ProfileOverviewScreen(state: state),
                               ),
                             );
                           },
                           style: OutlinedButton.styleFrom(
-                            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 14,
+                              vertical: 8,
+                            ),
                           ),
-                          child: const Text('View Targets', style: TextStyle(fontSize: 12)),
+                          child: const Text(
+                            'View Targets',
+                            style: TextStyle(fontSize: 12),
+                          ),
                         ),
                       ],
                     ),
@@ -151,12 +165,16 @@ class SettingsScreen extends StatelessWidget {
                   children: [
                     SwitchListTile(
                       secondary: Icon(
-                        state.isDarkMode ? Icons.dark_mode_rounded : Icons.light_mode_rounded,
+                        state.isDarkMode
+                            ? Icons.dark_mode_rounded
+                            : Icons.light_mode_rounded,
                         color: AppColors.crimson,
                       ),
                       title: const Text('Dark Mode (Lamp Black)'),
                       subtitle: Text(
-                        state.isDarkMode ? 'Lamp black & crimson theme' : 'Clean off-white & crimson theme',
+                        state.isDarkMode
+                            ? 'Lamp black & crimson theme'
+                            : 'Clean off-white & crimson theme',
                         style: TextStyle(color: textMuted, fontSize: 12),
                       ),
                       value: state.isDarkMode,
@@ -181,42 +199,62 @@ class SettingsScreen extends StatelessWidget {
                 child: Column(
                   children: [
                     ListTile(
-                      leading: const Icon(Icons.timer_outlined, color: AppColors.crimson),
+                      leading: const Icon(
+                        Icons.timer_outlined,
+                        color: AppColors.crimson,
+                      ),
                       title: const Text('Default Rest Duration'),
-                      subtitle: Text('${state.settings.defaultRestSeconds} seconds',
-                          style: TextStyle(color: textMuted, fontSize: 12)),
+                      subtitle: Text(
+                        '${state.settings.defaultRestSeconds} seconds',
+                        style: TextStyle(color: textMuted, fontSize: 12),
+                      ),
                       trailing: DropdownButton<int>(
                         value: state.settings.defaultRestSeconds,
                         underline: const SizedBox(),
                         dropdownColor: surfaceColor,
                         items: [30, 60, 90, 120, 180, 240, 300].map((s) {
-                          return DropdownMenuItem(value: s, child: Text('${s}s'));
+                          return DropdownMenuItem(
+                            value: s,
+                            child: Text('${s}s'),
+                          );
                         }).toList(),
                         onChanged: (val) {
                           if (val != null) {
-                            state.updateSettings(state.settings.copyWith(defaultRestSeconds: val));
+                            state.updateSettings(
+                              state.settings.copyWith(defaultRestSeconds: val),
+                            );
                           }
                         },
                       ),
                     ),
                     const Divider(height: 1),
                     SwitchListTile(
-                      secondary: const Icon(Icons.volume_up_outlined, color: AppColors.crimson),
+                      secondary: const Icon(
+                        Icons.volume_up_outlined,
+                        color: AppColors.crimson,
+                      ),
                       title: const Text('Timer Sound Alert'),
                       value: state.settings.enableSound,
                       activeThumbColor: AppColors.crimson,
                       onChanged: (val) {
-                        state.updateSettings(state.settings.copyWith(enableSound: val));
+                        state.updateSettings(
+                          state.settings.copyWith(enableSound: val),
+                        );
                       },
                     ),
                     const Divider(height: 1),
                     SwitchListTile(
-                      secondary: const Icon(Icons.vibration_rounded, color: AppColors.crimson),
+                      secondary: const Icon(
+                        Icons.vibration_rounded,
+                        color: AppColors.crimson,
+                      ),
                       title: const Text('Timer Haptic Vibration'),
                       value: state.settings.enableVibration,
                       activeThumbColor: AppColors.crimson,
                       onChanged: (val) {
-                        state.updateSettings(state.settings.copyWith(enableVibration: val));
+                        state.updateSettings(
+                          state.settings.copyWith(enableVibration: val),
+                        );
                       },
                     ),
                   ],
@@ -235,38 +273,60 @@ class SettingsScreen extends StatelessWidget {
                 child: Column(
                   children: [
                     ListTile(
-                      leading: const Icon(Icons.download_rounded, color: AppColors.crimson),
+                      leading: const Icon(
+                        Icons.download_rounded,
+                        color: AppColors.crimson,
+                      ),
                       title: const Text('Export Backup (JSON)'),
-                      subtitle: Text('Save complete workout logs, plans, and metrics',
-                          style: TextStyle(color: textMuted, fontSize: 12)),
+                      subtitle: Text(
+                        'Save complete workout logs, plans, and metrics',
+                        style: TextStyle(color: textMuted, fontSize: 12),
+                      ),
                       trailing: const Icon(Icons.chevron_right_rounded),
                       onTap: () {
                         showDialog(
                           context: context,
-                          builder: (ctx) => BackupRestoreDialog(state: state, isExport: true),
+                          builder: (ctx) =>
+                              BackupRestoreDialog(state: state, isExport: true),
                         );
                       },
                     ),
                     const Divider(height: 1),
                     ListTile(
-                      leading: const Icon(Icons.upload_rounded, color: AppColors.crimson),
+                      leading: const Icon(
+                        Icons.upload_rounded,
+                        color: AppColors.crimson,
+                      ),
                       title: const Text('Restore Backup (JSON)'),
-                      subtitle: Text('Import database from a previous JSON export',
-                          style: TextStyle(color: textMuted, fontSize: 12)),
+                      subtitle: Text(
+                        'Import database from a previous JSON export',
+                        style: TextStyle(color: textMuted, fontSize: 12),
+                      ),
                       trailing: const Icon(Icons.chevron_right_rounded),
                       onTap: () {
                         showDialog(
                           context: context,
-                          builder: (ctx) => BackupRestoreDialog(state: state, isExport: false),
+                          builder: (ctx) => BackupRestoreDialog(
+                            state: state,
+                            isExport: false,
+                          ),
                         );
                       },
                     ),
                     const Divider(height: 1),
                     ListTile(
-                      leading: const Icon(Icons.delete_forever_rounded, color: AppColors.error),
-                      title: const Text('Reset All Data', style: TextStyle(color: AppColors.error)),
-                      subtitle: Text('Clear everything and start fresh',
-                          style: TextStyle(color: textMuted, fontSize: 12)),
+                      leading: const Icon(
+                        Icons.delete_forever_rounded,
+                        color: AppColors.error,
+                      ),
+                      title: const Text(
+                        'Reset All Data',
+                        style: TextStyle(color: AppColors.error),
+                      ),
+                      subtitle: Text(
+                        'Clear everything and start fresh',
+                        style: TextStyle(color: textMuted, fontSize: 12),
+                      ),
                       onTap: () => _showResetConfirmation(context),
                     ),
                   ],
@@ -289,7 +349,10 @@ class SettingsScreen extends StatelessWidget {
                     Row(
                       children: [
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 3,
+                          ),
                           decoration: BoxDecoration(
                             color: AppColors.crimson,
                             borderRadius: BorderRadius.circular(4),
@@ -314,7 +377,10 @@ class SettingsScreen extends StatelessWidget {
                     const SizedBox(height: 10),
                     Text(
                       'A minimal, high-performance personal fitness tracker engineered for progressive overload, body measurement tracking, and transformation consistency.',
-                      style: AppTypography.bodyMedium.copyWith(color: textMuted, fontSize: 12),
+                      style: AppTypography.bodyMedium.copyWith(
+                        color: textMuted,
+                        fontSize: 12,
+                      ),
                     ),
                   ],
                 ),

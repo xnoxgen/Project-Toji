@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
 import '../../core/theme/app_colors.dart';
 import '../../state/physique_state.dart';
 
@@ -59,7 +60,9 @@ class _BackupRestoreDialogState extends State<BackupRestoreDialog> {
   Future<void> _restore() async {
     final text = _jsonController.text.trim();
     if (text.isEmpty) {
-      setState(() => _statusMessage = 'Please enter or paste JSON backup data.');
+      setState(
+        () => _statusMessage = 'Please enter or paste JSON backup data.',
+      );
       return;
     }
 
@@ -72,14 +75,18 @@ class _BackupRestoreDialogState extends State<BackupRestoreDialog> {
         );
       }
     } else {
-      setState(() => _statusMessage = 'Failed to parse JSON backup. Invalid format.');
+      setState(
+        () => _statusMessage = 'Failed to parse JSON backup. Invalid format.',
+      );
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text(widget.isExport ? 'Export Backup (JSON)' : 'Restore Backup (JSON)'),
+      title: Text(
+        widget.isExport ? 'Export Backup (JSON)' : 'Restore Backup (JSON)',
+      ),
       content: SizedBox(
         width: double.maxFinite,
         child: SingleChildScrollView(
@@ -100,7 +107,9 @@ class _BackupRestoreDialogState extends State<BackupRestoreDialog> {
                 readOnly: widget.isExport,
                 style: const TextStyle(fontFamily: 'monospace', fontSize: 11),
                 decoration: InputDecoration(
-                  hintText: widget.isExport ? '' : 'Paste JSON backup string here...',
+                  hintText: widget.isExport
+                      ? ''
+                      : 'Paste JSON backup string here...',
                 ),
               ),
               const SizedBox(height: 8),
@@ -147,4 +156,3 @@ class _BackupRestoreDialogState extends State<BackupRestoreDialog> {
     );
   }
 }
-

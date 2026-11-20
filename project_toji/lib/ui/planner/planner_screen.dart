@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_typography.dart';
 import '../../data/models/exercise_definition.dart';
@@ -11,11 +12,7 @@ class PlannerScreen extends StatefulWidget {
   final PhysiqueState state;
   final int? initialDayOfWeek;
 
-  const PlannerScreen({
-    super.key,
-    required this.state,
-    this.initialDayOfWeek,
-  });
+  const PlannerScreen({super.key, required this.state, this.initialDayOfWeek});
 
   @override
   State<PlannerScreen> createState() => _PlannerScreenState();
@@ -87,7 +84,9 @@ class _PlannerScreenState extends State<PlannerScreen> {
                   const SizedBox(height: 16),
                   SwitchListTile(
                     title: const Text('Mark as Rest Day'),
-                    subtitle: const Text('Designates this day for physical recovery'),
+                    subtitle: const Text(
+                      'Designates this day for physical recovery',
+                    ),
                     value: isRest,
                     activeThumbColor: AppColors.crimson,
                     onChanged: (val) {
@@ -123,11 +122,19 @@ class _PlannerScreenState extends State<PlannerScreen> {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final surfaceColor = isDark ? AppColors.darkSurface : AppColors.lightSurface;
-    final elevatedColor = isDark ? AppColors.darkSurfaceElevated : AppColors.lightSurfaceElevated;
+    final surfaceColor = isDark
+        ? AppColors.darkSurface
+        : AppColors.lightSurface;
+    final elevatedColor = isDark
+        ? AppColors.darkSurfaceElevated
+        : AppColors.lightSurfaceElevated;
     final borderColor = isDark ? AppColors.darkBorder : AppColors.lightBorder;
-    final textColor = isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary;
-    final textMuted = isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary;
+    final textColor = isDark
+        ? AppColors.darkTextPrimary
+        : AppColors.lightTextPrimary;
+    final textMuted = isDark
+        ? AppColors.darkTextSecondary
+        : AppColors.lightTextSecondary;
 
     final plan = widget.state.getDayPlan(_selectedDayOfWeek);
 
@@ -157,7 +164,10 @@ class _PlannerScreenState extends State<PlannerScreen> {
         backgroundColor: AppColors.crimson,
         foregroundColor: Colors.white,
         icon: const Icon(Icons.add_rounded),
-        label: const Text('Add Exercise', style: TextStyle(fontWeight: FontWeight.w600)),
+        label: const Text(
+          'Add Exercise',
+          style: TextStyle(fontWeight: FontWeight.w600),
+        ),
       ),
       body: Center(
         child: ConstrainedBox(
@@ -166,7 +176,10 @@ class _PlannerScreenState extends State<PlannerScreen> {
             children: [
               // Day Tabs
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 12,
+                ),
                 color: surfaceColor,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -179,7 +192,8 @@ class _PlannerScreenState extends State<PlannerScreen> {
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 3),
                         child: InkWell(
-                          onTap: () => setState(() => _selectedDayOfWeek = dayNum),
+                          onTap: () =>
+                              setState(() => _selectedDayOfWeek = dayNum),
                           borderRadius: BorderRadius.circular(10),
                           child: Container(
                             padding: const EdgeInsets.symmetric(vertical: 8),
@@ -187,11 +201,15 @@ class _PlannerScreenState extends State<PlannerScreen> {
                               color: isSelected
                                   ? AppColors.crimson
                                   : (dayData.isRestDay
-                                      ? Colors.transparent
-                                      : (isDark ? elevatedColor : elevatedColor)),
+                                        ? Colors.transparent
+                                        : (isDark
+                                              ? elevatedColor
+                                              : elevatedColor)),
                               borderRadius: BorderRadius.circular(10),
                               border: Border.all(
-                                color: isSelected ? AppColors.crimson : borderColor,
+                                color: isSelected
+                                    ? AppColors.crimson
+                                    : borderColor,
                                 width: 1,
                               ),
                             ),
@@ -200,14 +218,20 @@ class _PlannerScreenState extends State<PlannerScreen> {
                                 Text(
                                   d['short'] as String,
                                   style: AppTypography.labelSmall.copyWith(
-                                    color: isSelected ? Colors.white : textColor,
-                                    fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+                                    color: isSelected
+                                        ? Colors.white
+                                        : textColor,
+                                    fontWeight: isSelected
+                                        ? FontWeight.w700
+                                        : FontWeight.w500,
                                     fontSize: 10,
                                   ),
                                 ),
                                 const SizedBox(height: 3),
                                 Text(
-                                  dayData.isRestDay ? 'REST' : '${dayData.exercises.length}',
+                                  dayData.isRestDay
+                                      ? 'REST'
+                                      : '${dayData.exercises.length}',
                                   style: AppTypography.labelSmall.copyWith(
                                     color: isSelected
                                         ? Colors.white.withValues(alpha: 0.9)
@@ -255,7 +279,10 @@ class _PlannerScreenState extends State<PlannerScreen> {
                               if (plan.isRestDay) ...[
                                 const SizedBox(width: 8),
                                 Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 6,
+                                    vertical: 1,
+                                  ),
                                   decoration: BoxDecoration(
                                     color: elevatedColor,
                                     borderRadius: BorderRadius.circular(4),
@@ -274,7 +301,9 @@ class _PlannerScreenState extends State<PlannerScreen> {
                           ),
                           const SizedBox(height: 4),
                           Text(
-                            plan.focusName.isNotEmpty ? plan.focusName : 'Routine',
+                            plan.focusName.isNotEmpty
+                                ? plan.focusName
+                                : 'Routine',
                             style: AppTypography.titleLarge.copyWith(
                               color: textColor,
                               fontSize: 18,
@@ -284,8 +313,11 @@ class _PlannerScreenState extends State<PlannerScreen> {
                       ),
                     ),
                     IconButton(
-                      icon: const Icon(Icons.add_circle_outline_rounded,
-                          color: AppColors.crimson, size: 26),
+                      icon: const Icon(
+                        Icons.add_circle_outline_rounded,
+                        color: AppColors.crimson,
+                        size: 26,
+                      ),
                       tooltip: 'Add Exercise',
                       onPressed: _openExerciseLibrary,
                     ),
@@ -303,14 +335,20 @@ class _PlannerScreenState extends State<PlannerScreen> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Icon(
-                                plan.isRestDay ? Icons.spa_rounded : Icons.fitness_center_rounded,
+                                plan.isRestDay
+                                    ? Icons.spa_rounded
+                                    : Icons.fitness_center_rounded,
                                 size: 48,
                                 color: textMuted,
                               ),
                               const SizedBox(height: 16),
                               Text(
-                                plan.isRestDay ? 'Scheduled Rest Day' : 'No Exercises Added Yet',
-                                style: AppTypography.titleLarge.copyWith(color: textColor),
+                                plan.isRestDay
+                                    ? 'Scheduled Rest Day'
+                                    : 'No Exercises Added Yet',
+                                style: AppTypography.titleLarge.copyWith(
+                                  color: textColor,
+                                ),
                               ),
                               const SizedBox(height: 6),
                               Text(
@@ -318,7 +356,9 @@ class _PlannerScreenState extends State<PlannerScreen> {
                                     ? 'Take this day to recover or tap "Add Exercise" to assign movements.'
                                     : 'Build your custom routine by adding exercises from the library.',
                                 textAlign: TextAlign.center,
-                                style: AppTypography.bodyMedium.copyWith(color: textMuted),
+                                style: AppTypography.bodyMedium.copyWith(
+                                  color: textMuted,
+                                ),
                               ),
                               const SizedBox(height: 20),
                               ElevatedButton.icon(
@@ -339,7 +379,11 @@ class _PlannerScreenState extends State<PlannerScreen> {
                         itemCount: plan.exercises.length,
                         // ignore: deprecated_member_use
                         onReorder: (oldIndex, newIndex) {
-                          widget.state.reorderExercises(_selectedDayOfWeek, oldIndex, newIndex);
+                          widget.state.reorderExercises(
+                            _selectedDayOfWeek,
+                            oldIndex,
+                            newIndex,
+                          );
                         },
                         itemBuilder: (ctx, index) {
                           final ex = plan.exercises[index];
@@ -352,8 +396,10 @@ class _PlannerScreenState extends State<PlannerScreen> {
                               border: Border.all(color: borderColor),
                             ),
                             child: ListTile(
-                              contentPadding:
-                                  const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+                              contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 14,
+                                vertical: 6,
+                              ),
                               leading: Container(
                                 width: 34,
                                 height: 34,
@@ -383,8 +429,10 @@ class _PlannerScreenState extends State<PlannerScreen> {
                                     ),
                                   ),
                                   Container(
-                                    padding:
-                                        const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 6,
+                                      vertical: 2,
+                                    ),
                                     decoration: BoxDecoration(
                                       color: elevatedColor,
                                       borderRadius: BorderRadius.circular(4),
@@ -429,17 +477,25 @@ class _PlannerScreenState extends State<PlannerScreen> {
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   PopupMenuButton<String>(
-                                    icon: Icon(Icons.more_vert_rounded,
-                                        size: 20, color: textMuted),
+                                    icon: Icon(
+                                      Icons.more_vert_rounded,
+                                      size: 20,
+                                      color: textMuted,
+                                    ),
                                     onSelected: (val) async {
                                       if (val == 'edit') {
                                         _editExercise(ex);
                                       } else if (val == 'duplicate') {
                                         await widget.state.duplicateExercise(
-                                            _selectedDayOfWeek, ex.id);
+                                          _selectedDayOfWeek,
+                                          ex.id,
+                                        );
                                       } else if (val == 'delete') {
-                                        await widget.state.removeExerciseFromDay(
-                                            _selectedDayOfWeek, ex.id);
+                                        await widget.state
+                                            .removeExerciseFromDay(
+                                              _selectedDayOfWeek,
+                                              ex.id,
+                                            );
                                       }
                                     },
                                     itemBuilder: (ctx) => [
@@ -467,11 +523,18 @@ class _PlannerScreenState extends State<PlannerScreen> {
                                         value: 'delete',
                                         child: Row(
                                           children: [
-                                            Icon(Icons.delete_outline_rounded,
-                                                size: 18, color: AppColors.error),
+                                            Icon(
+                                              Icons.delete_outline_rounded,
+                                              size: 18,
+                                              color: AppColors.error,
+                                            ),
                                             SizedBox(width: 8),
-                                            Text('Remove Exercise',
-                                                style: TextStyle(color: AppColors.error)),
+                                            Text(
+                                              'Remove Exercise',
+                                              style: TextStyle(
+                                                color: AppColors.error,
+                                              ),
+                                            ),
                                           ],
                                         ),
                                       ),
@@ -479,8 +542,11 @@ class _PlannerScreenState extends State<PlannerScreen> {
                                   ),
                                   ReorderableDragStartListener(
                                     index: index,
-                                    child: Icon(Icons.drag_handle_rounded,
-                                        color: textMuted, size: 20),
+                                    child: Icon(
+                                      Icons.drag_handle_rounded,
+                                      color: textMuted,
+                                      size: 20,
+                                    ),
                                   ),
                                 ],
                               ),

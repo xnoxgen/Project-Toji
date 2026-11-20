@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_typography.dart';
 import '../../core/widgets/custom_chart.dart';
@@ -40,7 +41,9 @@ class _ProgressScreenState extends State<ProgressScreen> {
       context: context,
       builder: (ctx) => AddMeasurementDialog(
         state: widget.state,
-        initialMetric: _selectedMetric == 'strength' ? 'weight' : _selectedMetric,
+        initialMetric: _selectedMetric == 'strength'
+            ? 'weight'
+            : _selectedMetric,
       ),
     );
   }
@@ -48,14 +51,24 @@ class _ProgressScreenState extends State<ProgressScreen> {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final surfaceColor = isDark ? AppColors.darkSurface : AppColors.lightSurface;
-    final elevatedColor = isDark ? AppColors.darkSurfaceElevated : AppColors.lightSurfaceElevated;
+    final surfaceColor = isDark
+        ? AppColors.darkSurface
+        : AppColors.lightSurface;
+    final elevatedColor = isDark
+        ? AppColors.darkSurfaceElevated
+        : AppColors.lightSurfaceElevated;
     final borderColor = isDark ? AppColors.darkBorder : AppColors.lightBorder;
-    final textColor = isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary;
-    final textMuted = isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary;
+    final textColor = isDark
+        ? AppColors.darkTextPrimary
+        : AppColors.lightTextPrimary;
+    final textMuted = isDark
+        ? AppColors.darkTextSecondary
+        : AppColors.lightTextSecondary;
 
     final isStrengthMode = _selectedMetric == 'strength';
-    final unit = isStrengthMode ? 'kg' : (_selectedMetric == 'weight' ? 'kg' : 'cm');
+    final unit = isStrengthMode
+        ? 'kg'
+        : (_selectedMetric == 'weight' ? 'kg' : 'cm');
 
     // Prepare chart data
     List<ChartDataPoint> chartPoints = [];
@@ -65,7 +78,10 @@ class _ProgressScreenState extends State<ProgressScreen> {
     double? delta;
 
     if (isStrengthMode) {
-      final records = widget.state.getExerciseStrengthProgression(_selectedStrengthExercise, period: _selectedPeriod);
+      final records = widget.state.getExerciseStrengthProgression(
+        _selectedStrengthExercise,
+        period: _selectedPeriod,
+      );
       chartPoints = records.map((r) {
         return ChartDataPoint(
           date: r['date'] as DateTime,
@@ -80,12 +96,12 @@ class _ProgressScreenState extends State<ProgressScreen> {
         }
       }
     } else {
-      final records = widget.state.getMeasurementsForMetric(_selectedMetric, period: _selectedPeriod);
+      final records = widget.state.getMeasurementsForMetric(
+        _selectedMetric,
+        period: _selectedPeriod,
+      );
       chartPoints = records.map((m) {
-        return ChartDataPoint(
-          date: m.date,
-          value: m.value,
-        );
+        return ChartDataPoint(date: m.date, value: m.value);
       }).toList();
 
       currentVal = widget.state.getLatestMeasurement(_selectedMetric);
@@ -98,17 +114,20 @@ class _ProgressScreenState extends State<ProgressScreen> {
     final allHistorical = isStrengthMode
         ? []
         : widget.state.measurements
-            .where((m) => m.metricType == _selectedMetric)
-            .toList()
-            .reversed
-            .toList();
+              .where((m) => m.metricType == _selectedMetric)
+              .toList()
+              .reversed
+              .toList();
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('Progress & Analytics'),
         actions: [
           IconButton(
-            icon: const Icon(Icons.add_circle_outline_rounded, color: AppColors.crimson),
+            icon: const Icon(
+              Icons.add_circle_outline_rounded,
+              color: AppColors.crimson,
+            ),
             tooltip: 'Log Measurement',
             onPressed: _openAddMeasurementDialog,
           ),
@@ -145,21 +164,28 @@ class _ProgressScreenState extends State<ProgressScreen> {
                         onTap: () => setState(() => _selectedMetric = key),
                         borderRadius: BorderRadius.circular(20),
                         child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 14,
+                            vertical: 8,
+                          ),
                           decoration: BoxDecoration(
                             color: isSelected
                                 ? AppColors.crimson
                                 : (isDark ? elevatedColor : elevatedColor),
                             borderRadius: BorderRadius.circular(20),
                             border: Border.all(
-                              color: isSelected ? AppColors.crimson : borderColor,
+                              color: isSelected
+                                  ? AppColors.crimson
+                                  : borderColor,
                             ),
                           ),
                           child: Text(
                             label,
                             style: AppTypography.labelSmall.copyWith(
                               color: isSelected ? Colors.white : textColor,
-                              fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+                              fontWeight: isSelected
+                                  ? FontWeight.w700
+                                  : FontWeight.w500,
                               fontSize: 11,
                             ),
                           ),
@@ -173,7 +199,10 @@ class _ProgressScreenState extends State<ProgressScreen> {
                 // Strength Exercise Selector (if Strength Mode selected)
                 if (isStrengthMode) ...[
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 14,
+                      vertical: 4,
+                    ),
                     decoration: BoxDecoration(
                       color: surfaceColor,
                       borderRadius: BorderRadius.circular(10),
@@ -184,18 +213,28 @@ class _ProgressScreenState extends State<ProgressScreen> {
                         value: _selectedStrengthExercise,
                         isExpanded: true,
                         dropdownColor: surfaceColor,
-                        items: [
-                          'Bench Press',
-                          'Barbell Squat',
-                          'Romanian Deadlift',
-                          'Lat Pulldown',
-                          'Incline Dumbbell Press',
-                          'Pull-ups',
-                          'Hack Squat',
-                          'Lateral Raises',
-                        ].map((e) => DropdownMenuItem(value: e, child: Text(e))).toList(),
+                        items:
+                            [
+                                  'Bench Press',
+                                  'Barbell Squat',
+                                  'Romanian Deadlift',
+                                  'Lat Pulldown',
+                                  'Incline Dumbbell Press',
+                                  'Pull-ups',
+                                  'Hack Squat',
+                                  'Lateral Raises',
+                                ]
+                                .map(
+                                  (e) => DropdownMenuItem(
+                                    value: e,
+                                    child: Text(e),
+                                  ),
+                                )
+                                .toList(),
                         onChanged: (val) {
-                          if (val != null) setState(() => _selectedStrengthExercise = val);
+                          if (val != null) {
+                            setState(() => _selectedStrengthExercise = val);
+                          }
                         },
                       ),
                     ),
@@ -214,9 +253,14 @@ class _ProgressScreenState extends State<ProgressScreen> {
                         onTap: () => setState(() => _selectedPeriod = p),
                         borderRadius: BorderRadius.circular(6),
                         child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 4,
+                          ),
                           decoration: BoxDecoration(
-                            color: isSel ? AppColors.crimson : Colors.transparent,
+                            color: isSel
+                                ? AppColors.crimson
+                                : Colors.transparent,
                             borderRadius: BorderRadius.circular(6),
                             border: Border.all(
                               color: isSel ? AppColors.crimson : borderColor,
@@ -226,7 +270,9 @@ class _ProgressScreenState extends State<ProgressScreen> {
                             p.toUpperCase(),
                             style: AppTypography.labelSmall.copyWith(
                               color: isSel ? Colors.white : textMuted,
-                              fontWeight: isSel ? FontWeight.w700 : FontWeight.w500,
+                              fontWeight: isSel
+                                  ? FontWeight.w700
+                                  : FontWeight.w500,
                               fontSize: 10,
                             ),
                           ),
@@ -270,7 +316,9 @@ class _ProgressScreenState extends State<ProgressScreen> {
                                 textBaseline: TextBaseline.alphabetic,
                                 children: [
                                   Text(
-                                    currentVal != null ? currentVal.toStringAsFixed(1) : '--',
+                                    currentVal != null
+                                        ? currentVal.toStringAsFixed(1)
+                                        : '--',
                                     style: AppTypography.metricLarge.copyWith(
                                       color: textColor,
                                       fontSize: 34,
@@ -299,16 +347,20 @@ class _ProgressScreenState extends State<ProgressScreen> {
                                       delta > 0
                                           ? Icons.arrow_upward_rounded
                                           : (delta < 0
-                                              ? Icons.arrow_downward_rounded
-                                              : Icons.remove_rounded),
+                                                ? Icons.arrow_downward_rounded
+                                                : Icons.remove_rounded),
                                       size: 16,
-                                      color: delta > 0 ? AppColors.crimson : AppColors.success,
+                                      color: delta > 0
+                                          ? AppColors.crimson
+                                          : AppColors.success,
                                     ),
                                     const SizedBox(width: 2),
                                     Text(
                                       '${delta > 0 ? "+" : ""}${delta.toStringAsFixed(1)} $unit',
                                       style: AppTypography.titleMedium.copyWith(
-                                        color: delta > 0 ? AppColors.crimson : AppColors.success,
+                                        color: delta > 0
+                                            ? AppColors.crimson
+                                            : AppColors.success,
                                         fontWeight: FontWeight.w700,
                                       ),
                                     ),
@@ -338,7 +390,10 @@ class _ProgressScreenState extends State<ProgressScreen> {
                             prevVal != null
                                 ? 'Previous: ${prevVal.toStringAsFixed(1)} $unit'
                                 : 'Initial baseline recorded',
-                            style: AppTypography.bodyMedium.copyWith(color: textMuted, fontSize: 12),
+                            style: AppTypography.bodyMedium.copyWith(
+                              color: textMuted,
+                              fontSize: 12,
+                            ),
                           ),
                           if (targetValue != null) ...[
                             Text(
@@ -412,7 +467,9 @@ class _ProgressScreenState extends State<ProgressScreen> {
                       ),
                       Text(
                         '${allHistorical.length} entries',
-                        style: AppTypography.labelSmall.copyWith(color: textMuted),
+                        style: AppTypography.labelSmall.copyWith(
+                          color: textMuted,
+                        ),
                       ),
                     ],
                   ),
@@ -442,10 +499,12 @@ class _ProgressScreenState extends State<ProgressScreen> {
                             shrinkWrap: true,
                             physics: const NeverScrollableScrollPhysics(),
                             itemCount: allHistorical.length,
-                            separatorBuilder: (ctx, i) => const Divider(height: 1),
+                            separatorBuilder: (ctx, i) =>
+                                const Divider(height: 1),
                             itemBuilder: (ctx, i) {
                               final item = allHistorical[i];
-                              final dateStr = DateFormat('MMM d, yyyy').format(item.date);
+                              final dateStr = DateFormat('MMM d, yyyy')
+                                  .format(item.date);
                               return ListTile(
                                 dense: true,
                                 title: Text(
@@ -455,15 +514,21 @@ class _ProgressScreenState extends State<ProgressScreen> {
                                     fontSize: 15,
                                   ),
                                 ),
-                                subtitle: item.notes != null && item.notes!.isNotEmpty
+                                subtitle:
+                                    item.notes != null && item.notes!.isNotEmpty
                                     ? Text(
                                         item.notes!,
-                                        style: TextStyle(color: textMuted, fontSize: 11),
+                                        style: TextStyle(
+                                          color: textMuted,
+                                          fontSize: 11,
+                                        ),
                                       )
                                     : null,
                                 trailing: Text(
                                   dateStr,
-                                  style: AppTypography.labelSmall.copyWith(color: textMuted),
+                                  style: AppTypography.labelSmall.copyWith(
+                                    color: textMuted,
+                                  ),
                                 ),
                               );
                             },

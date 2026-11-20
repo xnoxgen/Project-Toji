@@ -114,7 +114,8 @@ class SessionExerciseLog {
       targetSets: (json['targetSets'] as num?)?.toInt() ?? 3,
       targetReps: json['targetReps'] as String? ?? '8-12',
       isCompleted: json['isCompleted'] as bool? ?? false,
-      sets: (json['sets'] as List<dynamic>?)
+      sets:
+          (json['sets'] as List<dynamic>?)
               ?.map((s) => SetLog.fromJson(s as Map<String, dynamic>))
               .toList() ??
           [],
@@ -216,9 +217,11 @@ class WorkoutSession {
       dayOfWeek: (json['dayOfWeek'] as num).toInt(),
       workoutName: json['workoutName'] as String,
       isCompleted: json['isCompleted'] as bool? ?? false,
-      exercises: (json['exercises'] as List<dynamic>?)
-              ?.map((e) =>
-                  SessionExerciseLog.fromJson(e as Map<String, dynamic>))
+      exercises:
+          (json['exercises'] as List<dynamic>?)
+              ?.map(
+                (e) => SessionExerciseLog.fromJson(e as Map<String, dynamic>),
+              )
               .toList() ??
           [],
       startedAt: json['startedAt'] != null
@@ -230,4 +233,3 @@ class WorkoutSession {
     );
   }
 }
-

@@ -121,11 +121,11 @@ class DayWorkoutPlan {
       dayName: json['dayName'] as String,
       focusName: json['focusName'] as String? ?? '',
       isRestDay: json['isRestDay'] as bool? ?? false,
-      exercises: (json['exercises'] as List<dynamic>?)
+      exercises:
+          (json['exercises'] as List<dynamic>?)
               ?.map((e) => PlannedExercise.fromJson(e as Map<String, dynamic>))
               .toList() ??
           [],
     );
   }
 }
-

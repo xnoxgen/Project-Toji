@@ -1,10 +1,14 @@
 class ReminderModel {
-  final int id; // Used as notification ID
+  final int id; // Notification ID
   final String title;
   final String? description;
   final DateTime dateTime;
   final String priority; // 'high', 'medium', 'low'
   final bool isCompleted;
+  final bool isNotificationEnabled; // Notification toggle
+  final int advanceMinutes; // 0 = at time, 5, 10, 15, or custom minutes before
+  final String? noteId; // Associated note ID
+  final String? noteTitle; // Associated note title
   final DateTime createdAt;
 
   const ReminderModel({
@@ -14,12 +18,22 @@ class ReminderModel {
     required this.dateTime,
     this.priority = 'medium',
     this.isCompleted = false,
+    this.isNotificationEnabled = true,
+    this.advanceMinutes = 0,
+    this.noteId,
+    this.noteTitle,
     required this.createdAt,
   });
 
   bool get isOverdue {
     if (isCompleted) return false;
     return dateTime.isBefore(DateTime.now());
+  }
+
+  // Calculated advance notification time
+  DateTime get advanceDateTime {
+    if (advanceMinutes <= 0) return dateTime;
+    return dateTime.subtract(Duration(minutes: advanceMinutes));
   }
 
   ReminderModel copyWith({
@@ -29,6 +43,10 @@ class ReminderModel {
     DateTime? dateTime,
     String? priority,
     bool? isCompleted,
+    bool? isNotificationEnabled,
+    int? advanceMinutes,
+    String? noteId,
+    String? noteTitle,
     DateTime? createdAt,
   }) {
     return ReminderModel(
@@ -38,6 +56,11 @@ class ReminderModel {
       dateTime: dateTime ?? this.dateTime,
       priority: priority ?? this.priority,
       isCompleted: isCompleted ?? this.isCompleted,
+      isNotificationEnabled:
+          isNotificationEnabled ?? this.isNotificationEnabled,
+      advanceMinutes: advanceMinutes ?? this.advanceMinutes,
+      noteId: noteId ?? this.noteId,
+      noteTitle: noteTitle ?? this.noteTitle,
       createdAt: createdAt ?? this.createdAt,
     );
   }
@@ -50,6 +73,10 @@ class ReminderModel {
       'dateTime': dateTime.toIso8601String(),
       'priority': priority,
       'isCompleted': isCompleted,
+      'isNotificationEnabled': isNotificationEnabled,
+      'advanceMinutes': advanceMinutes,
+      'noteId': noteId,
+      'noteTitle': noteTitle,
       'createdAt': createdAt.toIso8601String(),
     };
   }
@@ -64,6 +91,10 @@ class ReminderModel {
           : DateTime.now(),
       priority: json['priority'] as String? ?? 'medium',
       isCompleted: json['isCompleted'] as bool? ?? false,
+      isNotificationEnabled: json['isNotificationEnabled'] as bool? ?? true,
+      advanceMinutes: json['advanceMinutes'] as int? ?? 0,
+      noteId: json['noteId'] as String?,
+      noteTitle: json['noteTitle'] as String?,
       createdAt: json['createdAt'] != null
           ? DateTime.tryParse(json['createdAt'] as String) ?? DateTime.now()
           : DateTime.now(),

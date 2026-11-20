@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../theme/app_colors.dart';
 import '../theme/app_typography.dart';
 
@@ -25,10 +26,16 @@ class MetricCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final surfaceColor = isDark ? AppColors.darkSurface : AppColors.lightSurface;
+    final surfaceColor = isDark
+        ? AppColors.darkSurface
+        : AppColors.lightSurface;
     final borderColor = isDark ? AppColors.darkBorder : AppColors.lightBorder;
-    final textColor = isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary;
-    final textMuted = isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary;
+    final textColor = isDark
+        ? AppColors.darkTextPrimary
+        : AppColors.lightTextPrimary;
+    final textMuted = isDark
+        ? AppColors.darkTextSecondary
+        : AppColors.lightTextSecondary;
 
     return Material(
       color: Colors.transparent,
@@ -93,8 +100,8 @@ class MetricCard extends StatelessWidget {
                           delta! > 0
                               ? Icons.arrow_upward_rounded
                               : (delta! < 0
-                                  ? Icons.arrow_downward_rounded
-                                  : Icons.remove_rounded),
+                                    ? Icons.arrow_downward_rounded
+                                    : Icons.remove_rounded),
                           size: 13,
                           color: delta! > 0
                               ? AppColors.crimson
@@ -115,7 +122,9 @@ class MetricCard extends StatelessWidget {
                   ] else ...[
                     Text(
                       'Baseline',
-                      style: AppTypography.labelSmall.copyWith(color: textMuted),
+                      style: AppTypography.labelSmall.copyWith(
+                        color: textMuted,
+                      ),
                     ),
                   ],
                   if (targetText != null)
@@ -138,4 +147,3 @@ class MetricCard extends StatelessWidget {
     );
   }
 }
-

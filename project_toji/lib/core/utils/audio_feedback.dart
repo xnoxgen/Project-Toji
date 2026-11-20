@@ -15,7 +15,10 @@ class AudioFeedback {
     }
   }
 
-  static Future<void> playClick({bool sound = true, bool vibration = true}) async {
+  static Future<void> playClick({
+    bool sound = true,
+    bool vibration = true,
+  }) async {
     if (vibration) {
       await HapticFeedback.selectionClick();
     }
@@ -24,7 +27,10 @@ class AudioFeedback {
     }
   }
 
-  static Future<void> playSuccess({bool sound = true, bool vibration = true}) async {
+  static Future<void> playSuccess({
+    bool sound = true,
+    bool vibration = true,
+  }) async {
     if (vibration) {
       await HapticFeedback.mediumImpact();
     }
@@ -33,4 +39,3 @@ class AudioFeedback {
     }
   }
 }
-

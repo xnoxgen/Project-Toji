@@ -3,7 +3,6 @@
     <uses-permission android:name="android.permission.VIBRATE"/>
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM"/>
-    <uses-permission android:name="android.permission.USE_EXACT_ALARM"/>
 
     <application
         android:label="project_toji"
@@ -30,7 +29,51 @@
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
+            <!-- Deep link scheme for home-screen widgets and notification navigation -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="toji" />
+            </intent-filter>
         </activity>
+
+        <!-- Project Toji Home Screen Widgets -->
+        <receiver
+            android:name=".TojiQuickGlanceWidget"
+            android:exported="true"
+            android:label="@string/widget_quick_glance_name">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/toji_quick_glance_info" />
+        </receiver>
+
+        <receiver
+            android:name=".TojiDailyOverviewWidget"
+            android:exported="true"
+            android:label="@string/widget_daily_overview_name">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/toji_daily_overview_info" />
+        </receiver>
+
+        <receiver
+            android:name=".TojiDashboardWidget"
+            android:exported="true"
+            android:label="@string/widget_dashboard_name">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/toji_dashboard_info" />
+        </receiver>
 
         <receiver android:exported="false" android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationReceiver" />
         <receiver android:exported="false" android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationBootReceiver">

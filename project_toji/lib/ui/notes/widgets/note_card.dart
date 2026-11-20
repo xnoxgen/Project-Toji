@@ -1,61 +1,47 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart' hide TextDirection;
+
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../data/models/note_model.dart';
+import '../../../state/notes_state.dart';
+import 'label_chip.dart';
 
 class NoteCard extends StatelessWidget {
   final NoteModel note;
+  final NotesState notesState;
   final VoidCallback onTap;
   final VoidCallback onTogglePin;
 
   const NoteCard({
     super.key,
     required this.note,
+    required this.notesState,
     required this.onTap,
     required this.onTogglePin,
   });
 
-  IconData _categoryIcon(String category) {
-    switch (category.toLowerCase()) {
-      case 'personal':
-        return Icons.person_rounded;
-      case 'college':
-        return Icons.school_rounded;
-      case 'work':
-        return Icons.work_rounded;
-      case 'gym':
-        return Icons.fitness_center_rounded;
-      default:
-        return Icons.label_rounded;
-    }
-  }
-
-  Color _categoryColor(String category) {
-    switch (category.toLowerCase()) {
-      case 'gym':
-        return AppColors.crimson;
-      case 'college':
-        return const Color(0xFF3B82F6); // Blue
-      case 'work':
-        return const Color(0xFFF59E0B); // Amber
-      case 'personal':
-        return const Color(0xFF10B981); // Emerald
-      default:
-        return const Color(0xFF8B5CF6); // Purple
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final surfaceColor = isDark ? AppColors.darkSurface : AppColors.lightSurface;
+    final surfaceColor = isDark
+        ? AppColors.darkSurface
+        : AppColors.lightSurface;
     final borderColor = isDark ? AppColors.darkBorder : AppColors.lightBorder;
-    final textPrimary = isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary;
-    final textMuted = isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary;
+    final textPrimary = isDark
+        ? AppColors.darkTextPrimary
+        : AppColors.lightTextPrimary;
+    final textMuted = isDark
+        ? AppColors.darkTextSecondary
+        : AppColors.lightTextSecondary;
 
     final dateStr = DateFormat('MMM d, yyyy').format(note.updatedAt);
-    final catColor = _categoryColor(note.category);
+
+    // Resolve labels
+    final assignedLabels = note.labelIds
+        .map((id) => notesState.getLabelById(id))
+        .whereType<dynamic>()
+        .toList();
 
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
@@ -78,37 +64,56 @@ class NoteCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Header: Category chip + Pinned button
+                // Top Row: Pinned Tag & Pin Button
                 Row(
                   children: [
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                      decoration: BoxDecoration(
-                        color: catColor.withAlpha(25),
-                        borderRadius: BorderRadius.circular(6),
-                        border: Border.all(color: catColor.withAlpha(60), width: 1),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(_categoryIcon(note.category), size: 12, color: catColor),
-                          const SizedBox(width: 4),
-                          Text(
-                            note.category.toUpperCase(),
-                            style: AppTypography.labelSmall.copyWith(
-                              fontSize: 10,
-                              fontWeight: FontWeight.w700,
-                              color: catColor,
-                              letterSpacing: 0.5,
-                            ),
+                    // Associated Reminder Badge (if set)
+                    if (note.reminderDateTime != null) ...[
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 7,
+                          vertical: 3,
+                        ),
+                        decoration: BoxDecoration(
+                          color: AppColors.crimson.withAlpha(25),
+                          borderRadius: BorderRadius.circular(6),
+                          border: Border.all(
+                            color: AppColors.crimson.withAlpha(70),
+                            width: 1,
                           ),
-                        ],
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Icon(
+                              Icons.alarm_rounded,
+                              size: 12,
+                              color: AppColors.crimson,
+                            ),
+                            const SizedBox(width: 4),
+                            Text(
+                              DateFormat('MMM d • hh:mm a')
+                                  .format(note.reminderDateTime!),
+                              style: const TextStyle(
+                                fontSize: 10,
+                                fontWeight: FontWeight.w700,
+                                color: AppColors.crimson,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
+                      const SizedBox(width: 8),
+                    ],
+
                     const Spacer(),
+
                     if (note.isPinned)
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 6,
+                          vertical: 2,
+                        ),
                         margin: const EdgeInsets.only(right: 6),
                         decoration: BoxDecoration(
                           color: AppColors.crimson.withAlpha(30),
@@ -117,7 +122,11 @@ class NoteCard extends StatelessWidget {
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            const Icon(Icons.push_pin_rounded, size: 11, color: AppColors.crimson),
+                            const Icon(
+                              Icons.push_pin_rounded,
+                              size: 11,
+                              color: AppColors.crimson,
+                            ),
                             const SizedBox(width: 3),
                             Text(
                               'PINNED',
@@ -132,7 +141,9 @@ class NoteCard extends StatelessWidget {
                       ),
                     IconButton(
                       icon: Icon(
-                        note.isPinned ? Icons.push_pin_rounded : Icons.push_pin_outlined,
+                        note.isPinned
+                            ? Icons.push_pin_rounded
+                            : Icons.push_pin_outlined,
                         size: 18,
                         color: note.isPinned ? AppColors.crimson : textMuted,
                       ),
@@ -143,7 +154,7 @@ class NoteCard extends StatelessWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: 10),
+                const SizedBox(height: 8),
 
                 // Note Title
                 if (note.title.isNotEmpty)
@@ -154,14 +165,14 @@ class NoteCard extends StatelessWidget {
                     style: AppTypography.titleMedium.copyWith(
                       fontWeight: FontWeight.w700,
                       color: textPrimary,
-                      fontSize: 15,
+                      fontSize: 16,
                     ),
                   ),
 
                 if (note.title.isNotEmpty && note.content.isNotEmpty)
                   const SizedBox(height: 6),
 
-                // Note Content preview
+                // Note Content preview (clean plain-text)
                 if (note.content.isNotEmpty)
                   Text(
                     note.content,
@@ -169,12 +180,24 @@ class NoteCard extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                     style: AppTypography.bodyMedium.copyWith(
                       color: textMuted,
-                      height: 1.4,
+                      height: 1.45,
                       fontSize: 13,
                     ),
                   ),
 
                 const SizedBox(height: 12),
+
+                // Assigned Labels Chips Row
+                if (assignedLabels.isNotEmpty) ...[
+                  Wrap(
+                    spacing: 6,
+                    runSpacing: 6,
+                    children: assignedLabels.map((label) {
+                      return LabelChipWidget(label: label, compact: true);
+                    }).toList(),
+                  ),
+                  const SizedBox(height: 10),
+                ],
 
                 // Footer: Date modified
                 Row(

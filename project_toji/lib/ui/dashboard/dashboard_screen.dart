@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_typography.dart';
 import '../../core/widgets/metric_card.dart';
@@ -35,11 +36,19 @@ class DashboardScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final surfaceColor = isDark ? AppColors.darkSurface : AppColors.lightSurface;
-    final elevatedColor = isDark ? AppColors.darkSurfaceElevated : AppColors.lightSurfaceElevated;
+    final surfaceColor = isDark
+        ? AppColors.darkSurface
+        : AppColors.lightSurface;
+    final elevatedColor = isDark
+        ? AppColors.darkSurfaceElevated
+        : AppColors.lightSurfaceElevated;
     final borderColor = isDark ? AppColors.darkBorder : AppColors.lightBorder;
-    final textColor = isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary;
-    final textMuted = isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary;
+    final textColor = isDark
+        ? AppColors.darkTextPrimary
+        : AppColors.lightTextPrimary;
+    final textMuted = isDark
+        ? AppColors.darkTextSecondary
+        : AppColors.lightTextSecondary;
 
     final now = DateTime.now();
     final dateStr = DateFormat('EEEE, MMMM d').format(now);
@@ -47,10 +56,12 @@ class DashboardScreen extends StatelessWidget {
     final todaySession = state.getOrCreateTodaySession();
     final todayPlan = state.getTodayPlan();
 
-    final latestWeight = state.getLatestMeasurement('weight') ?? state.profile.currentWeightKg;
+    final latestWeight =
+        state.getLatestMeasurement('weight') ?? state.profile.currentWeightKg;
     final weightDelta = state.getMeasurementDelta('weight');
 
-    final latestWaist = state.getLatestMeasurement('waist') ?? state.profile.waistCm;
+    final latestWaist =
+        state.getLatestMeasurement('waist') ?? state.profile.waistCm;
     final waistDelta = state.getMeasurementDelta('waist');
 
     return Scaffold(
@@ -79,7 +90,9 @@ class DashboardScreen extends StatelessWidget {
         actions: [
           IconButton(
             icon: Icon(
-              state.isDarkMode ? Icons.light_mode_outlined : Icons.dark_mode_outlined,
+              state.isDarkMode
+                  ? Icons.light_mode_outlined
+                  : Icons.dark_mode_outlined,
               size: 20,
             ),
             tooltip: 'Toggle Theme',
@@ -102,7 +115,14 @@ class DashboardScreen extends StatelessWidget {
               children: [
                 // Weekly Check-in Prompt Banner (if due)
                 if (state.isWeeklyCheckInDue) ...[
-                  _buildCheckinBanner(context, isDark, surfaceColor, borderColor, textColor, textMuted),
+                  _buildCheckinBanner(
+                    context,
+                    isDark,
+                    surfaceColor,
+                    borderColor,
+                    textColor,
+                    textMuted,
+                  ),
                   const SizedBox(height: 16),
                 ],
 
@@ -140,7 +160,9 @@ class DashboardScreen extends StatelessWidget {
                     Expanded(
                       child: MetricCard(
                         title: 'Waist',
-                        value: latestWaist != null ? latestWaist.toStringAsFixed(1) : '--',
+                        value: latestWaist != null
+                            ? latestWaist.toStringAsFixed(1)
+                            : '--',
                         unit: 'cm',
                         delta: waistDelta,
                         targetText: state.profile.targetWaistCm != null
@@ -228,7 +250,11 @@ class DashboardScreen extends StatelessWidget {
               color: AppColors.crimson,
               borderRadius: BorderRadius.circular(8),
             ),
-            child: const Icon(Icons.assessment_rounded, color: Colors.white, size: 20),
+            child: const Icon(
+              Icons.assessment_rounded,
+              color: Colors.white,
+              size: 20,
+            ),
           ),
           const SizedBox(width: 14),
           Expanded(
@@ -244,7 +270,10 @@ class DashboardScreen extends StatelessWidget {
                 ),
                 Text(
                   'Record waist, weight & weekly consistency.',
-                  style: AppTypography.bodyMedium.copyWith(color: textMuted, fontSize: 12),
+                  style: AppTypography.bodyMedium.copyWith(
+                    color: textMuted,
+                    fontSize: 12,
+                  ),
                 ),
               ],
             ),
@@ -255,9 +284,14 @@ class DashboardScreen extends StatelessWidget {
               backgroundColor: AppColors.crimson,
               foregroundColor: Colors.white,
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
             ),
-            child: const Text('Check In', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600)),
+            child: const Text(
+              'Check In',
+              style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+            ),
           ),
         ],
       ),
@@ -319,14 +353,21 @@ class DashboardScreen extends StatelessWidget {
               ),
               if (isCompleted) ...[
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 2,
+                  ),
                   decoration: BoxDecoration(
                     color: AppColors.crimson.withValues(alpha: 0.15),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Row(
                     children: [
-                      const Icon(Icons.check, size: 12, color: AppColors.crimson),
+                      const Icon(
+                        Icons.check,
+                        size: 12,
+                        color: AppColors.crimson,
+                      ),
                       const SizedBox(width: 4),
                       Text(
                         'DONE',
@@ -374,7 +415,9 @@ class DashboardScreen extends StatelessWidget {
               child: LinearProgressIndicator(
                 value: totalCount > 0 ? (completedCount / totalCount) : 0.0,
                 backgroundColor: elevatedColor,
-                valueColor: const AlwaysStoppedAnimation<Color>(AppColors.crimson),
+                valueColor: const AlwaysStoppedAnimation<Color>(
+                  AppColors.crimson,
+                ),
                 minHeight: 6,
               ),
             ),
@@ -384,10 +427,15 @@ class DashboardScreen extends StatelessWidget {
             ...todaySession.exercises.map((ex) {
               return Container(
                 margin: const EdgeInsets.only(bottom: 8),
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 10,
+                ),
                 decoration: BoxDecoration(
                   color: ex.isCompleted
-                      ? AppColors.crimson.withValues(alpha: isDark ? 0.08 : 0.04)
+                      ? AppColors.crimson.withValues(
+                          alpha: isDark ? 0.08 : 0.04,
+                        )
                       : (isDark ? elevatedColor : elevatedColor),
                   borderRadius: BorderRadius.circular(10),
                   border: Border.all(
@@ -405,7 +453,10 @@ class DashboardScreen extends StatelessWidget {
                           Row(
                             children: [
                               Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1.5),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 5,
+                                  vertical: 1.5,
+                                ),
                                 decoration: BoxDecoration(
                                   color: surfaceColor,
                                   borderRadius: BorderRadius.circular(4),
@@ -438,7 +489,9 @@ class DashboardScreen extends StatelessWidget {
                               color: ex.isCompleted ? textMuted : textColor,
                               fontSize: 14,
                               fontWeight: FontWeight.w600,
-                              decoration: ex.isCompleted ? TextDecoration.lineThrough : null,
+                              decoration: ex.isCompleted
+                                  ? TextDecoration.lineThrough
+                                  : null,
                             ),
                           ),
                           Text(
@@ -454,9 +507,15 @@ class DashboardScreen extends StatelessWidget {
                     InkWell(
                       onTap: () async {
                         if (ex.isCompleted) {
-                          await state.undoExerciseCompletion(todaySession.id, ex.exerciseId);
+                          await state.undoExerciseCompletion(
+                            todaySession.id,
+                            ex.exerciseId,
+                          );
                         } else {
-                          await state.markExerciseDone(todaySession.id, ex.exerciseId);
+                          await state.markExerciseDone(
+                            todaySession.id,
+                            ex.exerciseId,
+                          );
                           final updated = state.getOrCreateTodaySession();
                           if (updated.isCompleted && context.mounted) {
                             showDialog(
@@ -478,12 +537,19 @@ class DashboardScreen extends StatelessWidget {
                       borderRadius: BorderRadius.circular(8),
                       child: AnimatedContainer(
                         duration: const Duration(milliseconds: 200),
-                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 6,
+                        ),
                         decoration: BoxDecoration(
-                          color: ex.isCompleted ? AppColors.crimson : surfaceColor,
+                          color: ex.isCompleted
+                              ? AppColors.crimson
+                              : surfaceColor,
                           borderRadius: BorderRadius.circular(8),
                           border: Border.all(
-                            color: ex.isCompleted ? AppColors.crimson : borderColor,
+                            color: ex.isCompleted
+                                ? AppColors.crimson
+                                : borderColor,
                             width: 1.2,
                           ),
                         ),
@@ -495,13 +561,17 @@ class DashboardScreen extends StatelessWidget {
                                   ? Icons.check_circle_rounded
                                   : Icons.check_circle_outline_rounded,
                               size: 14,
-                              color: ex.isCompleted ? Colors.white : AppColors.crimson,
+                              color: ex.isCompleted
+                                  ? Colors.white
+                                  : AppColors.crimson,
                             ),
                             const SizedBox(width: 4),
                             Text(
                               ex.isCompleted ? 'Completed' : 'Complete',
                               style: TextStyle(
-                                color: ex.isCompleted ? Colors.white : textColor,
+                                color: ex.isCompleted
+                                    ? Colors.white
+                                    : textColor,
                                 fontSize: 11.5,
                                 fontWeight: FontWeight.w600,
                               ),
@@ -520,7 +590,8 @@ class DashboardScreen extends StatelessWidget {
           // Action Button
           if (isRest) ...[
             OutlinedButton.icon(
-              onPressed: () => onNavigateTab(1), // Go to planner to edit or view
+              onPressed: () =>
+                  onNavigateTab(1), // Go to planner to edit or view
               icon: const Icon(Icons.edit_calendar_outlined, size: 18),
               label: const Text('View Routine in Planner'),
               style: OutlinedButton.styleFrom(
@@ -540,18 +611,26 @@ class DashboardScreen extends StatelessWidget {
                 );
               },
               icon: Icon(
-                isCompleted ? Icons.visibility_rounded : Icons.play_arrow_rounded,
+                isCompleted
+                    ? Icons.visibility_rounded
+                    : Icons.play_arrow_rounded,
                 size: 20,
               ),
               label: Text(
-                isCompleted ? 'Review Workout Execution' : (completedCount > 0 ? 'Resume Workout' : 'Start Today\'s Workout'),
+                isCompleted
+                    ? 'Review Workout Execution'
+                    : (completedCount > 0
+                          ? 'Resume Workout'
+                          : 'Start Today\'s Workout'),
                 style: const TextStyle(fontWeight: FontWeight.w600),
               ),
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.crimson,
                 foregroundColor: Colors.white,
                 minimumSize: const Size(double.infinity, 46),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
               ),
             ),
           ],
@@ -595,7 +674,11 @@ class DashboardScreen extends StatelessWidget {
               ),
               Row(
                 children: [
-                  const Icon(Icons.local_fire_department_rounded, size: 14, color: AppColors.crimson),
+                  const Icon(
+                    Icons.local_fire_department_rounded,
+                    size: 14,
+                    color: AppColors.crimson,
+                  ),
                   const SizedBox(width: 4),
                   Text(
                     '${state.currentStreak} Day Streak',
@@ -616,9 +699,13 @@ class DashboardScreen extends StatelessWidget {
             children: List.generate(7, (i) {
               final dayDate = monday.add(Duration(days: i));
               final dayNum = i + 1;
-              final dayKey = '${dayDate.year}-${dayDate.month.toString().padLeft(2, '0')}-${dayDate.day.toString().padLeft(2, '0')}';
+              final dayKey =
+                  '${dayDate.year}-${dayDate.month.toString().padLeft(2, '0')}-${dayDate.day.toString().padLeft(2, '0')}';
               final isCompleted = state.completedDateKeys.contains(dayKey);
-              final isToday = dayDate.day == now.day && dayDate.month == now.month && dayDate.year == now.year;
+              final isToday =
+                  dayDate.day == now.day &&
+                  dayDate.month == now.month &&
+                  dayDate.year == now.year;
               final dayPlan = state.getDayPlan(dayNum);
 
               return Column(
@@ -639,8 +726,8 @@ class DashboardScreen extends StatelessWidget {
                       color: isCompleted
                           ? AppColors.crimson
                           : (dayPlan.isRestDay
-                              ? Colors.transparent
-                              : (isDark ? elevatedColor : elevatedColor)),
+                                ? Colors.transparent
+                                : (isDark ? elevatedColor : elevatedColor)),
                       shape: BoxShape.circle,
                       border: Border.all(
                         color: isToday
@@ -653,15 +740,23 @@ class DashboardScreen extends StatelessWidget {
                     child: isCompleted
                         ? const Icon(Icons.check, size: 18, color: Colors.white)
                         : (dayPlan.isRestDay
-                            ? Icon(Icons.bed_rounded, size: 14, color: textMuted)
-                            : Text(
-                                '${dayDate.day}',
-                                style: TextStyle(
-                                  color: isToday ? AppColors.crimson : textMuted,
-                                  fontSize: 11,
-                                  fontWeight: isToday ? FontWeight.w700 : FontWeight.w500,
-                                ),
-                              )),
+                              ? Icon(
+                                  Icons.bed_rounded,
+                                  size: 14,
+                                  color: textMuted,
+                                )
+                              : Text(
+                                  '${dayDate.day}',
+                                  style: TextStyle(
+                                    color: isToday
+                                        ? AppColors.crimson
+                                        : textMuted,
+                                    fontSize: 11,
+                                    fontWeight: isToday
+                                        ? FontWeight.w700
+                                        : FontWeight.w500,
+                                  ),
+                                )),
                   ),
                 ],
               );
@@ -722,4 +817,3 @@ class DashboardScreen extends StatelessWidget {
     );
   }
 }
-

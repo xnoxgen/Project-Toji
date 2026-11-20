@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_typography.dart';
 import '../../data/models/workout_session.dart';
@@ -20,10 +21,16 @@ class WorkoutSummaryDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final surfaceColor = isDark ? AppColors.darkSurface : AppColors.lightSurface;
+    final surfaceColor = isDark
+        ? AppColors.darkSurface
+        : AppColors.lightSurface;
     final borderColor = isDark ? AppColors.darkBorder : AppColors.lightBorder;
-    final textColor = isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary;
-    final textMuted = isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary;
+    final textColor = isDark
+        ? AppColors.darkTextPrimary
+        : AppColors.lightTextPrimary;
+    final textMuted = isDark
+        ? AppColors.darkTextSecondary
+        : AppColors.lightTextSecondary;
 
     return Dialog(
       backgroundColor: surfaceColor,
@@ -83,7 +90,9 @@ class WorkoutSummaryDialog extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: isDark ? AppColors.darkSurfaceElevated : AppColors.lightSurfaceElevated,
+                  color: isDark
+                      ? AppColors.darkSurfaceElevated
+                      : AppColors.lightSurfaceElevated,
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(color: borderColor),
                 ),
@@ -146,18 +155,20 @@ class WorkoutSummaryDialog extends StatelessWidget {
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
-                  child: const Text('Return to Dashboard',
-                      style: TextStyle(fontWeight: FontWeight.w600)),
+                  child: const Text(
+                    'Return to Dashboard',
+                    style: TextStyle(fontWeight: FontWeight.w600),
+                  ),
                 ),
               ),
               const SizedBox(height: 8),
               TextButton(
                 onPressed: onUndo,
-                style: TextButton.styleFrom(
-                  foregroundColor: textMuted,
+                style: TextButton.styleFrom(foregroundColor: textMuted),
+                child: const Text(
+                  'Undo Workout Completion',
+                  style: TextStyle(fontSize: 13),
                 ),
-                child: const Text('Undo Workout Completion',
-                    style: TextStyle(fontSize: 13)),
               ),
             ],
           ),
@@ -166,7 +177,12 @@ class WorkoutSummaryDialog extends StatelessWidget {
     );
   }
 
-  Widget _buildStat(String label, String value, Color valColor, Color labelColor) {
+  Widget _buildStat(
+    String label,
+    String value,
+    Color valColor,
+    Color labelColor,
+  ) {
     return Column(
       children: [
         Text(
@@ -189,4 +205,3 @@ class WorkoutSummaryDialog extends StatelessWidget {
     );
   }
 }
-

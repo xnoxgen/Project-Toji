@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_typography.dart';
 import '../../data/models/note_model.dart';
@@ -6,8 +7,9 @@ import '../../data/models/reminder_model.dart';
 import '../../state/notes_state.dart';
 import '../../state/physique_state.dart';
 import 'note_editor_screen.dart';
+import 'notes_settings_screen.dart';
 import 'reminder_editor_dialog.dart';
-import 'widgets/category_filter_chips.dart';
+import 'widgets/label_chip.dart';
 import 'widgets/note_card.dart';
 import 'widgets/reminder_card.dart';
 
@@ -22,12 +24,16 @@ class NotesScreen extends StatefulWidget {
   });
 
   @override
-  State<NotesScreen> createState() => _NotesScreenState();
+  State<NotesScreen> createState() => NotesScreenState();
 }
 
-class _NotesScreenState extends State<NotesScreen> {
+class NotesScreenState extends State<NotesScreen> {
   final TextEditingController _searchController = TextEditingController();
   bool _showCompletedReminders = true;
+
+  void openNoteEditor([NoteModel? note]) => _openNoteEditor(note);
+  void openReminderDialog([ReminderModel? reminder]) =>
+      _openReminderDialog(reminder);
 
   @override
   void initState() {
@@ -48,6 +54,7 @@ class _NotesScreenState extends State<NotesScreen> {
       MaterialPageRoute(
         builder: (_) => NoteEditorScreen(
           initialNote: note,
+          notesState: widget.notesState,
           onSave: (savedNote) {
             if (note == null) {
               widget.notesState.addNote(savedNote);
@@ -78,14 +85,28 @@ class _NotesScreenState extends State<NotesScreen> {
     );
   }
 
+  void _openNotesSettings() {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => NotesSettingsScreen(notesState: widget.notesState),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final bg = isDark ? AppColors.darkBackground : AppColors.lightBackground;
-    final surfaceColor = isDark ? AppColors.darkSurface : AppColors.lightSurface;
+    final surfaceColor = isDark
+        ? AppColors.darkSurface
+        : AppColors.lightSurface;
     final borderColor = isDark ? AppColors.darkBorder : AppColors.lightBorder;
-    final textPrimary = isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary;
-    final textMuted = isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary;
+    final textPrimary = isDark
+        ? AppColors.darkTextPrimary
+        : AppColors.lightTextPrimary;
+    final textMuted = isDark
+        ? AppColors.darkTextSecondary
+        : AppColors.lightTextSecondary;
 
     return ListenableBuilder(
       listenable: widget.notesState,
@@ -131,7 +152,9 @@ class _NotesScreenState extends State<NotesScreen> {
                           ),
                           const SizedBox(height: 4),
                           Text(
-                            currentTab == 0 ? 'Personal Notes' : 'Smart Reminders',
+                            currentTab == 0
+                                ? 'Personal Notes'
+                                : 'Smart Reminders',
                             style: AppTypography.displayMedium.copyWith(
                               fontWeight: FontWeight.w800,
                               color: textPrimary,
@@ -141,33 +164,12 @@ class _NotesScreenState extends State<NotesScreen> {
                         ],
                       ),
                       const Spacer(),
-                      // Theme Indicator / Module badge
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                        decoration: BoxDecoration(
-                          color: surfaceColor,
-                          borderRadius: BorderRadius.circular(8),
-                          border: Border.all(color: borderColor),
-                        ),
-                        child: Row(
-                          children: [
-                            Icon(
-                              currentTab == 0 ? Icons.note_alt_rounded : Icons.alarm_rounded,
-                              size: 14,
-                              color: AppColors.crimson,
-                            ),
-                            const SizedBox(width: 6),
-                            Text(
-                              currentTab == 0
-                                  ? '${widget.notesState.notes.length} notes'
-                                  : '${widget.notesState.reminders.length} items',
-                              style: AppTypography.labelSmall.copyWith(
-                                color: textMuted,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ],
-                        ),
+                      // Settings Button
+                      IconButton(
+                        icon: const Icon(Icons.settings_outlined, size: 21),
+                        color: textMuted,
+                        tooltip: 'Notes & Labels Settings',
+                        onPressed: _openNotesSettings,
                       ),
                     ],
                   ),
@@ -175,7 +177,10 @@ class _NotesScreenState extends State<NotesScreen> {
 
                 // Segmented Tab Switch: Notes vs Reminders
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 6),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 4,
+                  ),
                   child: Container(
                     padding: const EdgeInsets.all(4),
                     decoration: BoxDecoration(
@@ -187,14 +192,17 @@ class _NotesScreenState extends State<NotesScreen> {
                       children: [
                         Expanded(
                           child: InkWell(
-                            onTap: () => widget.notesState.setActiveModuleTab(0),
+                            onTap: () =>
+                                widget.notesState.setActiveModuleTab(0),
                             borderRadius: BorderRadius.circular(9),
                             child: AnimatedContainer(
                               duration: const Duration(milliseconds: 180),
                               padding: const EdgeInsets.symmetric(vertical: 9),
                               alignment: Alignment.center,
                               decoration: BoxDecoration(
-                                color: currentTab == 0 ? AppColors.crimson : Colors.transparent,
+                                color: currentTab == 0
+                                    ? AppColors.crimson
+                                    : Colors.transparent,
                                 borderRadius: BorderRadius.circular(9),
                               ),
                               child: Row(
@@ -203,7 +211,9 @@ class _NotesScreenState extends State<NotesScreen> {
                                   Icon(
                                     Icons.edit_note_rounded,
                                     size: 18,
-                                    color: currentTab == 0 ? Colors.white : textMuted,
+                                    color: currentTab == 0
+                                        ? Colors.white
+                                        : textMuted,
                                   ),
                                   const SizedBox(width: 6),
                                   Text(
@@ -211,7 +221,9 @@ class _NotesScreenState extends State<NotesScreen> {
                                     style: TextStyle(
                                       fontWeight: FontWeight.w700,
                                       fontSize: 13,
-                                      color: currentTab == 0 ? Colors.white : textMuted,
+                                      color: currentTab == 0
+                                          ? Colors.white
+                                          : textMuted,
                                     ),
                                   ),
                                 ],
@@ -221,14 +233,17 @@ class _NotesScreenState extends State<NotesScreen> {
                         ),
                         Expanded(
                           child: InkWell(
-                            onTap: () => widget.notesState.setActiveModuleTab(1),
+                            onTap: () =>
+                                widget.notesState.setActiveModuleTab(1),
                             borderRadius: BorderRadius.circular(9),
                             child: AnimatedContainer(
                               duration: const Duration(milliseconds: 180),
                               padding: const EdgeInsets.symmetric(vertical: 9),
                               alignment: Alignment.center,
                               decoration: BoxDecoration(
-                                color: currentTab == 1 ? AppColors.crimson : Colors.transparent,
+                                color: currentTab == 1
+                                    ? AppColors.crimson
+                                    : Colors.transparent,
                                 borderRadius: BorderRadius.circular(9),
                               ),
                               child: Row(
@@ -237,7 +252,9 @@ class _NotesScreenState extends State<NotesScreen> {
                                   Icon(
                                     Icons.notifications_active_rounded,
                                     size: 18,
-                                    color: currentTab == 1 ? Colors.white : textMuted,
+                                    color: currentTab == 1
+                                        ? Colors.white
+                                        : textMuted,
                                   ),
                                   const SizedBox(width: 6),
                                   Text(
@@ -245,7 +262,9 @@ class _NotesScreenState extends State<NotesScreen> {
                                     style: TextStyle(
                                       fontWeight: FontWeight.w700,
                                       fontSize: 13,
-                                      color: currentTab == 1 ? Colors.white : textMuted,
+                                      color: currentTab == 1
+                                          ? Colors.white
+                                          : textMuted,
                                     ),
                                   ),
                                 ],
@@ -260,7 +279,7 @@ class _NotesScreenState extends State<NotesScreen> {
 
                 // Search Bar
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+                  padding: const EdgeInsets.fromLTRB(20, 10, 20, 8),
                   child: Container(
                     height: 42,
                     decoration: BoxDecoration(
@@ -272,7 +291,11 @@ class _NotesScreenState extends State<NotesScreen> {
                       controller: _searchController,
                       style: TextStyle(color: textPrimary, fontSize: 13),
                       decoration: InputDecoration(
-                        prefixIcon: Icon(Icons.search_rounded, size: 18, color: textMuted),
+                        prefixIcon: Icon(
+                          Icons.search_rounded,
+                          size: 18,
+                          color: textMuted,
+                        ),
                         suffixIcon: _searchController.text.isNotEmpty
                             ? IconButton(
                                 icon: const Icon(Icons.clear_rounded, size: 16),
@@ -286,10 +309,15 @@ class _NotesScreenState extends State<NotesScreen> {
                         hintText: currentTab == 0
                             ? 'Search note title or content...'
                             : 'Search reminders...',
-                        hintStyle: TextStyle(color: textMuted.withAlpha(150), fontSize: 13),
+                        hintStyle: TextStyle(
+                          color: textMuted.withAlpha(150),
+                          fontSize: 13,
+                        ),
                         border: InputBorder.none,
                         isDense: true,
-                        contentPadding: const EdgeInsets.symmetric(vertical: 11),
+                        contentPadding: const EdgeInsets.symmetric(
+                          vertical: 11,
+                        ),
                       ),
                     ),
                   ),
@@ -297,7 +325,9 @@ class _NotesScreenState extends State<NotesScreen> {
 
                 // Content View (Notes or Reminders)
                 Expanded(
-                  child: currentTab == 0 ? _buildNotesView() : _buildRemindersView(),
+                  child: currentTab == 0
+                      ? _buildNotesView()
+                      : _buildRemindersView(),
                 ),
               ],
             ),
@@ -306,7 +336,9 @@ class _NotesScreenState extends State<NotesScreen> {
             backgroundColor: AppColors.crimson,
             foregroundColor: Colors.white,
             elevation: 4,
-            icon: Icon(currentTab == 0 ? Icons.add_rounded : Icons.alarm_add_rounded),
+            icon: Icon(
+              currentTab == 0 ? Icons.add_rounded : Icons.alarm_add_rounded,
+            ),
             label: Text(
               currentTab == 0 ? 'New Note' : 'Add Reminder',
               style: const TextStyle(fontWeight: FontWeight.w700),
@@ -328,27 +360,80 @@ class _NotesScreenState extends State<NotesScreen> {
     final pinned = widget.notesState.pinnedNotes;
     final unpinned = widget.notesState.unpinnedNotes;
     final totalCount = widget.notesState.filteredNotes.length;
+    final labels = widget.notesState.labels;
+    final selectedLabelIds = widget.notesState.selectedLabelIds;
+
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final textMuted = isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary;
+    final surfaceColor = isDark
+        ? AppColors.darkSurface
+        : AppColors.lightSurface;
+    final borderColor = isDark ? AppColors.darkBorder : AppColors.lightBorder;
+    final textMuted = isDark
+        ? AppColors.darkTextSecondary
+        : AppColors.lightTextSecondary;
 
     return Column(
       children: [
-        // Category Chips
-        CategoryFilterChips(
-          selectedCategory: widget.notesState.selectedCategory,
-          onSelectCategory: (cat) => widget.notesState.setSelectedCategory(cat),
+        // Label Filter Chips Bar
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 4),
+          child: Row(
+            children: [
+              // "All" filter chip
+              Padding(
+                padding: const EdgeInsets.only(right: 8),
+                child: FilterChip(
+                  label: const Text('All Notes'),
+                  selected: selectedLabelIds.isEmpty,
+                  onSelected: (_) => widget.notesState.clearLabelFilters(),
+                  selectedColor: AppColors.crimson,
+                  backgroundColor: surfaceColor,
+                  labelStyle: TextStyle(
+                    fontSize: 12,
+                    fontWeight: selectedLabelIds.isEmpty
+                        ? FontWeight.w700
+                        : FontWeight.w500,
+                    color: selectedLabelIds.isEmpty ? Colors.white : textMuted,
+                  ),
+                  side: BorderSide(
+                    color: selectedLabelIds.isEmpty
+                        ? AppColors.crimson
+                        : borderColor,
+                  ),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 4,
+                    vertical: 2,
+                  ),
+                ),
+              ),
+              // User Labels
+              ...labels.map((label) {
+                final isSelected = selectedLabelIds.contains(label.id);
+                return Padding(
+                  padding: const EdgeInsets.only(right: 8),
+                  child: LabelChipWidget(
+                    label: label,
+                    isSelected: isSelected,
+                    onTap: () => widget.notesState.toggleLabelFilter(label.id),
+                  ),
+                );
+              }),
+            ],
+          ),
         ),
-        const SizedBox(height: 10),
+        const SizedBox(height: 6),
 
         Expanded(
           child: totalCount == 0
               ? _buildEmptyState(
                   icon: Icons.note_alt_outlined,
                   title: 'No notes found',
-                  subtitle: widget.notesState.searchQuery.isNotEmpty ||
-                          widget.notesState.selectedCategory != null
-                      ? 'Try adjusting your search query or category filter.'
-                      : 'Capture your thoughts, workouts, nutrition plans and ideas.',
+                  subtitle:
+                      widget.notesState.searchQuery.isNotEmpty ||
+                          selectedLabelIds.isNotEmpty
+                      ? 'No notes match your current search and label filters.'
+                      : 'Capture your thoughts, rich formatted routines, and workout plans.',
                   actionText: 'Create Your First Note',
                   onAction: () => _openNoteEditor(),
                 )
@@ -361,7 +446,11 @@ class _NotesScreenState extends State<NotesScreen> {
                         padding: const EdgeInsets.only(bottom: 10),
                         child: Row(
                           children: [
-                            const Icon(Icons.push_pin_rounded, size: 14, color: AppColors.crimson),
+                            const Icon(
+                              Icons.push_pin_rounded,
+                              size: 14,
+                              color: AppColors.crimson,
+                            ),
                             const SizedBox(width: 6),
                             Text(
                               'PINNED NOTES',
@@ -375,12 +464,16 @@ class _NotesScreenState extends State<NotesScreen> {
                           ],
                         ),
                       ),
-                      ...pinned.map((n) => NoteCard(
-                            key: ValueKey(n.id),
-                            note: n,
-                            onTap: () => _openNoteEditor(n),
-                            onTogglePin: () => widget.notesState.togglePinNote(n.id),
-                          )),
+                      ...pinned.map(
+                        (n) => NoteCard(
+                          key: ValueKey(n.id),
+                          note: n,
+                          notesState: widget.notesState,
+                          onTap: () => _openNoteEditor(n),
+                          onTogglePin: () =>
+                              widget.notesState.togglePinNote(n.id),
+                        ),
+                      ),
                       const SizedBox(height: 14),
                     ],
 
@@ -399,12 +492,16 @@ class _NotesScreenState extends State<NotesScreen> {
                             ),
                           ),
                         ),
-                      ...unpinned.map((n) => NoteCard(
-                            key: ValueKey(n.id),
-                            note: n,
-                            onTap: () => _openNoteEditor(n),
-                            onTogglePin: () => widget.notesState.togglePinNote(n.id),
-                          )),
+                      ...unpinned.map(
+                        (n) => NoteCard(
+                          key: ValueKey(n.id),
+                          note: n,
+                          notesState: widget.notesState,
+                          onTap: () => _openNoteEditor(n),
+                          onTogglePin: () =>
+                              widget.notesState.togglePinNote(n.id),
+                        ),
+                      ),
                     ],
                   ],
                 ),
@@ -419,7 +516,9 @@ class _NotesScreenState extends State<NotesScreen> {
     final completed = widget.notesState.completedReminders;
     final totalCount = widget.notesState.filteredReminders.length;
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final textMuted = isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary;
+    final textMuted = isDark
+        ? AppColors.darkTextSecondary
+        : AppColors.lightTextSecondary;
 
     if (totalCount == 0) {
       return _buildEmptyState(
@@ -427,7 +526,7 @@ class _NotesScreenState extends State<NotesScreen> {
         title: 'No reminders set',
         subtitle: widget.notesState.searchQuery.isNotEmpty
             ? 'No reminders match your search.'
-            : 'Schedule pre-workout fuel, supplements, or mobility sessions.',
+            : 'Schedule pre-workout fuel, supplements, or mobility sessions with advance alerts.',
         actionText: 'Set a Reminder',
         onAction: () => _openReminderDialog(),
       );
@@ -442,7 +541,11 @@ class _NotesScreenState extends State<NotesScreen> {
             padding: const EdgeInsets.only(bottom: 8, top: 4),
             child: Row(
               children: [
-                const Icon(Icons.warning_amber_rounded, size: 14, color: AppColors.crimson),
+                const Icon(
+                  Icons.warning_amber_rounded,
+                  size: 14,
+                  color: AppColors.crimson,
+                ),
                 const SizedBox(width: 6),
                 Text(
                   'OVERDUE (${overdue.length})',
@@ -456,13 +559,16 @@ class _NotesScreenState extends State<NotesScreen> {
               ],
             ),
           ),
-          ...overdue.map((r) => ReminderCard(
-                key: ValueKey(r.id),
-                reminder: r,
-                onToggleComplete: () => widget.notesState.toggleCompleteReminder(r.id),
-                onEdit: () => _openReminderDialog(r),
-                onDelete: () => widget.notesState.deleteReminder(r.id),
-              )),
+          ...overdue.map(
+            (r) => ReminderCard(
+              key: ValueKey(r.id),
+              reminder: r,
+              onToggleComplete: () =>
+                  widget.notesState.toggleCompleteReminder(r.id),
+              onEdit: () => _openReminderDialog(r),
+              onDelete: () => widget.notesState.deleteReminder(r.id),
+            ),
+          ),
           const SizedBox(height: 14),
         ],
 
@@ -472,7 +578,11 @@ class _NotesScreenState extends State<NotesScreen> {
             padding: const EdgeInsets.only(bottom: 8, top: 4),
             child: Row(
               children: [
-                const Icon(Icons.schedule_rounded, size: 14, color: AppColors.crimson),
+                const Icon(
+                  Icons.schedule_rounded,
+                  size: 14,
+                  color: AppColors.crimson,
+                ),
                 const SizedBox(width: 6),
                 Text(
                   'UPCOMING (${upcoming.length})',
@@ -486,13 +596,16 @@ class _NotesScreenState extends State<NotesScreen> {
               ],
             ),
           ),
-          ...upcoming.map((r) => ReminderCard(
-                key: ValueKey(r.id),
-                reminder: r,
-                onToggleComplete: () => widget.notesState.toggleCompleteReminder(r.id),
-                onEdit: () => _openReminderDialog(r),
-                onDelete: () => widget.notesState.deleteReminder(r.id),
-              )),
+          ...upcoming.map(
+            (r) => ReminderCard(
+              key: ValueKey(r.id),
+              reminder: r,
+              onToggleComplete: () =>
+                  widget.notesState.toggleCompleteReminder(r.id),
+              onEdit: () => _openReminderDialog(r),
+              onDelete: () => widget.notesState.deleteReminder(r.id),
+            ),
+          ),
           const SizedBox(height: 14),
         ],
 
@@ -532,13 +645,16 @@ class _NotesScreenState extends State<NotesScreen> {
           ),
           if (_showCompletedReminders) ...[
             const SizedBox(height: 4),
-            ...completed.map((r) => ReminderCard(
-                  key: ValueKey(r.id),
-                  reminder: r,
-                  onToggleComplete: () => widget.notesState.toggleCompleteReminder(r.id),
-                  onEdit: () => _openReminderDialog(r),
-                  onDelete: () => widget.notesState.deleteReminder(r.id),
-                )),
+            ...completed.map(
+              (r) => ReminderCard(
+                key: ValueKey(r.id),
+                reminder: r,
+                onToggleComplete: () =>
+                    widget.notesState.toggleCompleteReminder(r.id),
+                onEdit: () => _openReminderDialog(r),
+                onDelete: () => widget.notesState.deleteReminder(r.id),
+              ),
+            ),
           ],
         ],
       ],
@@ -553,10 +669,16 @@ class _NotesScreenState extends State<NotesScreen> {
     required VoidCallback onAction,
   }) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final surfaceColor = isDark ? AppColors.darkSurface : AppColors.lightSurface;
+    final surfaceColor = isDark
+        ? AppColors.darkSurface
+        : AppColors.lightSurface;
     final borderColor = isDark ? AppColors.darkBorder : AppColors.lightBorder;
-    final textPrimary = isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary;
-    final textMuted = isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary;
+    final textPrimary = isDark
+        ? AppColors.darkTextPrimary
+        : AppColors.lightTextPrimary;
+    final textMuted = isDark
+        ? AppColors.darkTextSecondary
+        : AppColors.lightTextSecondary;
 
     return Center(
       child: SingleChildScrollView(
@@ -601,7 +723,10 @@ class _NotesScreenState extends State<NotesScreen> {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
-                padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 18,
+                  vertical: 12,
+                ),
               ),
             ),
           ],

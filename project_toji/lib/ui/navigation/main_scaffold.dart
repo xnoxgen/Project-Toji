@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_typography.dart';
 import '../../state/physique_state.dart';
@@ -14,11 +15,13 @@ class MainScaffold extends StatefulWidget {
   const MainScaffold({super.key, required this.state});
 
   @override
-  State<MainScaffold> createState() => _MainScaffoldState();
+  State<MainScaffold> createState() => MainScaffoldState();
 }
 
-class _MainScaffoldState extends State<MainScaffold> {
+class MainScaffoldState extends State<MainScaffold> {
   int _currentIndex = 0;
+
+  void navigateToTab(int index) => _navigateToTab(index);
 
   void _navigateToTab(int index) {
     setState(() {
@@ -29,9 +32,13 @@ class _MainScaffoldState extends State<MainScaffold> {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final surfaceColor = isDark ? AppColors.darkSurface : AppColors.lightSurface;
+    final surfaceColor = isDark
+        ? AppColors.darkSurface
+        : AppColors.lightSurface;
     final borderColor = isDark ? AppColors.darkBorder : AppColors.lightBorder;
-    final textMuted = isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary;
+    final textMuted = isDark
+        ? AppColors.darkTextSecondary
+        : AppColors.lightTextSecondary;
 
     final pages = [
       DashboardScreen(state: widget.state, onNavigateTab: _navigateToTab),
@@ -60,7 +67,10 @@ class _MainScaffoldState extends State<MainScaffold> {
                     child: Column(
                       children: [
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 4,
+                          ),
                           decoration: BoxDecoration(
                             color: AppColors.crimson,
                             borderRadius: BorderRadius.circular(6),
@@ -81,37 +91,49 @@ class _MainScaffoldState extends State<MainScaffold> {
                   destinations: const [
                     NavigationRailDestination(
                       icon: Icon(Icons.dashboard_outlined),
-                      selectedIcon: Icon(Icons.dashboard_rounded, color: AppColors.crimson),
+                      selectedIcon: Icon(
+                        Icons.dashboard_rounded,
+                        color: AppColors.crimson,
+                      ),
                       label: Text('Home'),
                     ),
                     NavigationRailDestination(
                       icon: Icon(Icons.calendar_today_outlined),
-                      selectedIcon: Icon(Icons.calendar_month_rounded, color: AppColors.crimson),
+                      selectedIcon: Icon(
+                        Icons.calendar_month_rounded,
+                        color: AppColors.crimson,
+                      ),
                       label: Text('Planner'),
                     ),
                     NavigationRailDestination(
                       icon: Icon(Icons.trending_up_rounded),
-                      selectedIcon: Icon(Icons.show_chart_rounded, color: AppColors.crimson),
+                      selectedIcon: Icon(
+                        Icons.show_chart_rounded,
+                        color: AppColors.crimson,
+                      ),
                       label: Text('Progress'),
                     ),
                     NavigationRailDestination(
                       icon: Icon(Icons.local_fire_department_outlined),
-                      selectedIcon: Icon(Icons.local_fire_department_rounded, color: AppColors.crimson),
+                      selectedIcon: Icon(
+                        Icons.local_fire_department_rounded,
+                        color: AppColors.crimson,
+                      ),
                       label: Text('Streak'),
                     ),
                     NavigationRailDestination(
                       icon: Icon(Icons.settings_outlined),
-                      selectedIcon: Icon(Icons.settings_rounded, color: AppColors.crimson),
+                      selectedIcon: Icon(
+                        Icons.settings_rounded,
+                        color: AppColors.crimson,
+                      ),
                       label: Text('Settings'),
                     ),
                   ],
                 ),
                 const VerticalDivider(width: 1),
                 Expanded(
-                  child: IndexedStack(
-                    index: _currentIndex,
-                    children: pages,
-                  ),
+                  child: IndexedStack(index: _currentIndex, children: pages),
                 ),
               ],
             ),
@@ -120,10 +142,7 @@ class _MainScaffoldState extends State<MainScaffold> {
 
         // Mobile layout with clean BottomNavigationBar
         return Scaffold(
-          body: IndexedStack(
-            index: _currentIndex,
-            children: pages,
-          ),
+          body: IndexedStack(index: _currentIndex, children: pages),
           bottomNavigationBar: Container(
             decoration: BoxDecoration(
               color: surfaceColor,
@@ -163,7 +182,10 @@ class _MainScaffoldState extends State<MainScaffold> {
                 ),
                 BottomNavigationBarItem(
                   icon: Icon(Icons.local_fire_department_outlined, size: 22),
-                  activeIcon: Icon(Icons.local_fire_department_rounded, size: 22),
+                  activeIcon: Icon(
+                    Icons.local_fire_department_rounded,
+                    size: 22,
+                  ),
                   label: 'Streak',
                 ),
                 BottomNavigationBarItem(
@@ -179,4 +201,3 @@ class _MainScaffoldState extends State<MainScaffold> {
     );
   }
 }
-

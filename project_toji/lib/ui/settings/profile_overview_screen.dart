@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_typography.dart';
 import '../../state/physique_state.dart';
@@ -13,11 +14,19 @@ class ProfileOverviewScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final surfaceColor = isDark ? AppColors.darkSurface : AppColors.lightSurface;
-    final elevatedColor = isDark ? AppColors.darkSurfaceElevated : AppColors.lightSurfaceElevated;
+    final surfaceColor = isDark
+        ? AppColors.darkSurface
+        : AppColors.lightSurface;
+    final elevatedColor = isDark
+        ? AppColors.darkSurfaceElevated
+        : AppColors.lightSurfaceElevated;
     final borderColor = isDark ? AppColors.darkBorder : AppColors.lightBorder;
-    final textColor = isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary;
-    final textMuted = isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary;
+    final textColor = isDark
+        ? AppColors.darkTextPrimary
+        : AppColors.lightTextPrimary;
+    final textMuted = isDark
+        ? AppColors.darkTextSecondary
+        : AppColors.lightTextSecondary;
 
     final p = state.profile;
 
@@ -28,7 +37,8 @@ class ProfileOverviewScreen extends StatelessWidget {
         'target': p.targetWeightKg,
         'unit': 'kg',
         'type': 'weight',
-        'isLoss': (p.targetWeightKg != null && p.targetWeightKg! < p.currentWeightKg),
+        'isLoss':
+            (p.targetWeightKg != null && p.targetWeightKg! < p.currentWeightKg),
       },
       {
         'label': 'Waist',
@@ -133,7 +143,9 @@ class ProfileOverviewScreen extends StatelessWidget {
                     children: [
                       CircleAvatar(
                         radius: 34,
-                        backgroundColor: AppColors.crimson.withValues(alpha: 0.15),
+                        backgroundColor: AppColors.crimson.withValues(
+                          alpha: 0.15,
+                        ),
                         child: Text(
                           p.name.isNotEmpty ? p.name[0].toUpperCase() : 'P',
                           style: AppTypography.displayMedium.copyWith(
@@ -154,15 +166,22 @@ class ProfileOverviewScreen extends StatelessWidget {
                       const SizedBox(height: 4),
                       Text(
                         '${p.age} years • ${p.sex} • ${p.heightCm.toStringAsFixed(0)} cm • ${p.currentWeightKg.toStringAsFixed(1)} kg',
-                        style: AppTypography.bodyMedium.copyWith(color: textMuted),
+                        style: AppTypography.bodyMedium.copyWith(
+                          color: textMuted,
+                        ),
                       ),
                       const SizedBox(height: 12),
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 4,
+                        ),
                         decoration: BoxDecoration(
                           color: AppColors.crimson.withValues(alpha: 0.12),
                           borderRadius: BorderRadius.circular(20),
-                          border: Border.all(color: AppColors.crimson.withValues(alpha: 0.3)),
+                          border: Border.all(
+                            color: AppColors.crimson.withValues(alpha: 0.3),
+                          ),
                         ),
                         child: Text(
                           _formatGoal(p.fitnessGoal).toUpperCase(),
@@ -192,7 +211,11 @@ class ProfileOverviewScreen extends StatelessWidget {
                       children: [
                         Row(
                           children: [
-                            const Icon(Icons.flag_outlined, size: 16, color: AppColors.crimson),
+                            const Icon(
+                              Icons.flag_outlined,
+                              size: 16,
+                              color: AppColors.crimson,
+                            ),
                             const SizedBox(width: 6),
                             Text(
                               'TARGET PHYSIQUE VISION',
@@ -286,7 +309,10 @@ class ProfileOverviewScreen extends StatelessWidget {
                             ),
                             if (delta != null) ...[
                               Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                  vertical: 3,
+                                ),
                                 decoration: BoxDecoration(
                                   color: elevatedColor,
                                   borderRadius: BorderRadius.circular(6),
@@ -297,7 +323,9 @@ class ProfileOverviewScreen extends StatelessWidget {
                                       ? 'GOAL REACHED ✓'
                                       : '${delta > 0 ? "+" : ""}${delta.toStringAsFixed(1)} $unit remaining',
                                   style: AppTypography.labelSmall.copyWith(
-                                    color: delta == 0 ? AppColors.success : AppColors.crimson,
+                                    color: delta == 0
+                                        ? AppColors.success
+                                        : AppColors.crimson,
                                     fontWeight: FontWeight.w700,
                                     fontSize: 10,
                                   ),
@@ -315,11 +343,16 @@ class ProfileOverviewScreen extends StatelessWidget {
                               children: [
                                 Text(
                                   'Current',
-                                  style: AppTypography.labelSmall.copyWith(color: textMuted, fontSize: 10),
+                                  style: AppTypography.labelSmall.copyWith(
+                                    color: textMuted,
+                                    fontSize: 10,
+                                  ),
                                 ),
                                 const SizedBox(height: 2),
                                 Text(
-                                  current != null ? '${current.toStringAsFixed(1)} $unit' : '--',
+                                  current != null
+                                      ? '${current.toStringAsFixed(1)} $unit'
+                                      : '--',
                                   style: AppTypography.titleLarge.copyWith(
                                     color: textColor,
                                     fontSize: 18,
@@ -328,19 +361,30 @@ class ProfileOverviewScreen extends StatelessWidget {
                                 ),
                               ],
                             ),
-                            Icon(Icons.arrow_forward_rounded, size: 16, color: textMuted),
+                            Icon(
+                              Icons.arrow_forward_rounded,
+                              size: 16,
+                              color: textMuted,
+                            ),
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.end,
                               children: [
                                 Text(
                                   'Target',
-                                  style: AppTypography.labelSmall.copyWith(color: textMuted, fontSize: 10),
+                                  style: AppTypography.labelSmall.copyWith(
+                                    color: textMuted,
+                                    fontSize: 10,
+                                  ),
                                 ),
                                 const SizedBox(height: 2),
                                 Text(
-                                  target != null ? '${target.toStringAsFixed(1)} $unit' : 'Not set',
+                                  target != null
+                                      ? '${target.toStringAsFixed(1)} $unit'
+                                      : 'Not set',
                                   style: AppTypography.titleLarge.copyWith(
-                                    color: target != null ? AppColors.crimson : textMuted,
+                                    color: target != null
+                                        ? AppColors.crimson
+                                        : textMuted,
                                     fontSize: 18,
                                     fontWeight: FontWeight.w700,
                                   ),
@@ -394,4 +438,3 @@ class ProfileOverviewScreen extends StatelessWidget {
     }
   }
 }
-

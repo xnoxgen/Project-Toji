@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
 
@@ -24,9 +25,13 @@ class CategoryFilterChips extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final surfaceColor = isDark ? AppColors.darkSurface : AppColors.lightSurface;
+    final surfaceColor = isDark
+        ? AppColors.darkSurface
+        : AppColors.lightSurface;
     final borderColor = isDark ? AppColors.darkBorder : AppColors.lightBorder;
-    final textMuted = isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary;
+    final textMuted = isDark
+        ? AppColors.darkTextSecondary
+        : AppColors.lightTextSecondary;
 
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
@@ -35,7 +40,8 @@ class CategoryFilterChips extends StatelessWidget {
         children: categories.map((cat) {
           final name = cat['name'] as String;
           final icon = cat['icon'] as IconData;
-          final isSelected = (selectedCategory == null && name == 'All') ||
+          final isSelected =
+              (selectedCategory == null && name == 'All') ||
               (selectedCategory?.toLowerCase() == name.toLowerCase());
 
           return Padding(
@@ -53,7 +59,10 @@ class CategoryFilterChips extends StatelessWidget {
                 },
                 child: AnimatedContainer(
                   duration: const Duration(milliseconds: 180),
-                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 14,
+                    vertical: 7,
+                  ),
                   decoration: BoxDecoration(
                     color: isSelected ? AppColors.crimson : surfaceColor,
                     borderRadius: BorderRadius.circular(20),
@@ -75,7 +84,9 @@ class CategoryFilterChips extends StatelessWidget {
                         name,
                         style: AppTypography.labelSmall.copyWith(
                           color: isSelected ? Colors.white : textMuted,
-                          fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+                          fontWeight: isSelected
+                              ? FontWeight.w700
+                              : FontWeight.w500,
                           fontSize: 12,
                         ),
                       ),

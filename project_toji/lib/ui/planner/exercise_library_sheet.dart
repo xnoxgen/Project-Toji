@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_typography.dart';
 import '../../data/models/exercise_definition.dart';
@@ -44,17 +45,23 @@ class _ExerciseLibrarySheetState extends State<ExerciseLibrarySheet> {
                   children: [
                     TextField(
                       controller: nameCtrl,
-                      decoration: const InputDecoration(labelText: 'Exercise Name *'),
+                      decoration: const InputDecoration(
+                        labelText: 'Exercise Name *',
+                      ),
                     ),
                     const SizedBox(height: 12),
                     DropdownButtonFormField<String>(
                       initialValue: muscleGroup,
-                      decoration: const InputDecoration(labelText: 'Muscle Group'),
+                      decoration: const InputDecoration(
+                        labelText: 'Muscle Group',
+                      ),
                       items: MuscleGroups.all.map((g) {
                         return DropdownMenuItem(value: g, child: Text(g));
                       }).toList(),
                       onChanged: (val) {
-                        if (val != null) setDialogState(() => muscleGroup = val);
+                        if (val != null) {
+                          setDialogState(() => muscleGroup = val);
+                        }
                       },
                     ),
                     const SizedBox(height: 12),
@@ -64,14 +71,18 @@ class _ExerciseLibrarySheetState extends State<ExerciseLibrarySheet> {
                           child: TextField(
                             controller: setsCtrl,
                             keyboardType: TextInputType.number,
-                            decoration: const InputDecoration(labelText: 'Default Sets'),
+                            decoration: const InputDecoration(
+                              labelText: 'Default Sets',
+                            ),
                           ),
                         ),
                         const SizedBox(width: 8),
                         Expanded(
                           child: TextField(
                             controller: repsCtrl,
-                            decoration: const InputDecoration(labelText: 'Target Reps'),
+                            decoration: const InputDecoration(
+                              labelText: 'Target Reps',
+                            ),
                           ),
                         ),
                       ],
@@ -80,13 +91,17 @@ class _ExerciseLibrarySheetState extends State<ExerciseLibrarySheet> {
                     TextField(
                       controller: restCtrl,
                       keyboardType: TextInputType.number,
-                      decoration: const InputDecoration(labelText: 'Rest (seconds)'),
+                      decoration: const InputDecoration(
+                        labelText: 'Rest (seconds)',
+                      ),
                     ),
                     const SizedBox(height: 12),
                     TextField(
                       controller: instructionsCtrl,
                       maxLines: 2,
-                      decoration: const InputDecoration(labelText: 'Notes or instructions'),
+                      decoration: const InputDecoration(
+                        labelText: 'Notes or instructions',
+                      ),
                     ),
                   ],
                 ),
@@ -106,7 +121,9 @@ class _ExerciseLibrarySheetState extends State<ExerciseLibrarySheet> {
                       muscleGroup: muscleGroup,
                       isCustom: true,
                       defaultSets: int.tryParse(setsCtrl.text) ?? 3,
-                      defaultReps: repsCtrl.text.isNotEmpty ? repsCtrl.text : '8-12',
+                      defaultReps: repsCtrl.text.isNotEmpty
+                          ? repsCtrl.text
+                          : '8-12',
                       defaultRestSeconds: int.tryParse(restCtrl.text) ?? 90,
                       instructions: instructionsCtrl.text.trim(),
                     );
@@ -127,18 +144,29 @@ class _ExerciseLibrarySheetState extends State<ExerciseLibrarySheet> {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final surfaceColor = isDark ? AppColors.darkSurface : AppColors.lightSurface;
-    final elevatedColor = isDark ? AppColors.darkSurfaceElevated : AppColors.lightSurfaceElevated;
+    final surfaceColor = isDark
+        ? AppColors.darkSurface
+        : AppColors.lightSurface;
+    final elevatedColor = isDark
+        ? AppColors.darkSurfaceElevated
+        : AppColors.lightSurfaceElevated;
     final borderColor = isDark ? AppColors.darkBorder : AppColors.lightBorder;
-    final textColor = isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary;
-    final textMuted = isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary;
+    final textColor = isDark
+        ? AppColors.darkTextPrimary
+        : AppColors.lightTextPrimary;
+    final textMuted = isDark
+        ? AppColors.darkTextSecondary
+        : AppColors.lightTextSecondary;
 
     final all = widget.state.allExercises;
     final query = _searchController.text.trim().toLowerCase();
 
     final filtered = all.where((ex) {
-      final matchesGroup = _selectedMuscleGroup == 'All' || ex.muscleGroup == _selectedMuscleGroup;
-      final matchesQuery = query.isEmpty ||
+      final matchesGroup =
+          _selectedMuscleGroup == 'All' ||
+          ex.muscleGroup == _selectedMuscleGroup;
+      final matchesQuery =
+          query.isEmpty ||
           ex.name.toLowerCase().contains(query) ||
           ex.muscleGroup.toLowerCase().contains(query);
       return matchesGroup && matchesQuery;
@@ -176,11 +204,16 @@ class _ExerciseLibrarySheetState extends State<ExerciseLibrarySheet> {
                   children: [
                     Text(
                       'Exercise Library',
-                      style: AppTypography.titleLarge.copyWith(color: textColor),
+                      style: AppTypography.titleLarge.copyWith(
+                        color: textColor,
+                      ),
                     ),
                     Text(
                       'Choose an exercise or create your own',
-                      style: AppTypography.bodyMedium.copyWith(color: textMuted, fontSize: 12),
+                      style: AppTypography.bodyMedium.copyWith(
+                        color: textMuted,
+                        fontSize: 12,
+                      ),
                     ),
                   ],
                 ),
@@ -188,7 +221,9 @@ class _ExerciseLibrarySheetState extends State<ExerciseLibrarySheet> {
                   onPressed: _showCreateCustomExerciseDialog,
                   icon: const Icon(Icons.add, size: 16),
                   label: const Text('Custom'),
-                  style: TextButton.styleFrom(foregroundColor: AppColors.crimson),
+                  style: TextButton.styleFrom(
+                    foregroundColor: AppColors.crimson,
+                  ),
                 ),
               ],
             ),
@@ -214,7 +249,10 @@ class _ExerciseLibrarySheetState extends State<ExerciseLibrarySheet> {
                     : null,
                 filled: true,
                 fillColor: elevatedColor,
-                contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 14,
+                  vertical: 10,
+                ),
               ),
             ),
           ),
@@ -235,7 +273,10 @@ class _ExerciseLibrarySheetState extends State<ExerciseLibrarySheet> {
                   onTap: () => setState(() => _selectedMuscleGroup = group),
                   borderRadius: BorderRadius.circular(20),
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 6,
+                    ),
                     decoration: BoxDecoration(
                       color: isSelected
                           ? AppColors.crimson
@@ -249,7 +290,9 @@ class _ExerciseLibrarySheetState extends State<ExerciseLibrarySheet> {
                       group,
                       style: AppTypography.labelSmall.copyWith(
                         color: isSelected ? Colors.white : textMuted,
-                        fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+                        fontWeight: isSelected
+                            ? FontWeight.w700
+                            : FontWeight.w500,
                         fontSize: 11,
                       ),
                     ),
@@ -268,9 +311,16 @@ class _ExerciseLibrarySheetState extends State<ExerciseLibrarySheet> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.search_off_rounded, size: 40, color: textMuted),
+                        Icon(
+                          Icons.search_off_rounded,
+                          size: 40,
+                          color: textMuted,
+                        ),
                         const SizedBox(height: 12),
-                        Text('No exercises found', style: TextStyle(color: textMuted)),
+                        Text(
+                          'No exercises found',
+                          style: TextStyle(color: textMuted),
+                        ),
                         const SizedBox(height: 8),
                         TextButton(
                           onPressed: _showCreateCustomExerciseDialog,
@@ -280,13 +330,19 @@ class _ExerciseLibrarySheetState extends State<ExerciseLibrarySheet> {
                     ),
                   )
                 : ListView.separated(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 12,
+                    ),
                     itemCount: filtered.length,
                     separatorBuilder: (ctx, i) => const Divider(height: 1),
                     itemBuilder: (ctx, index) {
                       final ex = filtered[index];
                       return ListTile(
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 4,
+                        ),
                         title: Row(
                           children: [
                             Text(
@@ -299,9 +355,14 @@ class _ExerciseLibrarySheetState extends State<ExerciseLibrarySheet> {
                             if (ex.isCustom) ...[
                               const SizedBox(width: 6),
                               Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 5,
+                                  vertical: 1,
+                                ),
                                 decoration: BoxDecoration(
-                                  color: AppColors.crimson.withValues(alpha: 0.15),
+                                  color: AppColors.crimson.withValues(
+                                    alpha: 0.15,
+                                  ),
                                   borderRadius: BorderRadius.circular(4),
                                 ),
                                 child: Text(
@@ -322,8 +383,11 @@ class _ExerciseLibrarySheetState extends State<ExerciseLibrarySheet> {
                             fontSize: 12,
                           ),
                         ),
-                        trailing: const Icon(Icons.add_circle_outline_rounded,
-                            color: AppColors.crimson, size: 22),
+                        trailing: const Icon(
+                          Icons.add_circle_outline_rounded,
+                          color: AppColors.crimson,
+                          size: 22,
+                        ),
                         onTap: () {
                           Navigator.of(context).pop(ex);
                         },

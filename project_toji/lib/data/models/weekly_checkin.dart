@@ -95,10 +95,8 @@ class WeeklyCheckIn {
       neckCm: neckCm ?? this.neckCm,
       workoutConsistencyRating:
           workoutConsistencyRating ?? this.workoutConsistencyRating,
-      energyRecoveryRating:
-          energyRecoveryRating ?? this.energyRecoveryRating,
+      energyRecoveryRating: energyRecoveryRating ?? this.energyRecoveryRating,
       notes: notes ?? this.notes,
     );
   }
 }
-

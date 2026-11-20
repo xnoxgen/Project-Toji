@@ -66,7 +66,8 @@ class DefaultData {
       defaultSets: 3,
       defaultReps: '8-12',
       defaultRestSeconds: 90,
-      instructions: 'Focus on clavicular head contraction. Control negative descent.',
+      instructions:
+          'Focus on clavicular head contraction. Control negative descent.',
     ),
     const ExerciseDefinition(
       id: 'chest_cable_fly',
@@ -93,7 +94,8 @@ class DefaultData {
       defaultSets: 3,
       defaultReps: '15-20',
       defaultRestSeconds: 60,
-      instructions: 'Full lockout at top, chest touches ground at bottom, core rigid.',
+      instructions:
+          'Full lockout at top, chest touches ground at bottom, core rigid.',
     ),
 
     // Back
@@ -140,7 +142,8 @@ class DefaultData {
       defaultSets: 3,
       defaultReps: '6-10',
       defaultRestSeconds: 120,
-      instructions: 'Hinge hips to 45 degrees, pull bar to lower abdomen with flat back.',
+      instructions:
+          'Hinge hips to 45 degrees, pull bar to lower abdomen with flat back.',
     ),
     const ExerciseDefinition(
       id: 'back_single_arm_db_row',
@@ -205,7 +208,8 @@ class DefaultData {
       defaultSets: 3,
       defaultReps: '12-15',
       defaultRestSeconds: 60,
-      instructions: 'Hinge hips or lie prone on incline bench, sweep dumbbells outward.',
+      instructions:
+          'Hinge hips or lie prone on incline bench, sweep dumbbells outward.',
     ),
     const ExerciseDefinition(
       id: 'shoulder_face_pull',
@@ -243,7 +247,8 @@ class DefaultData {
       defaultSets: 3,
       defaultReps: '8-12',
       defaultRestSeconds: 75,
-      instructions: 'Angled grip reduces wrist strain. Keep elbows pinned to sides.',
+      instructions:
+          'Angled grip reduces wrist strain. Keep elbows pinned to sides.',
     ),
     const ExerciseDefinition(
       id: 'biceps_incline_curl',
@@ -299,7 +304,8 @@ class DefaultData {
       defaultSets: 3,
       defaultReps: '8-12',
       defaultRestSeconds: 90,
-      instructions: 'EZ-bar to crown of head or slightly behind bench, extend elbows.',
+      instructions:
+          'EZ-bar to crown of head or slightly behind bench, extend elbows.',
     ),
 
     // Forearms
@@ -366,7 +372,8 @@ class DefaultData {
       defaultSets: 3,
       defaultReps: '8-12',
       defaultRestSeconds: 120,
-      instructions: 'Deep knee flexion, great quad overload with spinal stability.',
+      instructions:
+          'Deep knee flexion, great quad overload with spinal stability.',
     ),
     const ExerciseDefinition(
       id: 'legs_bulgarian_split_squat',
@@ -375,7 +382,8 @@ class DefaultData {
       defaultSets: 3,
       defaultReps: '8-10',
       defaultRestSeconds: 90,
-      instructions: 'Rear foot elevated on bench, descend until front thigh is parallel.',
+      instructions:
+          'Rear foot elevated on bench, descend until front thigh is parallel.',
     ),
     const ExerciseDefinition(
       id: 'legs_leg_curl',
@@ -846,4 +854,3 @@ class DefaultData {
     };
   }
 }
-

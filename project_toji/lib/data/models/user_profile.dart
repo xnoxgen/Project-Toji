@@ -16,7 +16,8 @@ class UserProfile {
   final double? neckCm;
 
   // Fitness Goal
-  final String fitnessGoal; // muscle_gain, fat_loss, recomposition, general_fitness
+  final String
+  fitnessGoal; // muscle_gain, fat_loss, recomposition, general_fitness
   final String targetPhysiqueDescription;
 
   // Ideal target measurements (cm)
@@ -171,4 +172,3 @@ class UserProfile {
     );
   }
 }
-
