@@ -17,6 +17,11 @@ Works 100% offline with persistent local storage, zero accounts, and zero cloud 
 - **Streak & Consistency Tracker**: Current streak, longest streak, total completed sessions, and interactive monthly calendar highlighting active workout days.
 - **Progress & Analytics**: High-DPI interactive cubic bezier charts with gradient fills, period selectors (7d, 30d, 3m, 6m, 1y), target comparison lines, and date-based measurement history.
 - **Weekly Check-In System**: 7-day review prompt to record weight, waist, chest, biceps, consistency, and energy/recovery ratings.
+- **Notes & Smart Reminders Module**: Dedicated top-level module featuring:
+  - **Notes Dashboard**: Real-time search, pinned notes, categorized collections (Personal, College, Work, Gym, Other), and auto-saving note editor.
+  - **Smart Reminders**: Prioritized alerts (High, Medium, Low), date & time scheduling, completion tracking, and automatic overdue status detection.
+  - **Offline Local Notifications**: Real Android scheduled background notifications via `flutter_local_notifications` and `timezone`.
+- **Top-Level Dual Navigation Shell**: Smooth `IndexedStack` navigation between **Notes** and the complete **Gym** application with 100% state preservation and zero UI regressions.
 - **Offline Local Persistence & Backups**: Instant JSON export and restore for full data backups and migrations.
 
 ---

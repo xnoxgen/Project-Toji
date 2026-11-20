@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'core/theme/app_theme.dart';
+import 'data/services/notes_storage_service.dart';
+import 'data/services/notification_service.dart';
 import 'data/services/storage_service.dart';
+import 'state/notes_state.dart';
 import 'state/physique_state.dart';
-import 'ui/navigation/main_scaffold.dart';
+import 'ui/navigation/app_navigation_shell.dart';
 import 'ui/onboarding/onboarding_screen.dart';
 
 void main() async {
@@ -20,15 +23,28 @@ void main() async {
   );
 
   final storage = await StorageService.init();
-  final physiqueState = PhysiqueState(storage);
+  final notesStorage = await NotesStorageService.init();
+  final notificationService = NotificationService();
+  await notificationService.init();
 
-  runApp(PhysiqueApp(state: physiqueState));
+  final physiqueState = PhysiqueState(storage);
+  final notesState = NotesState(notesStorage);
+
+  runApp(PhysiqueApp(
+    state: physiqueState,
+    notesState: notesState,
+  ));
 }
 
 class PhysiqueApp extends StatelessWidget {
   final PhysiqueState state;
+  final NotesState notesState;
 
-  const PhysiqueApp({super.key, required this.state});
+  const PhysiqueApp({
+    super.key,
+    required this.state,
+    required this.notesState,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +58,10 @@ class PhysiqueApp extends StatelessWidget {
           darkTheme: AppTheme.darkTheme,
           themeMode: state.isDarkMode ? ThemeMode.dark : ThemeMode.light,
           home: state.settings.hasCompletedOnboarding
-              ? MainScaffold(state: state)
+              ? AppNavigationShell(
+                  notesState: notesState,
+                  physiqueState: state,
+                )
               : OnboardingScreen(
                   state: state,
                   onFinish: () {
