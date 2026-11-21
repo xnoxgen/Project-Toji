@@ -59,9 +59,11 @@ class ReminderNotificationService {
     try {
       tz.initializeTimeZones();
 
-      // Configure exact local device timezone using flutter_timezone
+      // Configure exact local device timezone using flutter_timezone with safety timeout
       try {
-        final timeZoneInfo = await FlutterTimezone.getLocalTimezone();
+        final timeZoneInfo = await FlutterTimezone.getLocalTimezone().timeout(
+          const Duration(seconds: 2),
+        );
         _deviceTimeZone = timeZoneInfo.identifier;
         tz.setLocalLocation(tz.getLocation(_deviceTimeZone));
         _log('Local timezone configured: $_deviceTimeZone');

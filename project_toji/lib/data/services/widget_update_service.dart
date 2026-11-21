@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:home_widget/home_widget.dart';
 import 'package:intl/intl.dart';
 
+import '../../data/models/workout_session.dart';
 import '../../state/notes_state.dart';
 import '../../state/physique_state.dart';
 
@@ -10,16 +11,39 @@ class WidgetUpdateService {
     return WidgetsBinding.instance.runtimeType.toString().contains('Test');
   }
 
+  static bool _isSyncing = false;
+  static bool _hasPendingSync = false;
+
   /// Synchronizes current workout, streak, and reminder data with native Android home widgets.
+  /// This method is strictly read-only and does NOT mutate state or trigger infinite notifyListeners loops.
   static Future<void> syncWidgetData({
     required PhysiqueState physiqueState,
     required NotesState notesState,
   }) async {
     if (_isTestEnv) return;
 
+    if (_isSyncing) {
+      _hasPendingSync = true;
+      return;
+    }
+    _isSyncing = true;
+
     try {
+      final now = DateTime.now();
       final todayPlan = physiqueState.getTodayPlan();
-      final todaySession = physiqueState.getOrCreateTodaySession();
+
+      // Look up today's session strictly in read-only mode (do NOT call getOrCreateTodaySession())
+      final todayDateKey =
+          '${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}';
+      WorkoutSession? todaySession;
+      for (final s in physiqueState.sessions) {
+        final sKey =
+            '${s.date.year}-${s.date.month.toString().padLeft(2, '0')}-${s.date.day.toString().padLeft(2, '0')}';
+        if (sKey == todayDateKey) {
+          todaySession = s;
+          break;
+        }
+      }
 
       final String workoutName;
       if (todayPlan.isRestDay) {
@@ -41,10 +65,11 @@ class WidgetUpdateService {
         workoutFocus = 'Rest & Recovery';
       }
 
-      final isCompleted = todaySession.isCompleted;
-      final totalExercises = todaySession.exercises.length;
-      final completedExercises = todaySession.completedExercisesCount;
-      final completionPct = todaySession.completionPercentage.toInt();
+      final isCompleted = todaySession?.isCompleted ?? false;
+      final totalExercises =
+          todaySession?.exercises.length ?? todayPlan.exercises.length;
+      final completedExercises = todaySession?.completedExercisesCount ?? 0;
+      final completionPct = todaySession?.completionPercentage.toInt() ?? 0;
 
       final String workoutStatus;
       if (isCompleted) {
@@ -59,9 +84,8 @@ class WidgetUpdateService {
       }
 
       final streak = physiqueState.currentStreak;
-      final todayDate = DateFormat('EEEE, MMM d').format(DateTime.now());
+      final todayDate = DateFormat('EEEE, MMM d').format(now);
 
-      final now = DateTime.now();
       final monday = now.subtract(Duration(days: now.weekday - 1));
       int plannedWeek = 0;
       int completedWeek = 0;
@@ -136,7 +160,7 @@ class WidgetUpdateService {
         reminderTime,
       );
 
-      // Trigger native widget refresh
+      // Trigger native widget refresh safely
       await HomeWidget.updateWidget(
         name: 'TojiQuickGlanceWidget',
         androidName: 'TojiQuickGlanceWidget',
@@ -153,6 +177,18 @@ class WidgetUpdateService {
       debugPrint('Home widgets synchronized successfully');
     } catch (e) {
       debugPrint('Error syncing home widget data: $e');
+    } finally {
+      _isSyncing = false;
+      if (_hasPendingSync) {
+        _hasPendingSync = false;
+        // Schedule next sync on next tick to avoid stack overflow
+        Future.microtask(
+          () => syncWidgetData(
+            physiqueState: physiqueState,
+            notesState: notesState,
+          ),
+        );
+      }
     }
   }
 }

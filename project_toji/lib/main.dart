@@ -30,33 +30,45 @@ void main() async {
   final storage = await StorageService.init();
   final notesStorage = await NotesStorageService.init();
   final labelStorage = await LabelStorageService.init();
-  final notificationService = ReminderNotificationService();
-  await notificationService.init();
 
   final physiqueState = PhysiqueState(storage);
   final notesState = NotesState(notesStorage, labelStorage);
 
-  // Initial synchronization for native Android home screen widgets
-  WidgetUpdateService.syncWidgetData(
-    physiqueState: physiqueState,
-    notesState: notesState,
-  );
-
-  // Keep native home widgets updated in real-time when Gym or Notes state changes
-  physiqueState.addListener(() {
-    WidgetUpdateService.syncWidgetData(
-      physiqueState: physiqueState,
-      notesState: notesState,
-    );
-  });
-  notesState.addListener(() {
-    WidgetUpdateService.syncWidgetData(
-      physiqueState: physiqueState,
-      notesState: notesState,
-    );
-  });
-
+  // Run the app immediately so the UI mounts and renders without blocking
   runApp(PhysiqueApp(state: physiqueState, notesState: notesState));
+
+  // Initialize notifications and widget sync in background after the first frame renders
+  WidgetsBinding.instance.addPostFrameCallback((_) async {
+    try {
+      final notificationService = ReminderNotificationService();
+      await notificationService.init();
+    } catch (e) {
+      debugPrint('NotificationService init error: $e');
+    }
+
+    try {
+      await WidgetUpdateService.syncWidgetData(
+        physiqueState: physiqueState,
+        notesState: notesState,
+      );
+    } catch (e) {
+      debugPrint('WidgetUpdateService initial sync error: $e');
+    }
+
+    // Keep native home widgets updated in real-time when Gym or Notes state changes
+    physiqueState.addListener(() {
+      WidgetUpdateService.syncWidgetData(
+        physiqueState: physiqueState,
+        notesState: notesState,
+      );
+    });
+    notesState.addListener(() {
+      WidgetUpdateService.syncWidgetData(
+        physiqueState: physiqueState,
+        notesState: notesState,
+      );
+    });
+  });
 }
 
 class PhysiqueApp extends StatelessWidget {

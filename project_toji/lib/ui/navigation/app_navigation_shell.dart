@@ -44,21 +44,41 @@ class _AppNavigationShellState extends State<AppNavigationShell> {
     super.initState();
 
     if (!_isTestEnv) {
-      // Check if application was launched from a home widget tap
-      HomeWidget.initiallyLaunchedFromHomeWidget().then((uri) {
-        if (uri != null) _handleDeepLink(uri);
-      });
+      try {
+        // Check if application was launched from a home widget tap
+        HomeWidget.initiallyLaunchedFromHomeWidget()
+            .then((uri) {
+              if (uri != null && mounted) _handleDeepLink(uri);
+            })
+            .catchError((e) {
+              debugPrint('initiallyLaunchedFromHomeWidget error: $e');
+            });
 
-      // Listen for interactive home widget taps while app is in foreground/background
-      _widgetSub = HomeWidget.widgetClicked.listen((uri) {
-        if (uri != null) _handleDeepLink(uri);
-      });
+        // Listen for interactive home widget taps while app is in foreground/background
+        _widgetSub = HomeWidget.widgetClicked.listen(
+          (uri) {
+            if (uri != null && mounted) _handleDeepLink(uri);
+          },
+          onError: (e) {
+            debugPrint('widgetClicked stream error: $e');
+          },
+        );
 
-      // Listen for reminder notification taps
-      _notificationSub = ReminderNotificationService().onNotificationClicked
-          .listen((payload) {
-            if (payload != null) _handleNotificationPayload(payload);
-          });
+        // Listen for reminder notification taps
+        _notificationSub = ReminderNotificationService().onNotificationClicked
+            .listen(
+              (payload) {
+                if (payload != null && mounted) {
+                  _handleNotificationPayload(payload);
+                }
+              },
+              onError: (e) {
+                debugPrint('onNotificationClicked stream error: $e');
+              },
+            );
+      } catch (e) {
+        debugPrint('AppNavigationShell widget setup error: $e');
+      }
     }
   }
 
@@ -78,9 +98,14 @@ class _AppNavigationShellState extends State<AppNavigationShell> {
   }
 
   void _handleDeepLink(Uri uri) {
-    final host = uri.host.toLowerCase();
+    if (!mounted || uri.toString().isEmpty) {
+      return;
+    }
     final scheme = uri.scheme.toLowerCase();
-    if (scheme != 'toji') return;
+    if (scheme != 'toji') {
+      return;
+    }
+    final host = uri.host.toLowerCase();
 
     debugPrint('AppNavigationShell handling deep link: $uri (host: $host)');
 
