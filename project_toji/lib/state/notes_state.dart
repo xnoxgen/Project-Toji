@@ -238,18 +238,18 @@ class NotesState extends ChangeNotifier {
   }
 
   Future<void> deleteNote(String id) async {
-    // If note has an associated reminder, cancel its notifications
-    final note = _notes.firstWhere(
-      (n) => n.id == id,
-      orElse: () => _notes.first,
-    );
+    final index = _notes.indexWhere((n) => n.id == id);
+    if (index == -1) {
+      return;
+    }
+    final note = _notes[index];
     if (note.reminderId != null) {
       await _notificationService.cancelReminderNotifications(note.reminderId!);
       _reminders.removeWhere((r) => r.id == note.reminderId);
       await _storage.saveReminders(_reminders);
     }
 
-    _notes.removeWhere((n) => n.id == id);
+    _notes.removeAt(index);
     await _storage.saveNotes(_notes);
     notifyListeners();
   }

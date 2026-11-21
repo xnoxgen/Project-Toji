@@ -29,6 +29,12 @@ class ReminderNotificationService {
   String _deviceTimeZone = 'UTC';
   String get deviceTimeZone => _deviceTimeZone;
 
+  Future<bool> ensureInitialized() async {
+    if (_isTestEnv || _isInitialized) return true;
+    await init();
+    return _isInitialized;
+  }
+
   static const String channelId = 'project_toji_reminders';
   static const String channelName = 'Project Toji Reminders';
   static const String channelDescription = 'Project Toji reminder alerts';
@@ -244,23 +250,21 @@ class ReminderNotificationService {
   /// Any prior notification for this reminder is cancelled first.
   Future<bool> scheduleReminderNotifications(ReminderModel reminder) async {
     if (_isTestEnv) return true;
-    if (!_isInitialized) {
-      await init();
+
+    final initialized = await ensureInitialized();
+    if (!initialized) {
+      _log('Cannot schedule reminder: notification service not initialized');
+      return false;
     }
 
-    // Always clear existing notifications for this reminder first to prevent duplicates
-    await cancelReminderNotifications(reminder.id);
-
-    // If disabled or completed, do not schedule
+    // If disabled or completed, cancel any existing notifications and return
     if (!reminder.isNotificationEnabled || reminder.isCompleted) {
+      await cancelReminderNotifications(reminder.id);
       _log(
-        'Reminder #${reminder.id} notification disabled or completed. Not scheduling.',
+        'Reminder #${reminder.id} notification disabled or completed. Cancelled existing notifications.',
       );
       return true;
     }
-
-    final p = plugin;
-    if (p == null) return false;
 
     final now = DateTime.now();
     // The single effective notification time based on the mutually exclusive advance interval
@@ -273,6 +277,12 @@ class ReminderNotificationService {
       );
       return false;
     }
+
+    // Clear existing notifications for this reminder before scheduling new one
+    await cancelReminderNotifications(reminder.id);
+
+    final p = plugin;
+    if (p == null) return false;
 
     final androidDetails = AndroidNotificationDetails(
       channelId,
@@ -398,7 +408,13 @@ class ReminderNotificationService {
   /// Sends a test notification after [delaySeconds] (default 10s) to verify device notification delivery.
   Future<bool> sendTestNotification({int delaySeconds = 10}) async {
     if (_isTestEnv) return true;
-    if (!_isInitialized) await init();
+    final initialized = await ensureInitialized();
+    if (!initialized) {
+      _log(
+        'Cannot send test notification: notification service not initialized',
+      );
+      return false;
+    }
 
     final p = plugin;
     if (p == null) return false;

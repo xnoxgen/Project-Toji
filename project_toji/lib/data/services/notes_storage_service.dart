@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/note_model.dart';
@@ -21,16 +22,19 @@ class NotesStorageService {
   // Load Notes
   List<NoteModel> loadNotes() {
     final raw = _prefs.getString(_keyNotes);
+
     if (raw == null) {
       return _defaultNotes();
     }
+
     try {
       final list = jsonDecode(raw) as List<dynamic>;
-      if (list.isEmpty) return _defaultNotes();
+
       return list
           .map((item) => NoteModel.fromJson(item as Map<String, dynamic>))
           .toList();
-    } catch (_) {
+    } catch (e) {
+      debugPrint('Error loading notes: $e');
       return _defaultNotes();
     }
   }
@@ -44,16 +48,19 @@ class NotesStorageService {
   // Load Reminders
   List<ReminderModel> loadReminders() {
     final raw = _prefs.getString(_keyReminders);
+
     if (raw == null) {
       return _defaultReminders();
     }
+
     try {
       final list = jsonDecode(raw) as List<dynamic>;
-      if (list.isEmpty) return _defaultReminders();
+
       return list
           .map((item) => ReminderModel.fromJson(item as Map<String, dynamic>))
           .toList();
-    } catch (_) {
+    } catch (e) {
+      debugPrint('Error loading reminders: $e');
       return _defaultReminders();
     }
   }

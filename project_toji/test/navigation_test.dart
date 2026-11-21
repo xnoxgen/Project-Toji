@@ -41,7 +41,10 @@ void main() {
             GlobalCupertinoLocalizations.delegate,
             FlutterQuillLocalizations.delegate,
           ],
-          supportedLocales: FlutterQuillLocalizations.supportedLocales,
+          supportedLocales: const [
+            Locale('en', ''),
+            ...FlutterQuillLocalizations.supportedLocales,
+          ],
           home: AppNavigationShell(
             notesState: notesState,
             physiqueState: physiqueState,

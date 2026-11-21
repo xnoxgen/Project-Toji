@@ -333,7 +333,10 @@ class PhysiqueState extends ChangeNotifier {
 
     _sessions.add(newSession);
     _storage.saveWorkoutSessions(_sessions);
-    notifyListeners();
+    // Safe notification deferred to avoid dispatching during a widget build phase
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      notifyListeners();
+    });
     return newSession;
   }
 

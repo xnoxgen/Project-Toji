@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/label_model.dart';
@@ -23,11 +24,11 @@ class LabelStorageService {
     }
     try {
       final list = jsonDecode(raw) as List<dynamic>;
-      if (list.isEmpty) return defaultLabels();
       return list
           .map((item) => LabelModel.fromJson(item as Map<String, dynamic>))
           .toList();
-    } catch (_) {
+    } catch (e) {
+      debugPrint('Error loading labels: $e');
       return defaultLabels();
     }
   }
