@@ -94,7 +94,10 @@ class PhysiqueApp extends StatelessWidget {
             GlobalCupertinoLocalizations.delegate,
             FlutterQuillLocalizations.delegate,
           ],
-          supportedLocales: FlutterQuillLocalizations.supportedLocales,
+          supportedLocales: const [
+            Locale('en', ''),
+            ...FlutterQuillLocalizations.supportedLocales,
+          ],
           home: state.settings.hasCompletedOnboarding
               ? AppNavigationShell(notesState: notesState, physiqueState: state)
               : OnboardingScreen(
